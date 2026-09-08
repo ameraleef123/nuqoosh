@@ -1,0 +1,166 @@
+{
+  "_comment": "The maximal case: every field in both languages, 5 projects, 2 jobs, phone present. Used only AFTER the no-experience fixture passes.",
+  "handle": "عمر-الرواشدة",
+  "latinHandle": "omar-rawashdeh",
+  "templateId": "hibr",
+  "theme": "dark",
+  "plan": "paid",
+  "accent": "#A99CFF",
+  "fields": {
+    "fullName": { "ar": "عمر الرواشدة", "en": "Omar Al-Rawashdeh" },
+    "tagline": {
+      "ar": "مطوّر واجهات، بشتغل على منتجات عربية بتحترم المستخدم",
+      "en": "Front-end developer building Arabic products that respect the user"
+    },
+    "about": {
+      "ar": "سنة رابعة علم حاسوب. اشتغلت على منتجات حقيقية بتستخدم يوميًا، وبهتم بالأداء وبتجربة القارئ العربي تحديدًا: الاتجاه، الخط، والأرقام.",
+      "en": "Final-year computer science student. I have shipped products people use daily, and I care about performance and about the Arabic reading experience specifically: direction, type, and numerals."
+    },
+    "location": { "ar": "إربد، الأردن", "en": "Irbid, Jordan" }
+  },
+  "sections": {
+    "education": {
+      "university": { "ar": "جامعة اليرموك", "en": "Yarmouk University" },
+      "major": { "ar": "علم الحاسوب", "en": "Computer Science" },
+      "gpa": 3.78,
+      "gpaScale": 4,
+      "year": 4,
+      "expectedGraduation": 2026
+    },
+    "projects": [
+      {
+        "id": "p1",
+        "title": { "ar": "لوحة تحليلات للمتاجر الصغيرة", "en": "Analytics Dashboard for Small Shops" },
+        "description": {
+          "ar": "لوحة بتعرض مبيعات المتجر بالعربي مع أرقام عربية وتواريخ هجرية وميلادية.",
+          "en": "A dashboard showing shop sales in Arabic, with Arabic-Indic numerals and both Hijri and Gregorian dates."
+        },
+        "kind": "personal",
+        "tools": ["Next.js", "TypeScript", "Postgres"],
+        "url": "https://example.com/dashboard",
+        "year": 2026
+      },
+      {
+        "id": "p2",
+        "title": { "ar": "محرّر نصوص عربي للويب", "en": "Arabic Web Text Editor" },
+        "description": {
+          "ar": "محرّر بيتعامل صح مع النص ثنائي الاتجاه، والتشكيل، والاقتباسات.",
+          "en": "An editor that handles bidirectional text, diacritics and quotations correctly."
+        },
+        "kind": "personal",
+        "tools": ["TypeScript", "ProseMirror"],
+        "year": 2025
+      },
+      {
+        "id": "p3",
+        "title": { "ar": "نظام إدارة مكتبة الكلية", "en": "Faculty Library System" },
+        "description": {
+          "ar": "مشروع تخرّج مصغّر لإدارة الإعارة والحجز.",
+          "en": "A small graduation project managing lending and reservations."
+        },
+        "kind": "course",
+        "courseName": { "ar": "مساق هندسة البرمجيات", "en": "Software Engineering" },
+        "tools": ["Java", "Spring", "MySQL"],
+        "year": 2025
+      },
+      {
+        "id": "p4",
+        "title": { "ar": "تطبيق مواقيت الحافلات", "en": "Bus Timetable App" },
+        "description": {
+          "ar": "تطبيق بيعرض مواعيد باصات الجامعة، اشتغلنا عليه أربعة.",
+          "en": "An app showing campus bus times, built by a team of four."
+        },
+        "kind": "team",
+        "tools": ["React Native", "Expo"],
+        "year": 2024
+      },
+      {
+        "id": "p5",
+        "title": { "ar": "أداة قياس أداء الصفحات العربية", "en": "Arabic Page Performance Tool" },
+        "description": {
+          "ar": "أداة بتقيس وقت تحميل الخطوط العربية وتأثيرها على أول رسم.",
+          "en": "A tool measuring Arabic font load time and its effect on first paint."
+        },
+        "kind": "personal",
+        "tools": ["Node.js", "Playwright"],
+        "year": 2026
+      }
+    ],
+    "volunteering": [
+      {
+        "id": "v1",
+        "role": { "ar": "منسّق تدريب", "en": "Training Coordinator" },
+        "organization": { "ar": "نادي الحاسوب — جامعة اليرموك", "en": "Computer Club, Yarmouk University" },
+        "impact": {
+          "ar": "نظّمت ١٢ ورشة وحضرها أكثر من ٢٠٠ طالب خلال سنة.",
+          "en": "Ran 12 workshops attended by over 200 students in one year."
+        },
+        "from": "2024-09",
+        "to": "2025-06"
+      },
+      {
+        "id": "v2",
+        "role": { "ar": "متطوّع تعليم", "en": "Teaching Volunteer" },
+        "organization": { "ar": "مبادرة صيف البرمجة", "en": "Summer Code Initiative" },
+        "impact": {
+          "ar": "درّست أساسيات الويب لطلاب مدارس في إربد.",
+          "en": "Taught web basics to school students in Irbid."
+        },
+        "from": "2024-06",
+        "to": "2024-08"
+      }
+    ],
+    "activities": [
+      {
+        "id": "a1",
+        "title": { "ar": "مسابقة البرمجة الجماعية ACM", "en": "ACM Collegiate Programming Contest" },
+        "detail": { "ar": "المركز الرابع على مستوى الجامعات الأردنية.", "en": "Fourth place among Jordanian universities." }
+      },
+      {
+        "id": "a2",
+        "title": { "ar": "هاكاثون عمّان", "en": "Amman Hackathon" },
+        "detail": { "ar": "بنينا نموذجًا لتطبيق نقل جماعي خلال ٤٨ ساعة.", "en": "Built a shared-transport prototype in 48 hours." }
+      }
+    ],
+    "experience": [
+      {
+        "id": "e1",
+        "role": { "ar": "مطوّر واجهات — تدريب", "en": "Front-end Developer, Internship" },
+        "employer": { "ar": "شركة مدار للتقنية", "en": "Madar Tech" },
+        "summary": {
+          "ar": "اشتغلت على واجهة منتج بيستخدمه ٣٠٠٠ مستخدم شهريًا، وحسّنت وقت التحميل ٤٠٪.",
+          "en": "Worked on a product interface used by 3,000 monthly users and cut load time by 40%."
+        },
+        "from": "2025-06",
+        "to": "2025-09"
+      },
+      {
+        "id": "e2",
+        "role": { "ar": "مطوّر ويب — عمل حر", "en": "Web Developer, Freelance" },
+        "employer": { "ar": "عملاء متفرّقون", "en": "Various clients" },
+        "summary": {
+          "ar": "بنيت مواقع لأربعة أعمال صغيرة، كلها بالعربي وبتشتغل على الموبايل أولًا.",
+          "en": "Built sites for four small businesses, all Arabic-first and mobile-first."
+        },
+        "from": "2024-01",
+        "to": "2025-05"
+      }
+    ],
+    "skills": [
+      { "id": "s1", "name": { "ar": "تايبسكربت", "en": "TypeScript" }, "group": "technical" },
+      { "id": "s2", "name": { "ar": "React و Next.js", "en": "React & Next.js" }, "group": "technical" },
+      { "id": "s3", "name": { "ar": "تحسين الأداء", "en": "Performance optimisation" }, "group": "technical" },
+      { "id": "s4", "name": { "ar": "قواعد البيانات", "en": "Databases" }, "group": "technical" },
+      { "id": "s5", "name": { "ar": "العربية — لغة أم", "en": "Arabic — native" }, "group": "language" },
+      { "id": "s6", "name": { "ar": "الإنجليزية — ممتاز", "en": "English — fluent" }, "group": "language" },
+      { "id": "s7", "name": { "ar": "قيادة فريق", "en": "Team leadership" }, "group": "soft" }
+    ],
+    "links": [
+      { "id": "l1", "kind": "email", "value": "omar.rawashdeh@example.com" },
+      { "id": "l2", "kind": "phone", "value": "+962790000000" },
+      { "id": "l3", "kind": "linkedin", "value": "https://linkedin.com/in/omar-rawashdeh" },
+      { "id": "l4", "kind": "github", "value": "https://github.com/omar-rw" },
+      { "id": "l5", "kind": "website", "value": "https://omar.example.com" }
+    ]
+  }
+}

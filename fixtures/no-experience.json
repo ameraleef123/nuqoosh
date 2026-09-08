@@ -1,0 +1,74 @@
+{
+  "_comment": "THE DEFAULT CASE. Every template is judged against this fixture first. No jobs, no phone, and exactly two fields translated to English (fullName and the first project title) so that per-field bilingual fallback is visible rather than theoretical.",
+  "handle": "ليان-الشوابكة",
+  "latinHandle": "layan-shawabkeh",
+  "templateId": "saqee",
+  "theme": "system",
+  "plan": "free",
+  "fields": {
+    "fullName": { "ar": "ليان الشوابكة", "en": "Layan Al-Shawabkeh" },
+    "tagline": { "ar": "طالبة هندسة برمجيات، بتعلّم بالمشاريع أكتر من الكتب" },
+    "about": {
+      "ar": "سنة ثانية بهندسة البرمجيات. أغلب شغلي لهلق من مشاريع المساقات، وبحب الشغل اللي بينحلّ فيه مشكلة حقيقية لناس حقيقية. بدرّب زمايلي بنادي البرمجة كل أسبوع."
+    },
+    "location": { "ar": "عمّان، الأردن" }
+  },
+  "sections": {
+    "education": {
+      "university": { "ar": "الجامعة الأردنية" },
+      "major": { "ar": "هندسة برمجيات" },
+      "gpa": 3.4,
+      "gpaScale": 4,
+      "year": 2,
+      "expectedGraduation": 2028
+    },
+    "projects": [
+      {
+        "id": "p1",
+        "title": { "ar": "نظام حجز مختبرات الجامعة", "en": "University Lab Booking System" },
+        "description": {
+          "ar": "تطبيق ويب بيخلّي الطالب يحجز جهاز بالمختبر قبل ما يوصل، بدل ما يستنى دوره. اشتغلت على الواجهة وقاعدة البيانات."
+        },
+        "kind": "course",
+        "courseName": { "ar": "مساق قواعد البيانات" },
+        "tools": ["React", "Node.js", "PostgreSQL"],
+        "year": 2026
+      },
+      {
+        "id": "p2",
+        "title": { "ar": "لعبة تعليم الحروف للأطفال" },
+        "description": {
+          "ar": "لعبة بسيطة بتساعد ولد عمره ٥ سنين يتعرّف على الحروف العربية بالصوت والصورة. جرّبتها مع بنت خالتي وعدّلت عليها من ملاحظاتها."
+        },
+        "kind": "course",
+        "courseName": { "ar": "مساق البرمجة الكيانية" },
+        "tools": ["Java", "JavaFX"],
+        "year": 2025
+      }
+    ],
+    "volunteering": [
+      {
+        "id": "v1",
+        "role": { "ar": "مدرّبة" },
+        "organization": { "ar": "نادي البرمجة — الجامعة الأردنية" },
+        "impact": { "ar": "درّبت ٢٥ طالبًا على أساسيات البرمجة بجلسات أسبوعية على مدى فصل كامل." },
+        "from": "2025-09",
+        "to": "2026-01"
+      }
+    ],
+    "activities": [],
+    "experience": [],
+    "skills": [
+      { "id": "s1", "name": { "ar": "جافاسكربت" }, "group": "technical" },
+      { "id": "s2", "name": { "ar": "React" }, "group": "technical" },
+      { "id": "s3", "name": { "ar": "SQL" }, "group": "technical" },
+      { "id": "s4", "name": { "ar": "العربية — لغة أم" }, "group": "language" },
+      { "id": "s5", "name": { "ar": "الإنجليزية — جيد جدًا" }, "group": "language" },
+      { "id": "s6", "name": { "ar": "شرح وتدريب" }, "group": "soft" }
+    ],
+    "links": [
+      { "id": "l1", "kind": "email", "value": "layan.shawabkeh@example.com" },
+      { "id": "l2", "kind": "github", "value": "https://github.com/layan-sh" }
+    ]
+  }
+}
