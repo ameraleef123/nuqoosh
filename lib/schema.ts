@@ -101,6 +101,10 @@ export const profileSchema = z.object({
   editTokenHash: z.string().optional(),
   ownerUserId: z.string().optional(),
 
+  /** Optional photo. Most students will not upload one, so the hero falls back
+   *  to an initials avatar rather than leaving a hole. */
+  avatar: z.string().optional(),
+
   templateId: z.string(),
   theme: z.enum(['system', 'light', 'dark']).default('system'),
   plan: z.enum(['free', 'paid']).default('free'),

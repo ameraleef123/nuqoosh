@@ -27,10 +27,10 @@ export type SectionLayout = 'stack' | 'bento'
  * Every slot is lazy and reduced-motion aware — see components/lottie-mark.tsx.
  */
 export type TemplateMedia = {
-  /** Full-width backdrop behind the hero band, under the glass. */
+  /** Fixed backdrop behind the whole screen, under every card. */
+  background?: string
+  /** Art inside the hero card itself. */
   hero?: string
-  /** Watermark at the vertical centre of the page, behind everything. */
-  page?: string
   /** A quiet mark in the page corner. */
   corner?: string
 }
@@ -76,8 +76,8 @@ export const TEMPLATES: Template[] = [
     order: 'A',
     layout: 'bento',
     media: {
-      hero: '/lottie/frost-hero.lottie',
-      page: '/lottie/frost-card.lottie',
+      background: '/lottie/frost-hero.lottie',
+      hero: '/lottie/frost-card.lottie',
       // corner: pending an exported file — the LottieFiles editor link cannot be
       // fetched without an account, so the slot is wired but empty.
     },
@@ -97,6 +97,11 @@ export const TEMPLATES: Template[] = [
     card: 'tile',
     order: 'A',
     layout: 'stack',
+    media: {
+      // The one free-catalog Lottie that met the bar: a vector prism splitting
+      // light, 1.6 KB. Everything else for this template is CSS.
+      hero: '/lottie/prism.lottie',
+    },
     fonts: { display: 'almarai', body: 'plex-arabic' },
   },
   {

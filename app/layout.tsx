@@ -4,6 +4,7 @@ import { BootScript } from '@/components/boot-script'
 import { Providers } from '@/components/providers'
 import './globals.css'
 import './templates.css'
+import './effects.css'
 
 export const metadata: Metadata = {
   title: 'نُقوش — موقعك الشخصي بعشر دقايق',

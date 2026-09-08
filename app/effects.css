@@ -1,0 +1,259 @@
+/* ═══ Per-template signature effects ═══════════════════════════════════════
+   Every effect here animates transform or opacity only, and every loop sits
+   inside a prefers-reduced-motion guard. What differs between templates is
+   the character, never the rules.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── بلّور: light through a prism ─────────────────────────────────────────
+   1. An iridescent field: an oversized conic gradient, blurred, rotated by a
+      transform. The colours are the same four orbs the palette was measured
+      against, at LOWER opacity than the orbs, so every measured pair holds.
+   2. A shine ring on the hero: a rotating conic gradient shown only through a
+      1.5px ring mask. Rotating an element is transform-only; animating the
+      gradient itself would repaint every frame.
+   3. A refraction sweep on hover: a diagonal highlight that slides across the
+      tile with translateX. */
+
+[data-bg='prism'] .prism-field {
+  position: absolute;
+  inset: -45%;
+  background: conic-gradient(from 0deg, #c9b8ff, #f5a79e, #ffe7b8, #cff3e6, #c9b8ff);
+  filter: blur(90px);
+  opacity: 0.5;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-bg='prism'] .prism-field {
+    animation: prism-spin 80s linear infinite;
+  }
+}
+:root[data-motion='paused'] .prism-field {
+  animation-play-state: paused;
+}
+@keyframes prism-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-bg='prism'] .prism-field {
+    background: conic-gradient(from 0deg, #6d5df6, #f0766a, #f5b942, #2dd4bf, #6d5df6);
+    opacity: 0.38;
+  }
+}
+:root[data-theme='dark'] [data-bg='prism'] .prism-field {
+  background: conic-gradient(from 0deg, #6d5df6, #f0766a, #f5b942, #2dd4bf, #6d5df6);
+  opacity: 0.38;
+}
+
+.shine-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  overflow: hidden;
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+}
+.shine-spin {
+  position: absolute;
+  inset: -60%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0 55%,
+    #c9b8ff 66%,
+    #f5a79e 76%,
+    #ffe7b8 86%,
+    transparent 100%
+  );
+  will-change: transform;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .shine-spin {
+    animation: shine-rotate 9s linear infinite;
+  }
+}
+:root[data-motion='paused'] .shine-spin {
+  animation-play-state: paused;
+}
+@keyframes shine-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.sweep {
+  position: relative;
+  overflow: hidden;
+}
+.sweep::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, 0.38) 50%, transparent 62%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+[dir='rtl'] .sweep::after {
+  transform: translateX(130%);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .sweep::after {
+    transition: transform 700ms var(--ease-out);
+  }
+  .sweep:hover::after {
+    transform: translateX(130%);
+  }
+  [dir='rtl'] .sweep:hover::after {
+    transform: translateX(-130%);
+  }
+}
+
+/* ── فجر: first light ──────────────────────────────────────────────────────
+   A sun disc rises once on load (transform + opacity), its halo breathes
+   (opacity), and a retro grid floor scrolls toward the horizon under it.
+   Under reduced motion the disc is rendered already risen. */
+
+.dawn-sun {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 6%;
+  margin-inline: auto;
+  inline-size: min(56vw, 36rem);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+.dawn-sun-disc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 42%, #ffe1b8 0%, #ffb88c 42%, rgba(255, 184, 140, 0) 70%);
+}
+.dawn-sun-halo {
+  position: absolute;
+  inset: -35%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 184, 140, 0.5), transparent 62%);
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .dawn-sun-disc {
+    animation: dawn-rise 1400ms var(--ease-out) both;
+  }
+  .dawn-sun-halo {
+    animation: dawn-breathe 9s ease-in-out infinite alternate;
+  }
+}
+:root[data-motion='paused'] .dawn-sun-halo {
+  animation-play-state: paused;
+}
+@keyframes dawn-rise {
+  from {
+    transform: translateY(22%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+@keyframes dawn-breathe {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 0.9;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .dawn-sun-disc {
+    background: radial-gradient(circle at 50% 42%, #ffc9a0 0%, #ff9e6b 40%, rgba(255, 158, 107, 0) 70%);
+  }
+  :root:not([data-theme='light']) .dawn-sun-halo {
+    background: radial-gradient(circle, rgba(255, 158, 107, 0.42), transparent 62%);
+  }
+}
+:root[data-theme='dark'] .dawn-sun-disc {
+  background: radial-gradient(circle at 50% 42%, #ffc9a0 0%, #ff9e6b 40%, rgba(255, 158, 107, 0) 70%);
+}
+:root[data-theme='dark'] .dawn-sun-halo {
+  background: radial-gradient(circle, rgba(255, 158, 107, 0.42), transparent 62%);
+}
+
+/* The grid is the floor: bottom half of the screen, peach lines in the dark. */
+[data-bg='dawn'] .retro-grid {
+  inset-block-start: auto;
+  block-size: 58%;
+  --grid-line: rgba(42, 27, 16, 0.2);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-bg='dawn'] .retro-grid {
+    --grid-line: rgba(255, 184, 140, 0.16);
+  }
+}
+:root[data-theme='dark'] [data-bg='dawn'] .retro-grid {
+  --grid-line: rgba(255, 184, 140, 0.16);
+}
+
+/* ── حبر: ink on paper ─────────────────────────────────────────────────────
+   Paper grain is a static SVG noise texture (no animation, ever — paper does
+   not move). The one moving thing is an ink blot in the corner that breathes
+   at the edge of perception.
+
+   No drop cap, on purpose: Arabic letters join, so a floated first letter is
+   torn out of its word and renders in its isolated form. The editorial cue is
+   the accent rule beside the tagline instead. */
+
+[data-bg='ink']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22220%22 height=%22220%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%222%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-bg='ink']::after {
+    opacity: 0.09;
+    mix-blend-mode: screen;
+  }
+}
+:root[data-theme='dark'] [data-bg='ink']::after {
+  opacity: 0.09;
+  mix-blend-mode: screen;
+}
+
+.ink-blot {
+  position: absolute;
+  inset-block-start: -4%;
+  inset-inline-end: -3%;
+  inline-size: clamp(12rem, 26vw, 24rem);
+  color: var(--nq-accent);
+  opacity: 0.14;
+  pointer-events: none;
+  transform-origin: 60% 40%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ink-blot {
+    animation: ink-breathe 14s ease-in-out infinite alternate;
+  }
+}
+:root[data-motion='paused'] .ink-blot {
+  animation-play-state: paused;
+}
+@keyframes ink-breathe {
+  from {
+    transform: scale(1) rotate(0deg);
+  }
+  to {
+    transform: scale(1.06) rotate(2deg);
+  }
+}

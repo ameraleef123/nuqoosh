@@ -17,6 +17,9 @@ import { formatGpa, formatNumber, resolveField, t, type Lang } from '@/lib/i18n'
 import type { Template } from '@/lib/templates'
 import { cn } from '@/lib/cn'
 import { LottieMark } from '@/components/lottie-mark'
+import { RetroGrid } from './retro-grid'
+import { DawnSun } from './dawn-sun'
+import { InkBlot } from './ink-blot'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ONE renderer for every template. Templates are data plus component variants,
@@ -169,10 +172,17 @@ function Background({ template }: { template: Template }) {
     <div className="tpl-bg" data-bg={template.background} aria-hidden="true">
       {template.background === 'dawn' ? <span className="tpl-sky" /> : null}
 
-      {/* Watermark at the vertical centre of the page, behind every card. */}
-      {template.media?.page ? (
-        <LottieMark src={template.media.page} className="tpl-watermark" />
+      {/* Signature layers, one per background system. Orbs come after so they
+          sit on top of the field or the floor. */}
+      {template.background === 'prism' ? <span className="prism-field" /> : null}
+      {template.background === 'dawn' ? (
+        <>
+          <DawnSun />
+          <RetroGrid />
+        </>
       ) : null}
+      {template.background === 'ink' ? <InkBlot /> : null}
+
       {orb(1, {
         inlineSize: '52vmax',
         blockSize: '52vmax',
@@ -266,6 +276,62 @@ function SectionShell({
   )
 }
 
+/* ── Avatar ────────────────────────────────────────────────────────────────
+   Most students will not upload a photo, so the fallback is the design, not an
+   error state: their initials on the template's accent. Nothing here ever
+   renders an empty circle or a placeholder silhouette.
+   ────────────────────────────────────────────────────────────────────────── */
+
+function Avatar({ profile, lang }: { profile: Profile; lang: Lang }) {
+  const name = resolveField(profile.fields.fullName, lang)?.text ?? ''
+
+  // Two things Arabic needs that a naive first-letter-of-each-word does not do.
+  //
+  // Strip the definite article: the first letter of «الشوابكة» is the alif of
+  // «ال», which carries no identity. Without this, «ليان الشوابكة» initialled
+  // to «لا» — which is also the Arabic word for "no".
+  //
+  // Then join with a zero-width non-joiner: Arabic letters connect, so «ل» and
+  // «ش» set next to each other fuse into a shape that reads as a different
+  // word. U+200C keeps them as two separate initials.
+  const initials = name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => Array.from(w.replace(/^ال(?=.)/, ''))[0])
+    .filter(Boolean)
+    .join('‌')
+
+  return (
+    <div
+      data-hero-item
+      className="glass-subtle flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full md:size-32"
+    >
+      {profile.avatar ? (
+        // eslint-disable-next-line @next/next/no-img-element -- a student photo
+        // is an arbitrary remote URL; next/image would need every host allowed.
+        <img
+          src={profile.avatar}
+          alt={name}
+          width={128}
+          height={128}
+          className="size-full object-cover"
+          loading="lazy"
+          decoding="async"
+        />
+      ) : (
+        <span
+          aria-hidden="true"
+          className="text-3xl font-extrabold md:text-4xl"
+          style={{ fontFamily: 'var(--font-display)', color: 'var(--nq-accent)' }}
+        >
+          {initials}
+        </span>
+      )}
+    </div>
+  )
+}
+
 /* ── How wide a section tile should be ─────────────────────────────────────
    Driven by how much the student actually wrote, not by which section it is.
    A profile with one project should not get a tile twice the width of the same
@@ -349,18 +415,25 @@ function Hero({ profile, template, lang }: RenderProps) {
   const about = <Txt value={profile.fields.about} lang={lang} as="p" className="measure" />
 
   if (template.hero === 'feature') {
-    // The art is a backdrop, not a sibling: it sits behind the glass so the
-    // panel's blur and alpha are what the text is actually read on. Measured
-    // worst case — a solid white flake directly behind a line of text — is
-    // 10.06:1 primary and 6.65:1 muted, at snow opacity 0.5 with this
-    // template's strong glass. At full snow opacity it was 3.98:1 and failed.
+    const art = template.media?.hero
     return (
-      <header className={cn(glass, 'tilt mx-auto max-w-5xl p-7 md:p-10 lg:p-14')} data-tilt>
-        <div className="flex flex-col gap-5">
-          <div data-hero-item>{headline}</div>
-          <div data-hero-item>{tagline}</div>
-          {pills}
-          <div data-hero-item>{about}</div>
+      <header className={cn(glass, 'tilt overflow-hidden p-7 md:p-10 lg:p-12')} data-tilt>
+        <div className="grid items-center gap-7 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-10">
+          <Avatar profile={profile} lang={lang} />
+
+          <div className="flex flex-col gap-4">
+            <div data-hero-item>{headline}</div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
+          </div>
+
+          {/* The art lives in the card. It is hidden below lg rather than
+              stacked: on a phone the card is the student's name, not scenery,
+              and a display:none LottieMark is never fetched or started. */}
+          {art ? (
+            <LottieMark src={art} className="hidden size-64 shrink-0 lg:block xl:size-72" />
+          ) : null}
         </div>
       </header>
     )
@@ -380,18 +453,32 @@ function Hero({ profile, template, lang }: RenderProps) {
   }
 
   if (template.hero === 'split') {
+    const art = template.media?.hero
     return (
-      <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
-        <div className="grid items-start gap-6 md:grid-cols-5 xl:gap-10">
+      <header className={cn(glass, 'tilt relative p-7 md:p-10')} data-tilt>
+        {/* Shine ring: a rotating conic gradient seen only through a 1.5px
+            border mask. Rotation is transform-only. */}
+        <span className="shine-ring" aria-hidden="true">
+          <span className="shine-spin" />
+        </span>
+        <div className="grid items-center gap-6 md:grid-cols-5 xl:gap-10">
           <div className="md:col-span-3">
             <div data-hero-item>{headline}</div>
             <div data-hero-item className="mt-3">
               {tagline}
             </div>
+            <div data-hero-item className="mt-4">
+              {about}
+            </div>
           </div>
           <div className="flex flex-col gap-4 md:col-span-2">
+            {art ? (
+              <LottieMark
+                src={art}
+                className="mx-auto hidden aspect-square w-full max-w-64 md:block"
+              />
+            ) : null}
             {pills}
-            <div data-hero-item>{about}</div>
           </div>
         </div>
       </header>
@@ -501,7 +588,7 @@ function ProjectItem({
   }
   if (shape === 'tile') {
     return (
-      <li className="glass-subtle glass-hover rounded-[var(--nq-radius-md)] p-5">{body}</li>
+      <li className="glass-subtle glass-hover sweep rounded-[var(--nq-radius-md)] p-5">{body}</li>
     )
   }
   return (
@@ -710,49 +797,25 @@ export function TemplateRenderer({
         />
       ) : null}
 
-      {/* A `feature` hero is its own full-width band with an animated backdrop
-          behind the glass. Every other hero stays inside the content column. */}
-      {template.hero === 'feature' ? (
-        <div className="tpl-hero-band">
-          {template.media?.hero ? (
-            /* Tiled, not stretched. The source is a 120x80 snowfall, so
-               covering a 1440px band scales every flake about 12x and one
-               flake ends up bigger than the panel. Three tiles keep each
-               instance near 480px, which is the scale the art was drawn for.
-
-               The extra tiles are display:none below lg, and a display:none
-               element has no intersection, so its IntersectionObserver never
-               fires and it is never fetched or started. Phones render one. */
-            <div className="tpl-hero-art" aria-hidden="true">
-              {[0, 1, 2].map((i) => (
-                <LottieMark
-                  key={i}
-                  src={template.media!.hero!}
-                  className={cn('tpl-hero-tile', i > 0 && 'tpl-hero-tile-extra')}
-                />
-              ))}
-            </div>
-          ) : null}
-          {/* Generous vertical room and a centred panel, so the backdrop is
-              visible around the glass instead of hidden beneath a panel that
-              spans the whole band. */}
-          <div className="container-wide relative py-14 md:py-24">
-            <Hero profile={profile} template={template} lang={lang} />
-          </div>
+      {/* The backdrop is fixed to the viewport, not to the page: it keeps
+          falling in place while the visitor scrolls, and each tile only ever
+          has to cover one screen instead of the whole document. */}
+      {template.media?.background ? (
+        <div className="tpl-screen-art" aria-hidden="true">
+          {[0, 1, 2].map((i) => (
+            <LottieMark
+              key={i}
+              src={template.media!.background!}
+              className={cn('tpl-screen-tile', i > 0 && 'tpl-screen-tile-extra')}
+            />
+          ))}
         </div>
       ) : null}
 
       {/* Full-screen width. Line length is protected inside each section by
           `auto-cols` and `measure`, not by squeezing the page into a column. */}
-      <div
-        className={cn(
-          'tpl-content container-wide pb-10 md:pb-16',
-          template.hero === 'feature' ? 'pt-6 md:pt-8' : 'pt-10 md:pt-16'
-        )}
-      >
-        {template.hero === 'feature' ? null : (
-          <Hero profile={profile} template={template} lang={lang} />
-        )}
+      <div className="tpl-content container-wide py-10 md:py-16">
+        <Hero profile={profile} template={template} lang={lang} />
 
         {/* Bento: the sections sit beside each other rather than in one column.
             Empty sections are still dropped upstream, and `grid-auto-flow: dense`
