@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="نُقوش">
+  <rect width="64" height="64" rx="14" fill="#1A1523"/>
+  <!-- نُقوش means inscriptions. The mark is a carved stroke with the three dots
+       that sit above ش, drawn as geometry so it renders identically everywhere
+       and needs no font. -->
+  <path d="M14 42c6.5 5.5 14 8 22 8s14-3 14-9c0-4.5-3.5-7-8-7"
+        fill="none" stroke="#A99CFF" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="26" cy="22" r="3.2" fill="#F5B942"/>
+  <circle cx="36" cy="17" r="3.2" fill="#F5B942"/>
+  <circle cx="46" cy="22" r="3.2" fill="#F5B942"/>
+</svg>

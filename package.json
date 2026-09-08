@@ -7,10 +7,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "npm run typecheck && npm run check:rtl",
     "check:rtl": "node scripts/check-rtl.mjs",
     "check:contrast": "python scripts/contrast.py",
-    "analyze": "cross-env ANALYZE=true next build"
+    "typecheck": "tsc --noEmit",
+    "verify": "node scripts/verify.mjs"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
