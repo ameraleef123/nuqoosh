@@ -449,9 +449,18 @@ html.motion-failsafe [data-hero] {
     grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
     grid-auto-flow: dense;
   }
+  /* Spans are chosen from the amount of data a section holds, not from which
+     section it is — a student with one project should not get a tile twice the
+     width of a student with six. Set in components/templates/renderer.tsx. */
   @media (min-width: 1024px) {
-    .bento > .bento-wide {
+    .bento > .span-2,
+    .bento > .span-3 {
       grid-column: span 2;
+    }
+  }
+  @media (min-width: 1536px) {
+    .bento > .span-3 {
+      grid-column: span 3;
     }
   }
 

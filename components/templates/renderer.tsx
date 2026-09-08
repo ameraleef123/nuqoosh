@@ -1,6 +1,6 @@
 'use client'
 
-import { Fragment, useEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import {
   ArrowUpRight,
   AtSign,
@@ -168,6 +168,11 @@ function Background({ template }: { template: Template }) {
   return (
     <div className="tpl-bg" data-bg={template.background} aria-hidden="true">
       {template.background === 'dawn' ? <span className="tpl-sky" /> : null}
+
+      {/* Watermark at the vertical centre of the page, behind every card. */}
+      {template.media?.page ? (
+        <LottieMark src={template.media.page} className="tpl-watermark" />
+      ) : null}
       {orb(1, {
         inlineSize: '52vmax',
         blockSize: '52vmax',
@@ -234,19 +239,19 @@ function SectionShell({
   title,
   glass,
   children,
-  wide = false,
+  span = 1,
 }: {
   title: string
   glass: string
   children: React.ReactNode
-  /** Spans two columns in a bento layout. */
-  wide?: boolean
+  /** Bento column span, chosen from the section's data volume. */
+  span?: 1 | 2 | 3
 }) {
   // The reveal animates the outer element and the tilt animates the inner one.
   // Sharing a node would mean two rules writing `transform`, and the reveal's
   // `transform: none` end state would cancel the tilt.
   return (
-    <section data-reveal className={wide ? 'bento-wide' : undefined}>
+    <section data-reveal className={span > 1 ? `span-${span}` : undefined}>
       <div className={cn(GLASS[glass as Template['glass']], 'tilt h-full p-6 md:p-8')} data-tilt>
         {/* At full width a stacked heading leaves short sections — education,
             skills, contact — hugging one edge with a field of empty space
@@ -259,6 +264,32 @@ function SectionShell({
       </div>
     </section>
   )
+}
+
+/* ── How wide a section tile should be ─────────────────────────────────────
+   Driven by how much the student actually wrote, not by which section it is.
+   A profile with one project should not get a tile twice the width of the same
+   tile on a profile with six.
+   ────────────────────────────────────────────────────────────────────────── */
+
+function sectionSpan(key: SectionKey, profile: Profile): 1 | 2 | 3 {
+  const s = profile.sections
+  switch (key) {
+    case 'projects':
+      return s.projects.length >= 4 ? 3 : s.projects.length >= 2 ? 2 : 1
+    case 'experience':
+      return s.experience.length >= 2 ? 2 : 1
+    case 'volunteering':
+      return s.volunteering.length >= 2 ? 2 : 1
+    case 'activities':
+      return s.activities.length >= 3 ? 2 : 1
+    case 'skills':
+      return s.skills.length >= 8 ? 2 : 1
+    case 'links':
+      return s.links.length >= 5 ? 2 : 1
+    default:
+      return 1
+  }
 }
 
 /* ── Hero variants ─────────────────────────────────────────────────────────── */
@@ -318,29 +349,18 @@ function Hero({ profile, template, lang }: RenderProps) {
   const about = <Txt value={profile.fields.about} lang={lang} as="p" className="measure" />
 
   if (template.hero === 'feature') {
-    const art = template.media?.hero
+    // The art is a backdrop, not a sibling: it sits behind the glass so the
+    // panel's blur and alpha are what the text is actually read on. Measured
+    // worst case — a solid white flake directly behind a line of text — is
+    // 10.06:1 primary and 6.65:1 muted, at snow opacity 0.5 with this
+    // template's strong glass. At full snow opacity it was 3.98:1 and failed.
     return (
-      <header className={cn(glass, 'tilt overflow-hidden')} data-tilt>
-        <div className="grid items-stretch lg:grid-cols-[1.35fr_1fr]">
-          <div className="flex flex-col justify-center gap-5 p-7 md:p-10 lg:p-12">
-            <div data-hero-item>{headline}</div>
-            <div data-hero-item>{tagline}</div>
-            {pills}
-            <div data-hero-item>{about}</div>
-          </div>
-          {art ? (
-            <div className="relative min-h-56 border-t border-[var(--nq-border)] lg:min-h-full lg:border-t-0 lg:border-s">
-              <LottieMark
-                src={art}
-                className="absolute inset-0"
-                poster={
-                  // Holds the space so nothing shifts, and is the whole of it
-                  // under reduced motion.
-                  <span className="block h-full w-full" />
-                }
-              />
-            </div>
-          ) : null}
+      <header className={cn(glass, 'tilt mx-auto max-w-5xl p-7 md:p-10 lg:p-14')} data-tilt>
+        <div className="flex flex-col gap-5">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
         </div>
       </header>
     )
@@ -516,11 +536,12 @@ type RenderProps = { profile: Profile; template: Template; lang: Lang }
 function Section({ which, profile, template, lang }: RenderProps & { which: SectionKey }) {
   const s = profile.sections
   const glass = template.glass
+  const span = template.layout === 'bento' ? sectionSpan(which, profile) : 1
 
   switch (which) {
     case 'projects':
       return (
-        <SectionShell title={t('projects', lang)} glass={glass} wide>
+        <SectionShell title={t('projects', lang)} glass={glass} span={span}>
           <ul className={template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'}>
             {s.projects.map((p) => (
               <ProjectItem key={p.id} project={p} lang={lang} shape={template.card} />
@@ -532,7 +553,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'volunteering':
       // Leadership and teaching, not a footnote.
       return (
-        <SectionShell title={t('volunteering', lang)} glass={glass}>
+        <SectionShell title={t('volunteering', lang)} glass={glass} span={span}>
           <ul className="auto-cols-lg">
             {s.volunteering.map((v) => (
               <li key={v.id}>
@@ -550,7 +571,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'activities':
       return (
-        <SectionShell title={t('activities', lang)} glass={glass}>
+        <SectionShell title={t('activities', lang)} glass={glass} span={span}>
           <ul className="auto-cols">
             {s.activities.map((a) => (
               <li key={a.id}>
@@ -569,7 +590,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'experience':
       return (
-        <SectionShell title={t('experience', lang)} glass={glass}>
+        <SectionShell title={t('experience', lang)} glass={glass} span={span}>
           <ul className="auto-cols-lg">
             {s.experience.map((e) => (
               <li key={e.id}>
@@ -588,7 +609,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'education': {
       const e = s.education!
       return (
-        <SectionShell title={t('education', lang)} glass={glass}>
+        <SectionShell title={t('education', lang)} glass={glass} span={span}>
           <div className="space-y-1">
             <Txt value={e.university} lang={lang} as="p" className="text-lg font-bold" />
             <Txt value={e.major} lang={lang} as="p" />
@@ -613,7 +634,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'skills':
       return (
-        <SectionShell title={t('skills', lang)} glass={glass}>
+        <SectionShell title={t('skills', lang)} glass={glass} span={span}>
           <ul className="flex flex-wrap gap-2">
             {s.skills.map((sk) => (
               <li key={sk.id}>
@@ -626,7 +647,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'links':
       return (
-        <SectionShell title={t('links', lang)} glass={glass}>
+        <SectionShell title={t('links', lang)} glass={glass} span={span}>
           <ul className="flex flex-wrap gap-3">
             {s.links.map((l) => {
               const Icon = LINK_ICON[l.kind]
@@ -648,21 +669,6 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
         </SectionShell>
       )
   }
-}
-
-function MediaTile({ template }: { template: Template }) {
-  if (!template.media?.card) return null
-  return (
-    <section data-reveal>
-      <div className={cn(GLASS[template.glass], 'tilt h-full overflow-hidden')} data-tilt>
-        <LottieMark
-          src={template.media.card}
-          className="aspect-[4/3] w-full"
-          poster={<span className="block h-full w-full" />}
-        />
-      </div>
-    </section>
-  )
 }
 
 /* ── The renderer ──────────────────────────────────────────────────────────── */
@@ -704,10 +710,49 @@ export function TemplateRenderer({
         />
       ) : null}
 
+      {/* A `feature` hero is its own full-width band with an animated backdrop
+          behind the glass. Every other hero stays inside the content column. */}
+      {template.hero === 'feature' ? (
+        <div className="tpl-hero-band">
+          {template.media?.hero ? (
+            /* Tiled, not stretched. The source is a 120x80 snowfall, so
+               covering a 1440px band scales every flake about 12x and one
+               flake ends up bigger than the panel. Three tiles keep each
+               instance near 480px, which is the scale the art was drawn for.
+
+               The extra tiles are display:none below lg, and a display:none
+               element has no intersection, so its IntersectionObserver never
+               fires and it is never fetched or started. Phones render one. */
+            <div className="tpl-hero-art" aria-hidden="true">
+              {[0, 1, 2].map((i) => (
+                <LottieMark
+                  key={i}
+                  src={template.media!.hero!}
+                  className={cn('tpl-hero-tile', i > 0 && 'tpl-hero-tile-extra')}
+                />
+              ))}
+            </div>
+          ) : null}
+          {/* Generous vertical room and a centred panel, so the backdrop is
+              visible around the glass instead of hidden beneath a panel that
+              spans the whole band. */}
+          <div className="container-wide relative py-14 md:py-24">
+            <Hero profile={profile} template={template} lang={lang} />
+          </div>
+        </div>
+      ) : null}
+
       {/* Full-screen width. Line length is protected inside each section by
           `auto-cols` and `measure`, not by squeezing the page into a column. */}
-      <div className="tpl-content container-wide py-10 md:py-16">
-        <Hero profile={profile} template={template} lang={lang} />
+      <div
+        className={cn(
+          'tpl-content container-wide pb-10 md:pb-16',
+          template.hero === 'feature' ? 'pt-6 md:pt-8' : 'pt-10 md:pt-16'
+        )}
+      >
+        {template.hero === 'feature' ? null : (
+          <Hero profile={profile} template={template} lang={lang} />
+        )}
 
         {/* Bento: the sections sit beside each other rather than in one column.
             Empty sections are still dropped upstream, and `grid-auto-flow: dense`
@@ -718,14 +763,8 @@ export function TemplateRenderer({
             template.layout === 'bento' ? 'bento' : 'space-y-6 md:space-y-8'
           )}
         >
-          {sections.map((key, i) => (
-            <Fragment key={key}>
-              <Section which={key} profile={profile} template={template} lang={lang} />
-              {/* The art tile sits after the first section rather than last.
-                  At the end it stranded alone in a row with two empty columns,
-                  and decoration should not be the final thing on a CV anyway. */}
-              {i === 0 && template.media?.card ? <MediaTile template={template} /> : null}
-            </Fragment>
+          {sections.map((key) => (
+            <Section key={key} which={key} profile={profile} template={template} lang={lang} />
           ))}
         </div>
 

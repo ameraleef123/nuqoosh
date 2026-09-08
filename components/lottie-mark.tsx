@@ -48,11 +48,14 @@ export function LottieMark({
   /** Rendered until the animation loads, and forever under reduced motion. */
   poster,
   label,
+  fit = 'contain',
 }: {
   src: string
   className?: string
   style?: React.CSSProperties
   loop?: boolean
+  /** 'cover' for a backdrop that must fill its band; 'contain' for a mark. */
+  fit?: 'contain' | 'cover'
   poster?: React.ReactNode
   /** Give a label only if the animation carries meaning; decoration stays hidden. */
   label?: string
@@ -107,6 +110,7 @@ export function LottieMark({
           loop={loop}
           autoplay
           dotLottieRefCallback={setPlayer}
+          layout={{ fit, align: [0.5, 0.5] }}
           style={{ inlineSize: '100%', blockSize: '100%' }}
         />
       ) : (

@@ -27,12 +27,12 @@ export type SectionLayout = 'stack' | 'bento'
  * Every slot is lazy and reduced-motion aware — see components/lottie-mark.tsx.
  */
 export type TemplateMedia = {
-  /** Sits beside the name in a `feature` hero. */
+  /** Full-width backdrop behind the hero band, under the glass. */
   hero?: string
+  /** Watermark at the vertical centre of the page, behind everything. */
+  page?: string
   /** A quiet mark in the page corner. */
   corner?: string
-  /** Fills its own tile in a `bento` layout. */
-  card?: string
 }
 
 export type Template = {
@@ -77,7 +77,7 @@ export const TEMPLATES: Template[] = [
     layout: 'bento',
     media: {
       hero: '/lottie/frost-hero.lottie',
-      card: '/lottie/frost-card.lottie',
+      page: '/lottie/frost-card.lottie',
       // corner: pending an exported file — the LottieFiles editor link cannot be
       // fetched without an account, so the slot is wired but empty.
     },

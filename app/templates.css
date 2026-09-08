@@ -32,6 +32,59 @@
   overflow: hidden;
   pointer-events: none;
 }
+/* ── Lottie backdrops ──────────────────────────────────────────────────────
+   Both are art behind glass, never beside it. That is what keeps them safe:
+   the panel's alpha and blur are what the text is read against, so the
+   measured glass contrast still holds.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.tpl-hero-band {
+  position: relative;
+  z-index: 1;
+}
+
+/* Snow spans the full screen width behind the hero panel. Opacity 0.5 is not a
+   taste call: at full strength a white flake behind dark-mode glass measured
+   3.98:1 and failed. At 0.5 the same worst case is 10.06:1. */
+.tpl-hero-art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  display: flex;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.tpl-hero-tile {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+/* One tile on a phone: the band is narrow enough that a single instance is
+   already at the right scale, and one animation is one animation's worth of
+   battery. These are display:none, so they never even load. */
+.tpl-hero-tile-extra {
+  display: none;
+}
+@media (min-width: 1024px) {
+  .tpl-hero-tile-extra {
+    display: block;
+  }
+}
+
+/* Watermark at the vertical centre of the page. Centred with inset-inline +
+   margin-inline rather than a translateX, which would push it the wrong way
+   in RTL. */
+.tpl-watermark {
+  position: absolute;
+  inset-inline: 0;
+  margin-inline: auto;
+  inset-block-start: 50%;
+  translate: 0 -50%;
+  inline-size: min(70vw, 44rem);
+  aspect-ratio: 1;
+  opacity: var(--watermark-opacity, 0.32);
+  pointer-events: none;
+}
+
 .tpl-content {
   position: relative;
   z-index: 1;
@@ -64,6 +117,8 @@
   --glass-fallback-strong: #ffffff;
   --glass-blur: 12px;
   --orb-opacity: 0.9;
+
+  --watermark-opacity: 0.32;
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -100,6 +155,7 @@
     --glass-fallback-subtle: #111827;
     --glass-fallback-strong: #182238;
     --orb-opacity: 0.7;
+    --watermark-opacity: 0.2;
   }
   :root:not([data-theme='light']) [data-bg='frost'] .orb[data-orb='1'] {
     background: #1b3a6b;
@@ -132,6 +188,7 @@
   --glass-fallback-subtle: #111827;
   --glass-fallback-strong: #182238;
   --orb-opacity: 0.7;
+  --watermark-opacity: 0.2;
 }
 :root[data-theme='dark'] [data-bg='frost'] .orb[data-orb='1'] {
   background: #1b3a6b;
