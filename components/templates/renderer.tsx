@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef } from 'react'
 import {
   ArrowUpRight,
   AtSign,
@@ -16,6 +16,7 @@ import { visibleSections, type SectionKey } from '@/lib/profile'
 import { formatGpa, formatNumber, resolveField, t, type Lang } from '@/lib/i18n'
 import type { Template } from '@/lib/templates'
 import { cn } from '@/lib/cn'
+import { LottieMark } from '@/components/lottie-mark'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ONE renderer for every template. Templates are data plus component variants,
@@ -233,17 +234,20 @@ function SectionShell({
   title,
   glass,
   children,
+  wide = false,
 }: {
   title: string
   glass: string
   children: React.ReactNode
+  /** Spans two columns in a bento layout. */
+  wide?: boolean
 }) {
   // The reveal animates the outer element and the tilt animates the inner one.
   // Sharing a node would mean two rules writing `transform`, and the reveal's
   // `transform: none` end state would cancel the tilt.
   return (
-    <section data-reveal>
-      <div className={cn(GLASS[glass as Template['glass']], 'tilt p-6 md:p-8')} data-tilt>
+    <section data-reveal className={wide ? 'bento-wide' : undefined}>
+      <div className={cn(GLASS[glass as Template['glass']], 'tilt h-full p-6 md:p-8')} data-tilt>
         {/* At full width a stacked heading leaves short sections — education,
             skills, contact — hugging one edge with a field of empty space
             beside them. Giving the heading its own column fills the card and
@@ -312,6 +316,35 @@ function Hero({ profile, template, lang }: RenderProps) {
   )
 
   const about = <Txt value={profile.fields.about} lang={lang} as="p" className="measure" />
+
+  if (template.hero === 'feature') {
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt overflow-hidden')} data-tilt>
+        <div className="grid items-stretch lg:grid-cols-[1.35fr_1fr]">
+          <div className="flex flex-col justify-center gap-5 p-7 md:p-10 lg:p-12">
+            <div data-hero-item>{headline}</div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
+          </div>
+          {art ? (
+            <div className="relative min-h-56 border-t border-[var(--nq-border)] lg:min-h-full lg:border-t-0 lg:border-s">
+              <LottieMark
+                src={art}
+                className="absolute inset-0"
+                poster={
+                  // Holds the space so nothing shifts, and is the whole of it
+                  // under reduced motion.
+                  <span className="block h-full w-full" />
+                }
+              />
+            </div>
+          ) : null}
+        </div>
+      </header>
+    )
+  }
 
   if (template.hero === 'centered') {
     return (
@@ -487,7 +520,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
   switch (which) {
     case 'projects':
       return (
-        <SectionShell title={t('projects', lang)} glass={glass}>
+        <SectionShell title={t('projects', lang)} glass={glass} wide>
           <ul className={template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'}>
             {s.projects.map((p) => (
               <ProjectItem key={p.id} project={p} lang={lang} shape={template.card} />
@@ -617,6 +650,21 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
   }
 }
 
+function MediaTile({ template }: { template: Template }) {
+  if (!template.media?.card) return null
+  return (
+    <section data-reveal>
+      <div className={cn(GLASS[template.glass], 'tilt h-full overflow-hidden')} data-tilt>
+        <LottieMark
+          src={template.media.card}
+          className="aspect-[4/3] w-full"
+          poster={<span className="block h-full w-full" />}
+        />
+      </div>
+    </section>
+  )
+}
+
 /* ── The renderer ──────────────────────────────────────────────────────────── */
 
 export function TemplateRenderer({
@@ -643,14 +691,41 @@ export function TemplateRenderer({
       <Background template={template} />
       <RevealObserver scope={scope} />
 
+      {template.media?.corner ? (
+        <LottieMark
+          src={template.media.corner}
+          className="pointer-events-none absolute z-10"
+          style={{
+            inlineSize: 'clamp(6rem, 12vw, 11rem)',
+            aspectRatio: '1',
+            insetBlockStart: 0,
+            insetInlineEnd: 0,
+          }}
+        />
+      ) : null}
+
       {/* Full-screen width. Line length is protected inside each section by
           `auto-cols` and `measure`, not by squeezing the page into a column. */}
       <div className="tpl-content container-wide py-10 md:py-16">
         <Hero profile={profile} template={template} lang={lang} />
 
-        <div className="mt-6 space-y-6 md:mt-8 md:space-y-8">
-          {sections.map((key) => (
-            <Section key={key} which={key} profile={profile} template={template} lang={lang} />
+        {/* Bento: the sections sit beside each other rather than in one column.
+            Empty sections are still dropped upstream, and `grid-auto-flow: dense`
+            closes the gap they would otherwise leave. */}
+        <div
+          className={cn(
+            'mt-6 md:mt-8',
+            template.layout === 'bento' ? 'bento' : 'space-y-6 md:space-y-8'
+          )}
+        >
+          {sections.map((key, i) => (
+            <Fragment key={key}>
+              <Section which={key} profile={profile} template={template} lang={lang} />
+              {/* The art tile sits after the first section rather than last.
+                  At the end it stranded alone in a row with two empty columns,
+                  and decoration should not be the final thing on a CV anyway. */}
+              {i === 0 && template.media?.card ? <MediaTile template={template} /> : null}
+            </Fragment>
           ))}
         </div>
 

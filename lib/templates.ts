@@ -15,9 +15,25 @@ import type { SectionOrderVariant } from './profile'
 
 export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink'
 export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial'
-export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial'
+export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature'
 export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger'
 export type GlassIntensity = 'subtle' | 'default' | 'strong'
+
+/** How the sections below the hero are arranged. */
+export type SectionLayout = 'stack' | 'bento'
+
+/**
+ * Optional Lottie art, self-hosted under public/lottie.
+ * Every slot is lazy and reduced-motion aware — see components/lottie-mark.tsx.
+ */
+export type TemplateMedia = {
+  /** Sits beside the name in a `feature` hero. */
+  hero?: string
+  /** A quiet mark in the page corner. */
+  corner?: string
+  /** Fills its own tile in a `bento` layout. */
+  card?: string
+}
 
 export type Template = {
   id: string
@@ -35,6 +51,8 @@ export type Template = {
   hero: HeroLayout
   card: ProjectCardShape
   order: SectionOrderVariant
+  layout: SectionLayout
+  media?: TemplateMedia
 
   /** Display / body font CSS variables, applied by app/templates.css. */
   fonts: { display: string; body: string }
@@ -53,9 +71,16 @@ export const TEMPLATES: Template[] = [
     background: 'frost',
     glass: 'strong',
     motion: 'crisp',
-    hero: 'centered',
+    hero: 'feature',
     card: 'panel',
     order: 'A',
+    layout: 'bento',
+    media: {
+      hero: '/lottie/frost-hero.lottie',
+      card: '/lottie/frost-card.lottie',
+      // corner: pending an exported file — the LottieFiles editor link cannot be
+      // fetched without an account, so the slot is wired but empty.
+    },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
   {
@@ -71,6 +96,7 @@ export const TEMPLATES: Template[] = [
     hero: 'split',
     card: 'tile',
     order: 'A',
+    layout: 'stack',
     fonts: { display: 'almarai', body: 'plex-arabic' },
   },
   {
@@ -86,6 +112,7 @@ export const TEMPLATES: Template[] = [
     hero: 'stacked',
     card: 'panel',
     order: 'A',
+    layout: 'stack',
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
   {
@@ -101,6 +128,7 @@ export const TEMPLATES: Template[] = [
     hero: 'editorial',
     card: 'list',
     order: 'A',
+    layout: 'stack',
     fonts: { display: 'naskh', body: 'plex-arabic' },
   },
 ]

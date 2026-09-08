@@ -440,12 +440,30 @@ html.motion-failsafe [data-hero] {
     max-inline-size: 68ch;
   }
 
+  /* Bento: sections sit beside each other instead of stacking. `dense` matters
+     because sections are dropped when empty — without it, a missing section
+     would leave a hole in the grid rather than closing up. */
+  .bento {
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(min(24rem, 100%), 1fr));
+    grid-auto-flow: dense;
+  }
+  @media (min-width: 1024px) {
+    .bento > .bento-wide {
+      grid-column: span 2;
+    }
+  }
+
   /* Items flow into as many columns as the screen allows, so a 1920px card is
      three or four readable columns rather than one 1800px line. */
+  /* 20rem, not 22: inside a two-column bento tile the content box is about
+     700px, and a 22rem minimum needed 720px, so the two projects fell back to
+     one column and made that tile twice as tall as the row beside it. */
   .auto-cols {
     display: grid;
     gap: var(--space-md);
-    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
   }
   .auto-cols-lg {
     display: grid;
