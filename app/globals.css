@@ -418,6 +418,41 @@ html.motion-failsafe [data-hero] {
     margin-inline: auto;
   }
 
+  /* Full-bleed content width, used by the template pages. There is no max
+     width: the cards run the whole screen. Readability is protected inside
+     instead — sections lay their items out in auto-fitting columns, and prose
+     carries its own measure. */
+  .container-wide {
+    inline-size: 100%;
+    margin-inline: auto;
+    padding-inline: var(--space-md);
+  }
+  @media (min-width: 768px) {
+    .container-wide {
+      padding-inline: var(--space-xl);
+    }
+  }
+
+  /* Line length. Arabic sits comfortably around 60-70 characters; past that the
+     eye loses the line on the return sweep, which is worse in RTL because the
+     return is to the right edge. */
+  .measure {
+    max-inline-size: 68ch;
+  }
+
+  /* Items flow into as many columns as the screen allows, so a 1920px card is
+     three or four readable columns rather than one 1800px line. */
+  .auto-cols {
+    display: grid;
+    gap: var(--space-md);
+    grid-template-columns: repeat(auto-fit, minmax(min(22rem, 100%), 1fr));
+  }
+  .auto-cols-lg {
+    display: grid;
+    gap: var(--space-lg);
+    grid-template-columns: repeat(auto-fit, minmax(min(28rem, 100%), 1fr));
+  }
+
   /* Accent hairline under section headings — logical, so it flips with dir */
   .heading-rule::after {
     content: '';

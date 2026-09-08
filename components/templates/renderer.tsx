@@ -244,8 +244,14 @@ function SectionShell({
   return (
     <section data-reveal>
       <div className={cn(GLASS[glass as Template['glass']], 'tilt p-6 md:p-8')} data-tilt>
-        <h2 className="heading-rule mb-5 text-2xl">{title}</h2>
-        {children}
+        {/* At full width a stacked heading leaves short sections — education,
+            skills, contact — hugging one edge with a field of empty space
+            beside them. Giving the heading its own column fills the card and
+            reads as a label/value pair, which is what these sections are. */}
+        <div className="grid gap-5 lg:grid-cols-[minmax(9rem,16%)_1fr] lg:gap-10">
+          <h2 className="heading-rule text-2xl">{title}</h2>
+          <div>{children}</div>
+        </div>
       </div>
     </section>
   )
@@ -305,14 +311,12 @@ function Hero({ profile, template, lang }: RenderProps) {
     />
   )
 
-  const about = (
-    <Txt value={profile.fields.about} lang={lang} as="p" className="max-w-prose" />
-  )
+  const about = <Txt value={profile.fields.about} lang={lang} as="p" className="measure" />
 
   if (template.hero === 'centered') {
     return (
       <header className={cn(glass, 'tilt p-7 text-center md:p-12')} data-tilt>
-        <div className="mx-auto flex max-w-2xl flex-col items-center gap-4">
+        <div className="mx-auto flex max-w-4xl flex-col items-center gap-4">
           <div data-hero-item>{headline}</div>
           <div data-hero-item>{tagline}</div>
           {pills}
@@ -325,7 +329,7 @@ function Hero({ profile, template, lang }: RenderProps) {
   if (template.hero === 'split') {
     return (
       <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
-        <div className="grid items-start gap-6 md:grid-cols-5">
+        <div className="grid items-start gap-6 md:grid-cols-5 xl:gap-10">
           <div className="md:col-span-3">
             <div data-hero-item>{headline}</div>
             <div data-hero-item className="mt-3">
@@ -344,10 +348,12 @@ function Hero({ profile, template, lang }: RenderProps) {
   if (template.hero === 'stacked') {
     return (
       <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
-        <div className="flex flex-col gap-4">
-          {pills}
-          <div data-hero-item>{headline}</div>
-          <div data-hero-item>{tagline}</div>
+        <div className="grid gap-6 xl:grid-cols-2 xl:items-end">
+          <div className="flex flex-col gap-4">
+            {pills}
+            <div data-hero-item>{headline}</div>
+            <div data-hero-item>{tagline}</div>
+          </div>
           <div data-hero-item>{about}</div>
         </div>
       </header>
@@ -357,15 +363,19 @@ function Hero({ profile, template, lang }: RenderProps) {
   // editorial — no glass panel at all; the type is the design.
   return (
     <header className="border-b border-[var(--nq-border)] pb-8">
-      <div className="flex flex-col gap-4">
-        <div data-hero-item>{headline}</div>
-        <div data-hero-item className="border-s-2 border-[var(--nq-accent)] ps-4">
-          {tagline}
+      <div className="grid gap-6 xl:grid-cols-[1.2fr_1fr] xl:items-end xl:gap-12">
+        <div className="flex flex-col gap-4">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item className="border-s-2 border-[var(--nq-accent)] ps-4">
+            {tagline}
+          </div>
         </div>
-        <div data-hero-item className="max-w-prose leading-[1.9]">
-          {about}
+        <div className="flex flex-col gap-4">
+          <div data-hero-item className="measure leading-[1.9]">
+            {about}
+          </div>
+          {pills}
         </div>
-        {pills}
       </div>
     </header>
   )
@@ -414,7 +424,7 @@ function ProjectItem({
   const body = (
     <>
       {head}
-      <Txt value={project.description} lang={lang} as="p" className="mt-2" />
+      <Txt value={project.description} lang={lang} as="p" className="measure mt-2" />
       {meta}
       {project.url ? (
         <a
@@ -433,7 +443,7 @@ function ProjectItem({
 
   if (shape === 'list') {
     return (
-      <li className="border-b border-[var(--nq-border)] pb-5 last:border-0 last:pb-0">{body}</li>
+      <li>{body}</li>
     )
   }
   if (shape === 'tile') {
@@ -478,15 +488,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'projects':
       return (
         <SectionShell title={t('projects', lang)} glass={glass}>
-          <ul
-            className={cn(
-              template.card === 'tile'
-                ? 'grid gap-4 sm:grid-cols-2'
-                : template.card === 'list'
-                  ? 'space-y-5'
-                  : 'grid gap-4'
-            )}
-          >
+          <ul className={template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'}>
             {s.projects.map((p) => (
               <ProjectItem key={p.id} project={p} lang={lang} shape={template.card} />
             ))}
@@ -498,15 +500,15 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
       // Leadership and teaching, not a footnote.
       return (
         <SectionShell title={t('volunteering', lang)} glass={glass}>
-          <ul className="space-y-5">
+          <ul className="auto-cols-lg">
             {s.volunteering.map((v) => (
-              <li key={v.id} className="border-b border-[var(--nq-border)] pb-5 last:border-0 last:pb-0">
+              <li key={v.id}>
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <Txt value={v.role} lang={lang} as="h3" className="text-lg font-bold" />
                   <span className="text-[var(--nq-muted-foreground)]">—</span>
                   <Txt value={v.organization} lang={lang} className="text-[var(--nq-muted-foreground)]" />
                 </div>
-                <Txt value={v.impact} lang={lang} as="p" className="mt-2" />
+                <Txt value={v.impact} lang={lang} as="p" className="measure mt-2" />
               </li>
             ))}
           </ul>
@@ -516,7 +518,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'activities':
       return (
         <SectionShell title={t('activities', lang)} glass={glass}>
-          <ul className="space-y-4">
+          <ul className="auto-cols">
             {s.activities.map((a) => (
               <li key={a.id}>
                 <Txt value={a.title} lang={lang} as="h3" className="font-bold" />
@@ -535,15 +537,15 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'experience':
       return (
         <SectionShell title={t('experience', lang)} glass={glass}>
-          <ul className="space-y-5">
+          <ul className="auto-cols-lg">
             {s.experience.map((e) => (
-              <li key={e.id} className="border-b border-[var(--nq-border)] pb-5 last:border-0 last:pb-0">
+              <li key={e.id}>
                 <div className="flex flex-wrap items-baseline gap-x-2">
                   <Txt value={e.role} lang={lang} as="h3" className="text-lg font-bold" />
                   <span className="text-[var(--nq-muted-foreground)]">—</span>
                   <Txt value={e.employer} lang={lang} className="text-[var(--nq-muted-foreground)]" />
                 </div>
-                <Txt value={e.summary} lang={lang} as="p" className="mt-2" />
+                <Txt value={e.summary} lang={lang} as="p" className="measure mt-2" />
               </li>
             ))}
           </ul>
@@ -641,7 +643,9 @@ export function TemplateRenderer({
       <Background template={template} />
       <RevealObserver scope={scope} />
 
-      <div className="tpl-content container-read px-4 py-10 md:py-16">
+      {/* Full-screen width. Line length is protected inside each section by
+          `auto-cols` and `measure`, not by squeezing the page into a column. */}
+      <div className="tpl-content container-wide py-10 md:py-16">
         <Hero profile={profile} template={template} lang={lang} />
 
         <div className="mt-6 space-y-6 md:mt-8 md:space-y-8">
