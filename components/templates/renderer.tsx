@@ -90,6 +90,71 @@ function RevealObserver({ scope }: { scope: React.RefObject<HTMLElement | null> 
   return null
 }
 
+/* ── Pointer tilt ──────────────────────────────────────────────────────────
+   One delegated listener for the whole page, rAF-throttled, writing only two
+   CSS custom properties. The rotation itself is done by CSS (templates.css),
+   so JavaScript never touches `transform` and there is nothing to recompute on
+   scroll.
+
+   Skipped entirely on touch and under reduced motion, where --tx/--ty stay
+   unset and the CSS resolves to no rotation.
+   ────────────────────────────────────────────────────────────────────────── */
+
+export function useTilt(scope: React.RefObject<HTMLElement | null>) {
+  useEffect(() => {
+    const root = scope.current
+    if (!root) return
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    let frame = 0
+    let active: HTMLElement | null = null
+    let pointer = { x: 0, y: 0 }
+
+    const clear = (el: HTMLElement | null) => {
+      if (!el) return
+      el.style.removeProperty('--tx')
+      el.style.removeProperty('--ty')
+    }
+
+    const apply = () => {
+      frame = 0
+      if (!active) return
+      const r = active.getBoundingClientRect()
+      if (!r.width || !r.height) return
+      const tx = Math.max(-1, Math.min(1, ((pointer.x - r.left) / r.width) * 2 - 1))
+      const ty = Math.max(-1, Math.min(1, ((pointer.y - r.top) / r.height) * 2 - 1))
+      active.style.setProperty('--tx', tx.toFixed(3))
+      active.style.setProperty('--ty', ty.toFixed(3))
+    }
+
+    const onMove = (e: PointerEvent) => {
+      const target = e.target instanceof Element ? e.target.closest<HTMLElement>('[data-tilt]') : null
+      if (target !== active) {
+        clear(active)
+        active = target
+      }
+      if (!active) return
+      pointer = { x: e.clientX, y: e.clientY }
+      if (!frame) frame = requestAnimationFrame(apply)
+    }
+
+    const onLeave = () => {
+      clear(active)
+      active = null
+    }
+
+    root.addEventListener('pointermove', onMove, { passive: true })
+    root.addEventListener('pointerleave', onLeave)
+    return () => {
+      root.removeEventListener('pointermove', onMove)
+      root.removeEventListener('pointerleave', onLeave)
+      if (frame) cancelAnimationFrame(frame)
+      clear(active)
+    }
+  }, [scope])
+}
+
 /* ── Background systems ────────────────────────────────────────────────────
    Three orbs, transform-only drift, paused when the tab is hidden (the
    [data-motion='paused'] rule in globals.css). Colours come from templates.css.
@@ -173,10 +238,15 @@ function SectionShell({
   glass: string
   children: React.ReactNode
 }) {
+  // The reveal animates the outer element and the tilt animates the inner one.
+  // Sharing a node would mean two rules writing `transform`, and the reveal's
+  // `transform: none` end state would cancel the tilt.
   return (
-    <section data-reveal className={cn(GLASS[glass as Template['glass']], 'p-6 md:p-8')}>
-      <h2 className="heading-rule mb-5 text-2xl">{title}</h2>
-      {children}
+    <section data-reveal>
+      <div className={cn(GLASS[glass as Template['glass']], 'tilt p-6 md:p-8')} data-tilt>
+        <h2 className="heading-rule mb-5 text-2xl">{title}</h2>
+        {children}
+      </div>
     </section>
   )
 }
@@ -241,7 +311,7 @@ function Hero({ profile, template, lang }: RenderProps) {
 
   if (template.hero === 'centered') {
     return (
-      <header className={cn(glass, 'p-7 text-center md:p-12')}>
+      <header className={cn(glass, 'tilt p-7 text-center md:p-12')} data-tilt>
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-4">
           <div data-hero-item>{headline}</div>
           <div data-hero-item>{tagline}</div>
@@ -254,7 +324,7 @@ function Hero({ profile, template, lang }: RenderProps) {
 
   if (template.hero === 'split') {
     return (
-      <header className={cn(glass, 'p-7 md:p-10')}>
+      <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
         <div className="grid items-start gap-6 md:grid-cols-5">
           <div className="md:col-span-3">
             <div data-hero-item>{headline}</div>
@@ -273,7 +343,7 @@ function Hero({ profile, template, lang }: RenderProps) {
 
   if (template.hero === 'stacked') {
     return (
-      <header className={cn(glass, 'p-7 md:p-10')}>
+      <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
         <div className="flex flex-col gap-4">
           {pills}
           <div data-hero-item>{headline}</div>
@@ -554,6 +624,7 @@ export function TemplateRenderer({
   preview = false,
 }: RenderProps & { preview?: boolean }) {
   const scope = useRef<HTMLDivElement>(null)
+  useTilt(scope)
 
   // The single gate: only sections that actually have content, in template
   // order. Nothing downstream can render an empty section.

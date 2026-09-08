@@ -56,3 +56,38 @@ print()
 print("== LIGHT theme accent-as-text on paper ==")
 for txt in ["#4C3FD1","#B8452F","#A16207"]:
     r=contrast(hex2rgb(txt),hex2rgb("#FAF7F2")); print(f"{txt} on #FAF7F2: {r:5.2f}:1  {'PASS' if r>=4.5 else 'FAIL'}")
+
+# ── Phase 2b: gallery band meta text sits on the BACKGROUND, not on glass ──
+# The mood name, the one-line mood and the plan chip have no panel behind them,
+# so they are read directly against the band's orbs at full strength.
+print()
+print("== gallery band meta text: on .glass, vs bare on the orbs ==")
+BANDS = {
+ 'saqee  light': ('#f4f9ff', 0.9,  ['#cfe9ff','#e6f0ff','#dcebff'], '#14202e', '#43536b'),
+ 'saqee  dark ': ('#0b1220', 0.7,  ['#1b3a6b','#24325c','#16294a'], '#eaf2ff', '#b6c8e0'),
+ 'ballour light':('#faf7f2', 0.85, ['#c9b8ff','#f5a79e','#ffe7b8'], '#1a1523', '#4a4458'),
+ 'ballour dark ':('#0f0d17', 0.5,  ['#6d5df6','#f0766a','#f5b942'], '#f4f1fa', '#c4bdd6'),
+ 'fajr   light': ('#fff1e6', 0.85, ['#ffb88c','#ffd9a8','#ffc9c2'], '#2a1b10', '#5c4433'),
+ 'fajr   dark ': ('#1e1838', 0.55, ['#ff9e6b','#6d4aa8','#3a2a6e'], '#f6f1ff', '#c9bfe4'),
+ 'hibr   light': ('#f7f5fb', 0.6,  ['#ede9f5','#e4dff0','#f0edf8'], '#14121c', '#4a4458'),
+ 'hibr   dark ': ('#0f0d17', 0.75, ['#2a2440','#3a3159','#1e1a2e'], '#f4f1fa', '#c4bdd6'),
+}
+# The meta column sits on .glass, whose alpha is per-template (app/templates.css).
+GLASS_TINT = {'saqee  light':((255,255,255),0.50),'saqee  dark ':((20,28,48),0.60),
+ 'ballour light':((255,255,255),0.30),'ballour dark ':((30,24,48),0.60),
+ 'fajr   light':((255,255,255),0.50),'fajr   dark ':((30,24,48),0.62),
+ 'hibr   light':((255,255,255),0.42),'hibr   dark ':((30,24,48),0.60)}
+for name,(base,alpha,orbs,fg,muted) in BANDS.items():
+    lo_fg = lo_mu = 99
+    bare_fg = bare_mu = 99
+    for orb in orbs:
+        raw = composite(hex2rgb(orb), alpha, hex2rgb(base))
+        bare_fg = min(bare_fg, contrast(hex2rgb(fg), raw))
+        bare_mu = min(bare_mu, contrast(hex2rgb(muted), raw))
+        tint, ga = GLASS_TINT[name]
+        surf = composite(tint, ga, raw)
+        lo_fg = min(lo_fg, contrast(hex2rgb(fg), surf))
+        lo_mu = min(lo_mu, contrast(hex2rgb(muted), surf))
+    f1 = 'PASS' if lo_fg>=4.5 else '*** FAIL ***'
+    f2 = 'PASS' if lo_mu>=4.5 else '*** FAIL ***'
+    print(f"  {name}  name {lo_fg:5.2f}:1 {f1:<7} (bare {bare_fg:5.2f})   mood {lo_mu:5.2f}:1 {f2:<7} (bare {bare_mu:5.2f})")

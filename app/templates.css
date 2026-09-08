@@ -443,6 +443,92 @@
    prefers-reduced-motion: no-preference guard.
    ───────────────────────────────────────────────────────────────────────── */
 
+/* ═══ 3D ══════════════════════════════════════════════════════════════════
+   Depth is transform-only: rotateX/rotateY/translateZ compose on the GPU, so
+   nothing here touches layout, and every rule sits inside a
+   prefers-reduced-motion: no-preference guard.
+
+   Angles stay small on purpose. Past roughly 8deg, subpixel text rendering on
+   a rotated plane goes soft, which is a bad trade on a page whose whole job is
+   to be read. Each template sets its own --reveal-rx and --tilt-max, so depth
+   is part of a template's identity rather than a global effect.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Each 3D surface carries its own `perspective()` in the transform rather
+     than inheriting one from an ancestor. A `perspective` property only reaches
+     direct children unless every element in between sets
+     `transform-style: preserve-3d`, and these surfaces sit two or three levels
+     below the content wrapper — they would have rendered flat. Doing it inline
+     also avoids creating a containing block for fixed-position descendants. */
+
+  /* Cards rotate up from their own bottom edge as they enter. */
+  html.js .tpl [data-reveal] {
+    transform: perspective(1400px) translateY(12px) rotateX(var(--reveal-rx, 0deg));
+    transform-origin: 50% 100%;
+    backface-visibility: hidden;
+  }
+  html.js .tpl [data-reveal].is-in {
+    transform: perspective(1400px) translateY(0) rotateX(0deg);
+    transition:
+      opacity var(--dur-reveal) var(--ease-out),
+      transform var(--dur-reveal) var(--ease-out);
+  }
+
+  html.js .tpl [data-hero-item] {
+    transform-origin: 50% 100%;
+    backface-visibility: hidden;
+  }
+
+  /* Pointer tilt. --tx/--ty are set to -1..1 by the pointer handler in the
+     renderer; with no pointer they stay 0 and this resolves to no rotation. */
+  @media (hover: hover) and (pointer: fine) {
+    .tilt {
+      transform: perspective(900px)
+        rotateX(calc(var(--ty, 0) * var(--tilt-max, 4) * -1deg))
+        rotateY(calc(var(--tx, 0) * var(--tilt-max, 4) * 1deg))
+        translateZ(var(--tilt-z, 0px));
+      transform-origin: 50% 50%;
+      transition: transform 260ms var(--ease-out);
+      backface-visibility: hidden;
+    }
+    .tilt:hover {
+      --tilt-z: 16px;
+      transition-duration: 120ms;
+      /* Promoted only while it is actually being tilted. Leaving will-change on
+         every panel would pin a layer per card for the life of the page. */
+      will-change: transform;
+    }
+    /* The 3D lift already carries the hover feedback, so the flat -2px nudge
+       from .glass-hover would double up. */
+    .tilt.glass-hover:hover {
+      transform: perspective(900px)
+        rotateX(calc(var(--ty, 0) * var(--tilt-max, 4) * -1deg))
+        rotateY(calc(var(--tx, 0) * var(--tilt-max, 4) * 1deg)) translateZ(16px);
+    }
+  }
+}
+
+/* Depth character per template — the same properties, a different feel. */
+[data-motion-sig='crisp'] {
+  --reveal-rx: 5deg;
+  --tilt-max: 4;
+}
+[data-motion-sig='drift'] {
+  --reveal-rx: 7deg;
+  --tilt-max: 7;
+}
+[data-motion-sig='rise'] {
+  --reveal-rx: 9deg;
+  --tilt-max: 5;
+}
+/* حبر stays nearly flat: paper does not pitch. It gets a whisper of tilt so it
+   still answers the pointer, and no entrance rotation at all. */
+[data-motion-sig='editorial'] {
+  --reveal-rx: 0deg;
+  --tilt-max: 1.5;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   /* Signature 2 — scroll reveal. Small offset: reads as a fade, not a slide. */
   html.js .tpl [data-reveal] {
