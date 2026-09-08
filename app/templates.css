@@ -1,0 +1,561 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   Template identities — Phase 2 (صقيع · بلّور · فجر · حبر)
+
+   Each template overrides the --nq-* tokens on its own wrapper, in the same
+   three blocks used globally, so JS-off theming keeps working inside a template:
+
+     [data-template='x']                                          → light
+     @media (prefers-color-scheme: dark) :not([data-theme=light]) → system dark
+     :root[data-theme='dark'] [data-template='x']                 → manual dark
+
+   Every text/surface pair below is measured. Re-run the Phase 2 block of
+   scripts/contrast.py before changing any value.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.tpl {
+  font-family: var(--font-body);
+  position: relative;
+  min-block-size: 100dvh;
+  background-color: var(--nq-background);
+  color: var(--nq-foreground);
+}
+
+/* The template's own background layer replaces the global mesh. */
+.tpl[data-preview='true'] {
+  min-block-size: 0;
+}
+
+.tpl-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.tpl-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   صقيع — Frost. Crisp, cold, uncluttered. Strong glass on pale ice.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='saqee'] {
+  --nq-background: #f4f9ff;
+  --nq-foreground: #14202e; /* 15.40:1 on frost glass */
+  --nq-muted-foreground: #43536b; /*  7.31:1 on frost glass */
+  --nq-accent: #1d5fbf; /*  5.77:1 as text · white on it 6.10:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #cfe9ff;
+  --nq-on-highlight: #14202e;
+  --nq-border: rgba(20, 32, 46, 0.1);
+  --nq-border-strong: rgba(20, 32, 46, 0.2);
+  --nq-ring: #1d5fbf;
+
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.34);
+  --glass-bg-strong: rgba(255, 255, 255, 0.68);
+  --glass-border-color: rgba(255, 255, 255, 0.75);
+  --glass-edge: 0 0 0 1px rgba(20, 32, 46, 0.05);
+  --glass-shadow: 0 8px 32px rgba(20, 40, 70, 0.1);
+  --glass-fallback: #ffffff;
+  --glass-fallback-subtle: #fafcff;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+  --orb-opacity: 0.9;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='frost'] .orb[data-orb='1'] {
+  background: #cfe9ff;
+}
+[data-bg='frost'] .orb[data-orb='2'] {
+  background: #e6f0ff;
+}
+[data-bg='frost'] .orb[data-orb='3'] {
+  background: #dcebff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='saqee'] {
+    --nq-background: #0b1220;
+    --nq-foreground: #eaf2ff; /* 13.10:1 on ink glass */
+    --nq-muted-foreground: #b6c8e0; /*  8.66:1 on ink glass */
+    --nq-accent: #8fc1ff; /* 10.02:1 as text · ink on it 10.02:1 */
+    --nq-on-accent: #0b1220;
+    --nq-highlight: #8fc1ff;
+    --nq-on-highlight: #0b1220;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.22);
+    --nq-ring: #8fc1ff;
+    --glass-bg: rgba(20, 28, 48, 0.6);
+    --glass-bg-subtle: rgba(20, 28, 48, 0.45);
+    --glass-bg-strong: rgba(20, 28, 48, 0.72);
+    --glass-border-color: rgba(255, 255, 255, 0.14);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --glass-fallback: #141c30;
+    --glass-fallback-subtle: #111827;
+    --glass-fallback-strong: #182238;
+    --orb-opacity: 0.7;
+  }
+  :root:not([data-theme='light']) [data-bg='frost'] .orb[data-orb='1'] {
+    background: #1b3a6b;
+  }
+  :root:not([data-theme='light']) [data-bg='frost'] .orb[data-orb='2'] {
+    background: #24325c;
+  }
+  :root:not([data-theme='light']) [data-bg='frost'] .orb[data-orb='3'] {
+    background: #16294a;
+  }
+}
+:root[data-theme='dark'] [data-template='saqee'] {
+  --nq-background: #0b1220;
+  --nq-foreground: #eaf2ff;
+  --nq-muted-foreground: #b6c8e0;
+  --nq-accent: #8fc1ff;
+  --nq-on-accent: #0b1220;
+  --nq-highlight: #8fc1ff;
+  --nq-on-highlight: #0b1220;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.22);
+  --nq-ring: #8fc1ff;
+  --glass-bg: rgba(20, 28, 48, 0.6);
+  --glass-bg-subtle: rgba(20, 28, 48, 0.45);
+  --glass-bg-strong: rgba(20, 28, 48, 0.72);
+  --glass-border-color: rgba(255, 255, 255, 0.14);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-fallback: #141c30;
+  --glass-fallback-subtle: #111827;
+  --glass-fallback-strong: #182238;
+  --orb-opacity: 0.7;
+}
+:root[data-theme='dark'] [data-bg='frost'] .orb[data-orb='1'] {
+  background: #1b3a6b;
+}
+:root[data-theme='dark'] [data-bg='frost'] .orb[data-orb='2'] {
+  background: #24325c;
+}
+:root[data-theme='dark'] [data-bg='frost'] .orb[data-orb='3'] {
+  background: #16294a;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   بلّور — Crystal. Prismatic pastels, the liveliest of the four.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='ballour'] {
+  --nq-background: #faf7f2;
+  --nq-foreground: #1a1523; /* 11.35:1 worst case on prism glass */
+  --nq-muted-foreground: #4a4458; /*  5.90:1 worst case */
+  --nq-accent: #4c3fd1; /*  6.69:1 as text · white on it 7.15:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #f5b942;
+  --nq-on-highlight: #1a1523;
+  --glass-blur: 14px;
+  --orb-opacity: 0.85;
+
+  --font-display: var(--font-almarai), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='prism'] .orb[data-orb='1'] {
+  background: #c9b8ff;
+}
+[data-bg='prism'] .orb[data-orb='2'] {
+  background: #f5a79e;
+}
+[data-bg='prism'] .orb[data-orb='3'] {
+  background: #ffe7b8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-bg='prism'] .orb[data-orb='1'] {
+    background: #6d5df6;
+  }
+  :root:not([data-theme='light']) [data-bg='prism'] .orb[data-orb='2'] {
+    background: #f0766a;
+  }
+  :root:not([data-theme='light']) [data-bg='prism'] .orb[data-orb='3'] {
+    background: #f5b942;
+  }
+}
+:root[data-theme='dark'] [data-bg='prism'] .orb[data-orb='1'] {
+  background: #6d5df6;
+}
+:root[data-theme='dark'] [data-bg='prism'] .orb[data-orb='2'] {
+  background: #f0766a;
+}
+:root[data-theme='dark'] [data-bg='prism'] .orb[data-orb='3'] {
+  background: #f5b942;
+}
+/* بلّور was written assuming it could "inherit the global dark palette", which
+   is false: the values it declares on [data-template='ballour'] are MORE
+   specific than :root[data-theme='dark'], so its light ink (#1a1523) survived
+   into dark mode and the thumbnail was unreadable. Any token a template
+   declares must be declared again in its dark blocks. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='ballour'] {
+    --nq-background: #0f0d17;
+    --nq-foreground: #f4f1fa; /* 16.12:1 on ink glass */
+    --nq-muted-foreground: #c4bdd6; /*  9.94:1 */
+    --nq-accent: #a99cff; /*  8.15:1 as text · ink on it 7.56:1 */
+    --nq-on-accent: #1a1523;
+    --nq-highlight: #f5b942; /* ink on it 10.12:1 */
+    --nq-on-highlight: #1a1523;
+    --orb-opacity: 0.5;
+  }
+}
+:root[data-theme='dark'] [data-template='ballour'] {
+  --nq-background: #0f0d17;
+  --nq-foreground: #f4f1fa;
+  --nq-muted-foreground: #c4bdd6;
+  --nq-accent: #a99cff;
+  --nq-on-accent: #1a1523;
+  --nq-highlight: #f5b942;
+  --nq-on-highlight: #1a1523;
+  --orb-opacity: 0.5;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   فجر — Dawn. First light. A warm horizon glow over a deep ground.
+   The page ground stays dark in dark mode; the peach is a glow, never the
+   page colour, so glass panels never sit on a bright field.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='fajr'] {
+  --nq-background: #fff1e6;
+  --nq-foreground: #2a1b10; /* 12.91:1 on white glass over peach */
+  --nq-muted-foreground: #5c4433; /*  7.00:1 */
+  --nq-accent: #c2410c; /*  4.68:1 as text · white on it 5.18:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #ffb88c;
+  --nq-on-highlight: #2a1b10;
+  --nq-border: rgba(42, 27, 16, 0.12);
+  --nq-border-strong: rgba(42, 27, 16, 0.22);
+  --nq-ring: #c2410c;
+
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.34);
+  --glass-bg-strong: rgba(255, 255, 255, 0.68);
+  --glass-border-color: rgba(255, 255, 255, 0.7);
+  --glass-edge: 0 0 0 1px rgba(42, 27, 16, 0.05);
+  --glass-shadow: 0 8px 32px rgba(90, 50, 20, 0.12);
+  --glass-fallback: #ffffff;
+  --glass-fallback-subtle: #fffaf5;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 16px;
+  --orb-opacity: 0.85;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='dawn'] .tpl-sky {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, #ffd9b8 0%, #fff1e6 45%, #fffaf5 100%);
+}
+[data-bg='dawn'] .orb[data-orb='1'] {
+  background: #ffb88c;
+}
+[data-bg='dawn'] .orb[data-orb='2'] {
+  background: #ffd9a8;
+}
+[data-bg='dawn'] .orb[data-orb='3'] {
+  background: #ffc9c2;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='fajr'] {
+    --nq-background: #1e1838;
+    --nq-foreground: #f6f1ff; /* 15.36:1 on ink glass over indigo */
+    --nq-muted-foreground: #c9bfe4; /*  9.77:1 */
+    --nq-accent: #ffb88c; /* 10.05:1 as text · ink on it 10.05:1 */
+    --nq-on-accent: #1e1838;
+    --nq-highlight: #ffb88c;
+    --nq-on-highlight: #1e1838;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.22);
+    --nq-ring: #ffb88c;
+    --glass-bg: rgba(30, 24, 48, 0.62);
+    --glass-bg-subtle: rgba(30, 24, 48, 0.46);
+    --glass-bg-strong: rgba(30, 24, 48, 0.74);
+    --glass-border-color: rgba(255, 255, 255, 0.14);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    --glass-fallback: #241d42;
+    --glass-fallback-subtle: #201a3a;
+    --glass-fallback-strong: #2a2250;
+    --orb-opacity: 0.55;
+  }
+  :root:not([data-theme='light']) [data-bg='dawn'] .tpl-sky {
+    background: linear-gradient(to bottom, #120e26 0%, #1e1838 55%, #2c2350 100%);
+  }
+  :root:not([data-theme='light']) [data-bg='dawn'] .orb[data-orb='1'] {
+    background: #ff9e6b;
+  }
+  :root:not([data-theme='light']) [data-bg='dawn'] .orb[data-orb='2'] {
+    background: #6d4aa8;
+  }
+  :root:not([data-theme='light']) [data-bg='dawn'] .orb[data-orb='3'] {
+    background: #3a2a6e;
+  }
+}
+:root[data-theme='dark'] [data-template='fajr'] {
+  --nq-background: #1e1838;
+  --nq-foreground: #f6f1ff;
+  --nq-muted-foreground: #c9bfe4;
+  --nq-accent: #ffb88c;
+  --nq-on-accent: #1e1838;
+  --nq-highlight: #ffb88c;
+  --nq-on-highlight: #1e1838;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.22);
+  --nq-ring: #ffb88c;
+  --glass-bg: rgba(30, 24, 48, 0.62);
+  --glass-bg-subtle: rgba(30, 24, 48, 0.46);
+  --glass-bg-strong: rgba(30, 24, 48, 0.74);
+  --glass-border-color: rgba(255, 255, 255, 0.14);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --glass-fallback: #241d42;
+  --glass-fallback-subtle: #201a3a;
+  --glass-fallback-strong: #2a2250;
+  --orb-opacity: 0.55;
+}
+:root[data-theme='dark'] [data-bg='dawn'] .tpl-sky {
+  background: linear-gradient(to bottom, #120e26 0%, #1e1838 55%, #2c2350 100%);
+}
+:root[data-theme='dark'] [data-bg='dawn'] .orb[data-orb='1'] {
+  background: #ff9e6b;
+}
+:root[data-theme='dark'] [data-bg='dawn'] .orb[data-orb='2'] {
+  background: #6d4aa8;
+}
+:root[data-theme='dark'] [data-bg='dawn'] .orb[data-orb='3'] {
+  background: #3a2a6e;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   حبر — Ink. Editorial and quiet: the words are the subject, the glass is
+   nearly invisible, and nothing moves except a slow blot in the background.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='hibr'] {
+  --nq-background: #f7f5fb;
+  --nq-foreground: #14121c; /* 16.41:1 on paper glass */
+  --nq-muted-foreground: #4a4458;
+  --nq-accent: #4c3fd1; /*  6.60:1 as text */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #ede9f5;
+  --nq-on-highlight: #14121c;
+  --nq-border: rgba(20, 18, 28, 0.12);
+  --nq-border-strong: rgba(20, 18, 28, 0.24);
+  --glass-bg: rgba(255, 255, 255, 0.42);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.26);
+  --glass-bg-strong: rgba(255, 255, 255, 0.6);
+  --glass-blur: 10px;
+  --orb-opacity: 0.6;
+
+  --font-display: var(--font-naskh), Georgia, serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='ink'] .orb[data-orb='1'] {
+  background: #ede9f5;
+}
+[data-bg='ink'] .orb[data-orb='2'] {
+  background: #e4dff0;
+}
+[data-bg='ink'] .orb[data-orb='3'] {
+  background: #f0edf8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='hibr'] {
+    --nq-background: #0f0d17;
+    --nq-foreground: #f4f1fa; /* 16.12:1 on ink glass */
+    --nq-muted-foreground: #c4bdd6; /*  9.94:1 */
+    --nq-accent: #a99cff; /*  8.15:1 as text */
+    --nq-on-accent: #14121c;
+    --nq-highlight: #2a2440;
+    --nq-on-highlight: #f4f1fa;
+    --nq-border: rgba(255, 255, 255, 0.1);
+    --nq-border-strong: rgba(255, 255, 255, 0.2);
+    --nq-ring: #a99cff;
+    --glass-bg: rgba(30, 24, 48, 0.6);
+    --glass-bg-subtle: rgba(30, 24, 48, 0.42);
+    --glass-bg-strong: rgba(30, 24, 48, 0.72);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+    --glass-fallback: #1a1628;
+    --glass-fallback-subtle: #161222;
+    --glass-fallback-strong: #201b32;
+    --orb-opacity: 0.75;
+  }
+  :root:not([data-theme='light']) [data-bg='ink'] .orb[data-orb='1'] {
+    background: #2a2440;
+  }
+  :root:not([data-theme='light']) [data-bg='ink'] .orb[data-orb='2'] {
+    background: #3a3159;
+  }
+  :root:not([data-theme='light']) [data-bg='ink'] .orb[data-orb='3'] {
+    background: #1e1a2e;
+  }
+}
+:root[data-theme='dark'] [data-template='hibr'] {
+  --nq-background: #0f0d17;
+  --nq-foreground: #f4f1fa;
+  --nq-muted-foreground: #c4bdd6;
+  --nq-accent: #a99cff;
+  --nq-on-accent: #14121c;
+  --nq-highlight: #2a2440;
+  --nq-on-highlight: #f4f1fa;
+  --nq-border: rgba(255, 255, 255, 0.1);
+  --nq-border-strong: rgba(255, 255, 255, 0.2);
+  --nq-ring: #a99cff;
+  --glass-bg: rgba(30, 24, 48, 0.6);
+  --glass-bg-subtle: rgba(30, 24, 48, 0.42);
+  --glass-bg-strong: rgba(30, 24, 48, 0.72);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  --glass-fallback: #1a1628;
+  --glass-fallback-subtle: #161222;
+  --glass-fallback-strong: #201b32;
+  --orb-opacity: 0.75;
+}
+:root[data-theme='dark'] [data-bg='ink'] .orb[data-orb='1'] {
+  background: #2a2440;
+}
+:root[data-theme='dark'] [data-bg='ink'] .orb[data-orb='2'] {
+  background: #3a3159;
+}
+:root[data-theme='dark'] [data-bg='ink'] .orb[data-orb='3'] {
+  background: #1e1a2e;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Motion signatures. Public-route motion is CSS only — the measured
+   framework floor leaves no room for GSAP here (pages/public.md).
+   All of it is transform/opacity, and all of it is inside a
+   prefers-reduced-motion: no-preference guard.
+   ───────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Signature 2 — scroll reveal. Small offset: reads as a fade, not a slide. */
+  html.js .tpl [data-reveal] {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  html.js .tpl [data-reveal].is-in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity var(--dur-reveal) var(--ease-out),
+      transform var(--dur-reveal) var(--ease-out);
+  }
+
+  /* Signature 1 — hero entrance. Staggered by nth-child, no JS. */
+  html.js .tpl [data-hero-item] {
+    opacity: 0;
+    animation: tpl-hero-in var(--dur-hero) var(--ease-out) forwards;
+  }
+  html.js .tpl [data-hero-item]:nth-child(1) {
+    animation-delay: 0.05s;
+  }
+  html.js .tpl [data-hero-item]:nth-child(2) {
+    animation-delay: 0.11s;
+  }
+  html.js .tpl [data-hero-item]:nth-child(3) {
+    animation-delay: 0.17s;
+  }
+  html.js .tpl [data-hero-item]:nth-child(4) {
+    animation-delay: 0.23s;
+  }
+  html.js .tpl [data-hero-item]:nth-child(5) {
+    animation-delay: 0.29s;
+  }
+
+  /* Word-level split for the name. Arabic is cursive: splitting characters
+     breaks the joining forms, so the unit is the word. */
+  html.js .tpl .word {
+    display: inline-block;
+    opacity: 0;
+    animation: tpl-word-in var(--dur-hero) var(--ease-out) forwards;
+  }
+  html.js .tpl .word:nth-child(1) {
+    animation-delay: 0.02s;
+  }
+  html.js .tpl .word:nth-child(2) {
+    animation-delay: 0.06s;
+  }
+  html.js .tpl .word:nth-child(3) {
+    animation-delay: 0.1s;
+  }
+  html.js .tpl .word:nth-child(4) {
+    animation-delay: 0.14s;
+  }
+  html.js .tpl .word:nth-child(n + 5) {
+    animation-delay: 0.18s;
+  }
+}
+
+@keyframes tpl-hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes tpl-word-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Failsafe: if the observer never runs, nothing stays hidden. */
+html.motion-failsafe .tpl [data-reveal],
+html.motion-failsafe .tpl [data-hero-item],
+html.motion-failsafe .tpl .word {
+  opacity: 1 !important;
+  transform: none !important;
+  animation: none !important;
+}
+
+/* Motion character per template — the signature changes the feel, never which
+   properties are animated. */
+[data-motion-sig='crisp'] {
+  --dur-reveal: 300ms;
+  --dur-hero: 450ms;
+}
+[data-motion-sig='drift'] {
+  --dur-reveal: 380ms;
+  --dur-hero: 600ms;
+}
+[data-motion-sig='rise'] {
+  --dur-reveal: 350ms;
+  --dur-hero: 550ms;
+}
+/* Editorial: fades only, no vertical travel, no orb drift. */
+[data-motion-sig='editorial'] {
+  --dur-reveal: 400ms;
+  --dur-hero: 500ms;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-motion-sig='editorial'] [data-reveal] {
+    transform: none;
+  }
+  [data-motion-sig='editorial'] .orb {
+    animation: none;
+  }
+}

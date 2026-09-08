@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 import { fontVariables } from '@/lib/fonts'
 import { BootScript } from '@/components/boot-script'
 import { Providers } from '@/components/providers'
-import { Mesh } from '@/components/ui'
 import './globals.css'
+import './templates.css'
 
 export const metadata: Metadata = {
   title: 'نُقوش — موقعك الشخصي بعشر دقايق',
@@ -27,7 +27,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ar" dir="rtl" className={fontVariables} suppressHydrationWarning>
       <body>
         <BootScript />
-        <Mesh />
         <Providers>{children}</Providers>
       </body>
     </html>

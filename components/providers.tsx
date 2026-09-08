@@ -10,16 +10,6 @@ import {
   type ReactNode,
 } from 'react'
 import { dirFor, DEFAULT_LANG, type Lang } from '@/lib/i18n'
-import {
-  registerGsap,
-  revealOnScroll,
-  heroEntrance,
-  splitWords,
-  withMotion,
-  watchVisibility,
-  MOTION,
-} from '@/lib/motion'
-import { gsap } from 'gsap'
 
 /* ── Language ──────────────────────────────────────────────────────────────
    Same URL serves both languages (no /ar and /en routes). The toggle switches
@@ -118,75 +108,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
 }
 
-/* ── Motion ────────────────────────────────────────────────────────────────
-   The only place GSAP is booted. Under prefers-reduced-motion no tween is ever
-   created, so the page is fully static rather than lightly animated.
-   ────────────────────────────────────────────────────────────────────────── */
-
-export function MotionProvider({ children }: { children: ReactNode }) {
-  useEffect(() => {
-    const stopVisibility = watchVisibility()
-    let mm: ReturnType<typeof withMotion> | null = null
-    let revertSplit: (() => void) | null = null
-
-    try {
-      registerGsap()
-
-      mm = withMotion(() => {
-        // Signature 1 — hero entrance.
-        const headline = document.querySelector<HTMLElement>('[data-hero-headline]')
-        const heroItems = document.querySelectorAll('[data-hero]')
-
-        const tl = gsap.timeline()
-
-        if (headline) {
-          const split = splitWords(headline)
-          revertSplit = split.revert
-          gsap.set(headline, { opacity: 1 })
-          tl.fromTo(
-            split.words,
-            { opacity: 0, y: 20 },
-            {
-              opacity: 1,
-              y: 0,
-              duration: MOTION.dur.hero,
-              ease: MOTION.ease.out,
-              stagger: MOTION.stagger.words,
-            },
-            0
-          )
-        }
-
-        if (heroItems.length) {
-          tl.add(heroEntrance(heroItems), 0.1)
-        }
-
-        // Signature 2 — scroll reveal for every marked section.
-        revealOnScroll(document.querySelectorAll('[data-reveal]'))
-      })
-
-      document.documentElement.dataset.motionReady = '1'
-    } catch {
-      // Motion is an enhancement layer. If it throws, content must still show.
-      document.documentElement.classList.add('motion-failsafe')
-    }
-
-    return () => {
-      stopVisibility()
-      mm?.revert()
-      revertSplit?.() // restore the original text node for assistive tech
-    }
-  }, [])
-
-  return <>{children}</>
-}
-
+/**
+ * Theme and language only. `MotionProvider` (GSAP) is deliberately NOT composed
+ * here: it would then load on the public page, where the measured framework
+ * floor leaves no room for it. Builder routes opt in explicitly.
+ */
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ThemeProvider>
-      <LangProvider>
-        <MotionProvider>{children}</MotionProvider>
-      </LangProvider>
+      <LangProvider>{children}</LangProvider>
     </ThemeProvider>
   )
 }

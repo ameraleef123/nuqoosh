@@ -14,17 +14,13 @@
 
 import { useEffect, useState } from 'react'
 import { Check, Minus } from 'lucide-react'
-import { Glass, Reveal, SectionHeading, Wordmark } from '@/components/ui'
+import { Glass, Mesh, Reveal, SectionHeading, Wordmark } from '@/components/ui'
 import { LangToggle, ThemeToggle } from '@/components/toggles'
 import { useLang } from '@/components/providers'
+import { MotionProvider } from '@/components/gsap-motion'
 import { fixtures } from '@/lib/fixtures'
-import {
-  completionAxes,
-  completionPercent,
-  hasSection,
-  visibleSections,
-  type Profile,
-} from '@/lib/schema'
+import type { Profile } from '@/lib/schema'
+import { completionAxes, completionPercent, hasSection, visibleSections } from '@/lib/profile'
 import { formatGpa, formatNumber, resolveField, t, ui, type Lang } from '@/lib/i18n'
 import { countUp } from '@/lib/motion'
 
@@ -192,11 +188,19 @@ export default function FoundationsPage() {
   const { lang } = useLang()
 
   return (
-    <>
+    <MotionProvider>
+      <Mesh />
       <header className="sticky top-0 z-50 border-b border-[var(--nq-border)] bg-[var(--glass-bg-subtle)] backdrop-blur-md">
         <div className="container-page flex min-h-16 items-center justify-between gap-4">
           <Wordmark withLatin />
           <div className="flex items-center gap-2">
+            <a
+              href="/gallery"
+              className="inline-flex min-h-11 items-center rounded-[var(--nq-radius-md)] px-4 text-sm font-semibold"
+              style={{ background: 'var(--nq-accent)', color: 'var(--nq-on-accent)' }}
+            >
+              شوف القوالب
+            </a>
             <LangToggle />
             <ThemeToggle />
           </div>
@@ -355,6 +359,6 @@ export default function FoundationsPage() {
           <span>{t('builtWith', lang)}</span>
         </div>
       </footer>
-    </>
+    </MotionProvider>
   )
 }
