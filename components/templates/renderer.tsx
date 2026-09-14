@@ -8,12 +8,13 @@ import {
   Globe,
   Instagram,
   Linkedin,
+  MapPin,
   Phone,
   Twitter,
 } from 'lucide-react'
 import type { Profile, LinkKind } from '@/lib/schema'
 import { visibleSections, type SectionKey } from '@/lib/profile'
-import { formatGpa, formatNumber, resolveField, t, type Lang } from '@/lib/i18n'
+import { formatGpa, formatNumber, formatRange, resolveField, t, type Lang } from '@/lib/i18n'
 import type { Template } from '@/lib/templates'
 import { cn } from '@/lib/cn'
 import { LottieMark } from '@/components/lottie-mark'
@@ -232,6 +233,51 @@ const GLASS: Record<Template['glass'], string> = {
   strong: 'glass-strong',
 }
 
+/** A CV date range, rendered as the student wrote it, localised where it can be. */
+function DateRange({ from, to, lang }: { from?: string; to?: string; lang: Lang }) {
+  const text = formatRange(from, to, lang)
+  if (!text) return null
+  return (
+    <p className="text-[var(--nq-muted-foreground)] mt-0.5 text-sm tabular-nums">
+      <time>{text}</time>
+    </p>
+  )
+}
+
+const SKILL_GROUPS = ['technical', 'language', 'soft'] as const
+
+/**
+ * Skills as pills. When a CV sorted them into groups (technical / languages /
+ * soft) the groups are kept, each under a small label; a single group has no
+ * label at all.
+ */
+function SkillGroups({ skills, lang }: { skills: Profile['sections']['skills']; lang: Lang }) {
+  const groups = SKILL_GROUPS.map((g) => ({ g, items: skills.filter((sk) => sk.group === g) })).filter(
+    (x) => x.items.length
+  )
+  const labelled = groups.length > 1
+  return (
+    <div className="space-y-4">
+      {groups.map(({ g, items }) => (
+        <div key={g}>
+          {labelled ? (
+            <p className="text-[var(--nq-muted-foreground)] mb-2 text-xs font-semibold tracking-wide">
+              {t(g, lang)}
+            </p>
+          ) : null}
+          <ul className="flex flex-wrap gap-2">
+            {items.map((sk) => (
+              <li key={sk.id}>
+                <Pill>{resolveField(sk.name, lang)?.text}</Pill>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Pill({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center rounded-full border border-[var(--nq-border)] px-2.5 py-0.5 text-sm">
@@ -437,13 +483,26 @@ function Hero({ profile, template, lang }: RenderProps) {
     </h1>
   )
 
+  const location = resolveField(profile.fields.location, lang)
   const tagline = (
-    <Txt
-      value={profile.fields.tagline}
-      lang={lang}
-      as="p"
-      className="text-[var(--nq-muted-foreground)] text-lg"
-    />
+    <>
+      <Txt
+        value={profile.fields.tagline}
+        lang={lang}
+        as="p"
+        className="text-[var(--nq-muted-foreground)] text-lg"
+      />
+      {location ? (
+        <p
+          className="text-[var(--nq-muted-foreground)] mt-1 flex items-center gap-1.5 text-sm"
+          lang={location.lang}
+          dir={location.lang === 'ar' ? 'rtl' : 'ltr'}
+        >
+          <MapPin aria-hidden className="size-4 shrink-0" />
+          {location.text}
+        </p>
+      ) : null}
+    </>
   )
 
   const about = <Txt value={profile.fields.about} lang={lang} as="p" className="measure" />
@@ -742,6 +801,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
                   <span className="text-[var(--nq-muted-foreground)]">—</span>
                   <Txt value={v.organization} lang={lang} className="text-[var(--nq-muted-foreground)]" />
                 </div>
+                <DateRange from={v.from} to={v.to} lang={lang} />
                 <Txt value={v.impact} lang={lang} as="p" className="measure mt-2" />
               </li>
             ))}
@@ -779,6 +839,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
                   <span className="text-[var(--nq-muted-foreground)]">—</span>
                   <Txt value={e.employer} lang={lang} className="text-[var(--nq-muted-foreground)]" />
                 </div>
+                <DateRange from={e.from} to={e.to} lang={lang} />
                 <Txt value={e.summary} lang={lang} as="p" className="measure mt-2" />
               </li>
             ))}
@@ -815,7 +876,10 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
               ) : null}
               {e.expectedGraduation ? (
                 <span>
-                  {lang === 'ar' ? 'التخرّج المتوقّع ' : 'Expected '}
+                  {/* A year already behind us is a graduation, not an expectation. */}
+                  {e.expectedGraduation < new Date().getFullYear()
+                    ? lang === 'ar' ? 'تخرّج ' : 'Graduated '
+                    : lang === 'ar' ? 'التخرّج المتوقّع ' : 'Expected '}
                   {formatNumber(e.expectedGraduation, lang, { useGrouping: false })}
                 </span>
               ) : null}
@@ -839,13 +903,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
             />
           }
         >
-          <ul className="flex flex-wrap gap-2">
-            {s.skills.map((sk) => (
-              <li key={sk.id}>
-                <Pill>{resolveField(sk.name, lang)?.text}</Pill>
-              </li>
-            ))}
-          </ul>
+          <SkillGroups skills={s.skills} lang={lang} />
         </SectionShell>
       )
 

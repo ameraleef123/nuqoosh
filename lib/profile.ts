@@ -22,7 +22,10 @@ export function hasSection(profile: Profile, key: SectionKey): boolean {
   const s = profile.sections
   switch (key) {
     case 'education':
-      return Boolean(s.education?.university.ar || s.education?.major.ar)
+      // Either language counts: an imported English CV has no Arabic side yet.
+      return Boolean(
+        s.education?.university.ar || s.education?.university.en || s.education?.major.ar || s.education?.major.en
+      )
     case 'projects':
       return s.projects.length > 0
     case 'volunteering':
@@ -67,16 +70,19 @@ export type CompletionAxis = {
   weight: number
 }
 
+/** Filled in either language. A CV written in English is not "empty". */
+const has = (v: { ar?: string; en?: string } | undefined) => Boolean(v?.ar?.trim() || v?.en?.trim())
+
 export function completionAxes(profile: Profile): CompletionAxis[] {
   const f = profile.fields
   const s = profile.sections
   return [
-    { key: 'name', labelAr: 'اسمك', done: Boolean(f.fullName.ar.trim()), weight: 20 },
-    { key: 'tagline', labelAr: 'سطر يعرّف فيك', done: Boolean(f.tagline?.ar.trim()), weight: 15 },
+    { key: 'name', labelAr: 'اسمك', done: has(f.fullName), weight: 20 },
+    { key: 'tagline', labelAr: 'سطر يعرّف فيك', done: has(f.tagline), weight: 15 },
     {
       key: 'education',
       labelAr: 'دراستك',
-      done: Boolean(s.education?.university.ar.trim() && s.education?.major.ar.trim()),
+      done: has(s.education?.university) && has(s.education?.major),
       weight: 20,
     },
     { key: 'projects', labelAr: 'مشروع واحد على الأقل', done: s.projects.length > 0, weight: 20 },

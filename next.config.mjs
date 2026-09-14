@@ -6,6 +6,14 @@ const nextConfig = {
   experimental: { optimizePackageImports: ['lucide-react'] },
 
   /**
+   * pdf.js resolves its worker relative to its own file. Bundled into Next's
+   * vendor chunks that path does not exist ("Cannot find module
+   * .next/server/vendor-chunks/pdf.worker.mjs"), so the package is left to
+   * Node's normal resolution from node_modules.
+   */
+  serverExternalPackages: ['pdfjs-dist'],
+
+  /**
    * A verification build must not clobber a running dev server.
    *
    * `next dev` and `next build` both write to `.next` by default, so running a
