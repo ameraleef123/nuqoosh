@@ -15,7 +15,7 @@ import type { SectionOrderVariant } from './profile'
 
 export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink'
 export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial'
-export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature'
+export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover'
 export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger'
 export type GlassIntensity = 'subtle' | 'default' | 'strong'
 
@@ -29,6 +29,9 @@ export type SectionLayout = 'stack' | 'bento'
 export type TemplateMedia = {
   /** Fixed backdrop behind the whole screen, under every card. */
   background?: string
+  /** 'tile' repeats a small loop across the width (snow); 'cover' fills the
+   *  viewport with one wide scene. Defaults to tile. */
+  backgroundFit?: 'tile' | 'cover' 
   /** Art inside the hero card itself. */
   hero?: string
   /** A quiet mark in the page corner. */
@@ -74,7 +77,7 @@ export const TEMPLATES: Template[] = [
     hero: 'feature',
     card: 'panel',
     order: 'A',
-    layout: 'bento',
+    layout: 'stack',
     media: {
       background: '/lottie/frost-hero.lottie',
       hero: '/lottie/frost-card.lottie',
@@ -114,10 +117,20 @@ export const TEMPLATES: Template[] = [
     background: 'dawn',
     glass: 'strong',
     motion: 'rise',
-    hero: 'stacked',
+    hero: 'cover',
     card: 'panel',
     order: 'A',
     layout: 'stack',
+    media: {
+      // The painted dusk range is the whole page: one wide scene, fixed to the
+      // viewport, under every card. Cards are glass-strong, and text on them
+      // measures 8.31:1 / 5.29:1 (dark fg / muted) over the scene's real
+      // brightest coral pixel at full opacity.
+      background: '/lottie/dawn-scene.lottie',
+      backgroundFit: 'cover',
+      // The hero character: a flock in silhouette, sweeping the cover strip.
+      hero: '/lottie/dawn-birds.lottie',
+    },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
   {
@@ -134,6 +147,12 @@ export const TEMPLATES: Template[] = [
     card: 'list',
     order: 'A',
     layout: 'stack',
+    media: {
+      // A quill writing on a scroll — ink on paper, in motion. It sits on a
+      // cream paper disc in both themes: a sheet on a dark desk is a natural
+      // image, and it keeps the navy feather readable on ink black.
+      hero: '/lottie/ink-quill.lottie',
+    },
     fonts: { display: 'naskh', body: 'plex-arabic' },
   },
 ]

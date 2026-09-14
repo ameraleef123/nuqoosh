@@ -1,87 +1,21 @@
-import {
-  Cairo,
-  IBM_Plex_Sans_Arabic,
-  Amiri,
-  Almarai,
-  Noto_Naskh_Arabic,
-  Noto_Sans_Arabic,
-} from 'next/font/google'
-
 /**
- * Arabic is the source language, so the Arabic subset is loaded explicitly and
- * listed first. A Latin fallback must never be allowed to render Arabic —
- * next/font emits per-subset `unicode-range`, which guarantees that.
+ * Fonts are local files. See app/fonts.css for the @font-face rules and
+ * public/fonts/ for the woff2 files — nothing is fetched from Google at build
+ * or run time.
  *
- * Every family here ships a Latin subset drawn to the same vertical metrics as
- * its Arabic, so a mixed-script line sits on one baseline.
+ * `next/font/google` used to live here. It self-hosts at run time but still
+ * downloads from Google every build, which made the build depend on the
+ * network and on a third party. The CSS variables it used to inject
+ * (--font-cairo and friends) are now declared in fonts.css on :root.
  *
- * Preload policy: only the default pair (Cairo + IBM Plex Sans Arabic) is
- * preloaded. Template-specific families declare `preload: false` and rely on
- * `font-display: swap` — an unused @font-face is never downloaded, so the
- * gallery does not pay for families it is not rendering.
+ * Preload only the default pair's Arabic files: they are on the first paint
+ * of every page. Template-specific families load on demand via font-display:
+ * swap and are never downloaded unless their template is rendered.
  */
+export const PRELOAD_FONTS = [
+  '/fonts/cairo/arabic-400-800.woff2',
+  '/fonts/plex-arabic/arabic-400.woff2',
+] as const
 
-/* ── Default pair ────────────────────────────────────────────────────────── */
-
-export const cairo = Cairo({
-  subsets: ['arabic', 'latin'],
-  display: 'swap',
-  variable: '--font-cairo',
-  weight: ['400', '600', '700', '800'],
-})
-
-export const plexArabic = IBM_Plex_Sans_Arabic({
-  subsets: ['arabic', 'latin'],
-  display: 'swap',
-  variable: '--font-plex-arabic',
-  weight: ['400', '500', '600', '700'],
-})
-
-/* ── Wordmark ────────────────────────────────────────────────────────────── */
-
-/**
- * TODO(before launch): outline نُقوش to SVG paths and drop this webfont
- * (MASTER.md §2.1). Rendering <text> is correct but ties the mark to a font load.
- */
-export const amiri = Amiri({
-  subsets: ['arabic'],
-  display: 'swap',
-  variable: '--font-amiri',
-  weight: ['700'],
-  preload: false,
-})
-
-/* ── Template families ───────────────────────────────────────────────────── */
-
-export const almarai = Almarai({
-  subsets: ['arabic'],
-  display: 'swap',
-  variable: '--font-almarai',
-  weight: ['300', '400', '700', '800'],
-  preload: false,
-})
-
-export const notoNaskh = Noto_Naskh_Arabic({
-  subsets: ['arabic'],
-  display: 'swap',
-  variable: '--font-naskh',
-  weight: ['400', '500', '600', '700'],
-  preload: false,
-})
-
-export const notoSansArabic = Noto_Sans_Arabic({
-  subsets: ['arabic'],
-  display: 'swap',
-  variable: '--font-noto-arabic',
-  weight: ['400', '500', '600', '700'],
-  preload: false,
-})
-
-export const fontVariables = [
-  cairo.variable,
-  plexArabic.variable,
-  amiri.variable,
-  almarai.variable,
-  notoNaskh.variable,
-  notoSansArabic.variable,
-].join(' ')
+/** Kept for call sites that used to spread next/font class names. */
+export const fontVariables = ''

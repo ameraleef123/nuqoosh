@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from 'next'
-import { fontVariables } from '@/lib/fonts'
+import { PRELOAD_FONTS } from '@/lib/fonts'
 import { BootScript } from '@/components/boot-script'
 import { Providers } from '@/components/providers'
+import './fonts.css'
 import './globals.css'
 import './templates.css'
 import './effects.css'
@@ -25,7 +26,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // Arabic is the source language, so rtl/ar is the served default.
     // The toggle rewrites both attributes; suppressHydrationWarning covers the
     // boot script having already done so from localStorage.
-    <html lang="ar" dir="rtl" className={fontVariables} suppressHydrationWarning>
+    <html lang="ar" dir="rtl" suppressHydrationWarning>
+      <head>
+        {PRELOAD_FONTS.map((href) => (
+          <link key={href} rel="preload" href={href} as="font" type="font/woff2" crossOrigin="anonymous" />
+        ))}
+      </head>
       <body>
         <BootScript />
         <Providers>{children}</Providers>

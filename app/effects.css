@@ -257,3 +257,66 @@
     transform: scale(1.06) rotate(2deg);
   }
 }
+
+/* ── فجر hero cover ────────────────────────────────────────────────────────
+   The strip is the dawn itself: a horizon gradient, a sun that rises once
+   (transform + opacity, same keyframes as the page sun), and the line-art
+   mountains on the end side. Under reduced motion the sun is already up. */
+
+.cover-band {
+  position: relative;
+  block-size: clamp(9rem, 22vw, 15rem);
+  overflow: hidden;
+  /* Only a whisper of horizon: the glass beneath already shows the scene. */
+  background: linear-gradient(to top, rgba(255, 217, 184, 0.35) 0%, rgba(255, 233, 214, 0) 70%);
+}
+/* Black silhouettes vanish on ink glass; a static invert makes them white.
+   The filter is fixed, never animated — the canvas moves underneath it. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .cover-band {
+    background: linear-gradient(to top, rgba(58, 42, 94, 0.35) 0%, rgba(42, 32, 80, 0) 70%);
+  }
+  :root:not([data-theme='light']) .cover-art {
+    filter: invert(1) brightness(0.92);
+  }
+}
+:root[data-theme='dark'] .cover-band {
+  background: linear-gradient(to top, rgba(58, 42, 94, 0.35) 0%, rgba(42, 32, 80, 0) 70%);
+}
+:root[data-theme='dark'] .cover-art {
+  filter: invert(1) brightness(0.92);
+}
+/* The scene fills the strip edge to edge; the gradient beneath it is only the
+   poster shown before it loads and under reduced motion. */
+.cover-art {
+  position: absolute;
+  inset: 0;
+}
+
+/* ── حبر hero: a sheet of paper for the quill ──────────────────────────────
+   Cream in BOTH themes on purpose. Paper on a dark desk is a natural image,
+   and it keeps the navy feather visible on ink black without inverting the
+   art's colours. The disc is slightly off-round, like a torn sheet. */
+.ink-paper {
+  position: relative;
+  overflow: hidden;
+  inline-size: clamp(11rem, 26vw, 17rem);
+  aspect-ratio: 1;
+  border-radius: 48% 52% 47% 53% / 52% 46% 54% 48%;
+  background: #f6f1e7;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 14px 40px rgba(20, 18, 28, 0.14);
+}
+.ink-paper-art {
+  position: absolute;
+  inset: -70%;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .ink-paper {
+    box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+  }
+}
+:root[data-theme='dark'] .ink-paper {
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
+}

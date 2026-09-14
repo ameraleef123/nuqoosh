@@ -168,6 +168,16 @@ function Background({ template }: { template: Template }) {
   const orb = (n: 1 | 2 | 3, style: React.CSSProperties) => (
     <span className="orb" data-orb={n} style={style} key={n} />
   )
+  // A covering scene paints over everything in this layer, so the sun, the
+  // grid and the orbs would animate forever without a pixel reaching the
+  // screen. Keep only the flat ground colour as the poster under the scene.
+  if (template.media?.backgroundFit === 'cover') {
+    return (
+      <div className="tpl-bg" data-bg={template.background} aria-hidden="true">
+        {template.background === 'dawn' ? <span className="tpl-sky" /> : null}
+      </div>
+    )
+  }
   return (
     <div className="tpl-bg" data-bg={template.background} aria-hidden="true">
       {template.background === 'dawn' ? <span className="tpl-sky" /> : null}
@@ -250,12 +260,18 @@ function SectionShell({
   glass,
   children,
   span = 1,
+  art,
+  artSide = 'start',
 }: {
   title: string
   glass: string
   children: React.ReactNode
   /** Bento column span, chosen from the section's data volume. */
   span?: 1 | 2 | 3
+  /** Optional illustration. */
+  art?: React.ReactNode
+  /** 'start' = under the heading; 'end' = its own column on the far side. */
+  artSide?: 'start' | 'end'
 }) {
   // The reveal animates the outer element and the tilt animates the inner one.
   // Sharing a node would mean two rules writing `transform`, and the reveal's
@@ -267,14 +283,30 @@ function SectionShell({
             skills, contact — hugging one edge with a field of empty space
             beside them. Giving the heading its own column fills the card and
             reads as a label/value pair, which is what these sections are. */}
-        <div className="grid gap-5 lg:grid-cols-[minmax(9rem,16%)_1fr] lg:gap-10">
-          <h2 className="heading-rule text-2xl">{title}</h2>
+        <div
+          className={cn(
+            'grid gap-5 lg:gap-10',
+            artSide === 'end' && art
+              ? 'lg:grid-cols-[minmax(8rem,14%)_1fr_auto] lg:items-center'
+              : 'lg:grid-cols-[minmax(9rem,16%)_1fr]'
+          )}
+        >
+          <div>
+            <h2 className="heading-rule text-2xl">{title}</h2>
+            {artSide === 'start' ? art : null}
+          </div>
           <div>{children}</div>
+          {artSide === 'end' && art ? <div className="justify-self-end">{art}</div> : null}
         </div>
       </div>
     </section>
   )
 }
+
+const PROJECTS_ART = '/lottie/projects.lottie'
+const EDUCATION_ART = '/lottie/education.lottie'
+const SKILLS_ART = '/lottie/skills.lottie'
+const CONTACT_ART = '/lottie/contact.lottie'
 
 /* ── Avatar ────────────────────────────────────────────────────────────────
    Most students will not upload a photo, so the fallback is the design, not an
@@ -305,7 +337,9 @@ function Avatar({ profile, lang }: { profile: Profile; lang: Lang }) {
   return (
     <div
       data-hero-item
-      className="glass-subtle flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full md:size-32"
+      // glass-strong, not subtle: on the فجر cover the circle overlaps a peach
+      // band and the accent initials measured 4.31:1 on subtle glass — a fail.
+      className="glass-strong flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full md:size-32"
     >
       {profile.avatar ? (
         // eslint-disable-next-line @next/next/no-img-element -- a student photo
@@ -439,6 +473,38 @@ function Hero({ profile, template, lang }: RenderProps) {
     )
   }
 
+  if (template.hero === 'cover') {
+    const art = template.media?.hero
+    // Cover-and-avatar: a wide dawn strip across the top of the card, the
+    // avatar sitting on its lower edge, the text below. Nothing else on the
+    // site uses this shape, which is the point — فجر should be recognisable
+    // from across the room.
+    return (
+      <header className={cn(glass, 'tilt overflow-hidden')} data-tilt>
+        {/* No CSS sun in the band: the line-art already carries its own, and
+            the page sun still rises behind the whole card. */}
+        {/* The strip is see-through: the page scene shows through the glass,
+            and the flock crosses it. Birds are silhouettes, so they are
+            inverted to white in dark mode (cover-art CSS). */}
+        <div className="cover-band" aria-hidden="true">
+          {art ? <LottieMark src={art} className="cover-art" fit="cover" /> : null}
+        </div>
+        <div className="relative px-7 pb-8 md:px-10 md:pb-10">
+          {/* The avatar overlaps the band by half its height. */}
+          <div className="-mt-14 md:-mt-16">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+          <div className="mt-4 flex flex-col gap-4">
+            <div data-hero-item>{headline}</div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
+          </div>
+        </div>
+      </header>
+    )
+  }
+
   if (template.hero === 'centered') {
     return (
       <header className={cn(glass, 'tilt p-7 text-center md:p-12')} data-tilt>
@@ -500,22 +566,36 @@ function Hero({ profile, template, lang }: RenderProps) {
     )
   }
 
-  // editorial — no glass panel at all; the type is the design.
+  // editorial — no glass panel at all; the type is the design. The avatar is
+  // a byline portrait beside the name, and the art sits on a paper disc in
+  // the far column like a magazine spot illustration.
+  const editorialArt = template.media?.hero
   return (
     <header className="border-b border-[var(--nq-border)] pb-8">
-      <div className="grid gap-6 xl:grid-cols-[1.2fr_1fr] xl:items-end xl:gap-12">
+      <div className="grid gap-8 xl:grid-cols-[1.2fr_1fr] xl:items-center xl:gap-12">
         <div className="flex flex-col gap-4">
-          <div data-hero-item>{headline}</div>
+          <div className="flex flex-wrap items-center gap-5">
+            <Avatar profile={profile} lang={lang} />
+            <div data-hero-item className="min-w-0 flex-1">
+              {headline}
+            </div>
+          </div>
           <div data-hero-item className="border-s-2 border-[var(--nq-accent)] ps-4">
             {tagline}
           </div>
-        </div>
-        <div className="flex flex-col gap-4">
           <div data-hero-item className="measure leading-[1.9]">
             {about}
           </div>
           {pills}
         </div>
+        {editorialArt ? (
+          <div data-hero-item className="ink-paper mx-auto xl:ms-auto xl:me-0">
+            {/* The source frame is mostly empty margin around the quill, so the
+                art box is oversized and the disc clips it. The canvas renders
+                at full resolution and is only cropped, never upscaled. */}
+            <LottieMark src={editorialArt} className="ink-paper-art" />
+          </div>
+        ) : null}
       </div>
     </header>
   )
@@ -628,7 +708,20 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
   switch (which) {
     case 'projects':
       return (
-        <SectionShell title={t('projects', lang)} glass={glass} span={span}>
+        <SectionShell
+          title={t('projects', lang)}
+          glass={glass}
+          span={span}
+          art={
+            // The same team illustration in every template — it lives in the
+            // heading column, which sits empty beside the grid at full width.
+            // Vector, 17.6 KB, lazy, reduced-motion aware like every LottieMark.
+            <LottieMark
+              src={PROJECTS_ART}
+              className="mt-4 aspect-[4/3] w-full max-w-56 lg:max-w-none"
+            />
+          }
+        >
           <ul className={template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'}>
             {s.projects.map((p) => (
               <ProjectItem key={p.id} project={p} lang={lang} shape={template.card} />
@@ -696,7 +789,20 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'education': {
       const e = s.education!
       return (
-        <SectionShell title={t('education', lang)} glass={glass} span={span}>
+        <SectionShell
+          title={t('education', lang)}
+          glass={glass}
+          span={span}
+          artSide="end"
+          art={
+            // A single object rather than a scene, so it is sized smaller than
+            // the projects illustration and kept square.
+            <LottieMark
+              src={EDUCATION_ART}
+              className="aspect-square w-full max-w-36 lg:max-w-44"
+            />
+          }
+        >
           <div className="space-y-1">
             <Txt value={e.university} lang={lang} as="p" className="text-lg font-bold" />
             <Txt value={e.major} lang={lang} as="p" />
@@ -721,7 +827,18 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'skills':
       return (
-        <SectionShell title={t('skills', lang)} glass={glass} span={span}>
+        <SectionShell
+          title={t('skills', lang)}
+          glass={glass}
+          span={span}
+          artSide="end"
+          art={
+            <LottieMark
+              src={SKILLS_ART}
+              className="aspect-square w-full max-w-36 lg:max-w-44"
+            />
+          }
+        >
           <ul className="flex flex-wrap gap-2">
             {s.skills.map((sk) => (
               <li key={sk.id}>
@@ -734,7 +851,20 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'links':
       return (
-        <SectionShell title={t('links', lang)} glass={glass} span={span}>
+        <SectionShell
+          title={t('links', lang)}
+          glass={glass}
+          span={span}
+          artSide="end"
+          art={
+            <LottieMark
+              src={CONTACT_ART}
+              // Landscape source (950x760): a square box letterboxed it into a
+              // thin phone. Sized to its own ratio and a touch wider.
+              className="aspect-[5/4] w-full max-w-44 lg:max-w-56"
+            />
+          }
+        >
           <ul className="flex flex-wrap gap-3">
             {s.links.map((l) => {
               const Icon = LINK_ICON[l.kind]
@@ -772,6 +902,7 @@ export function TemplateRenderer({
   // The single gate: only sections that actually have content, in template
   // order. Nothing downstream can render an empty section.
   const sections = visibleSections(profile, template.order)
+  const pairable = sections.includes('education') && sections.includes('links')
 
   return (
     <div
@@ -801,14 +932,24 @@ export function TemplateRenderer({
           falling in place while the visitor scrolls, and each tile only ever
           has to cover one screen instead of the whole document. */}
       {template.media?.background ? (
-        <div className="tpl-screen-art" aria-hidden="true">
-          {[0, 1, 2].map((i) => (
-            <LottieMark
-              key={i}
-              src={template.media!.background!}
-              className={cn('tpl-screen-tile', i > 0 && 'tpl-screen-tile-extra')}
-            />
-          ))}
+        <div
+          className="tpl-screen-art"
+          data-fit={template.media.backgroundFit ?? 'tile'}
+          aria-hidden="true"
+        >
+          {template.media.backgroundFit === 'cover' ? (
+            // One wide scene covering the viewport — a landscape, not a loop
+            // to repeat. Cropped by `cover`, never stretched.
+            <LottieMark src={template.media.background} className="tpl-screen-cover" fit="cover" />
+          ) : (
+            [0, 1, 2].map((i) => (
+              <LottieMark
+                key={i}
+                src={template.media!.background!}
+                className={cn('tpl-screen-tile', i > 0 && 'tpl-screen-tile-extra')}
+              />
+            ))
+          )}
         </div>
       ) : null}
 
@@ -826,9 +967,26 @@ export function TemplateRenderer({
             template.layout === 'bento' ? 'bento' : 'space-y-6 md:space-y-8'
           )}
         >
-          {sections.map((key) => (
-            <Section key={key} which={key} profile={profile} template={template} lang={lang} />
-          ))}
+          {sections.map((key) => {
+            // Education and contact share one row, each half the width. The
+            // pair is rendered where contact would have been, so education
+            // moves down to meet it; if either is missing the other keeps its
+            // own place at full width. Bento layouts keep their own packing.
+            if (template.layout === 'stack' && pairable) {
+              if (key === 'education') return null
+              if (key === 'links') {
+                return (
+                  <div key="education+links" className="grid gap-6 md:gap-8 lg:grid-cols-2">
+                    <Section which="education" profile={profile} template={template} lang={lang} />
+                    <Section which="links" profile={profile} template={template} lang={lang} />
+                  </div>
+                )
+              }
+            }
+            return (
+              <Section key={key} which={key} profile={profile} template={template} lang={lang} />
+            )
+          })}
         </div>
 
         <footer className="text-[var(--nq-muted-foreground)] mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--nq-border)] pt-6 text-sm">

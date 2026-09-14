@@ -60,6 +60,11 @@
   flex: 1 1 0;
   min-inline-size: 0;
 }
+/* A single covering scene fills the whole fixed layer. */
+.tpl-screen-cover {
+  position: absolute;
+  inset: 0;
+}
 /* One tile on a phone. These are display:none, and a display:none element has
    no intersection, so its observer never fires and it is never fetched or
    started — a phone renders one animation, not three. */
@@ -344,6 +349,7 @@
   --glass-fallback-strong: #ffffff;
   --glass-blur: 16px;
   --orb-opacity: 0.85;
+  --screen-art-opacity: 0.92;
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
