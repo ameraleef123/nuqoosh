@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════════════════
-   Template identities — Phase 2 (صقيع · بلّور · فجر · حبر)
+   Template identities — Phase 2 (صقيع · بلّور · فجر · حبر) + ورقة
 
    Each template overrides the --nq-* tokens on its own wrapper, in the same
    three blocks used globally, so JS-off theming keeps working inside a template:
@@ -537,6 +537,178 @@
 }
 :root[data-theme='dark'] [data-bg='ink'] .orb[data-orb='3'] {
   background: #1e1a2e;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   ورقة — Paper. Sheets of warm stock laid out on a kraft desk.
+
+   The page colour is the DESK, not the paper: it is deliberately darker than
+   the cards so every sheet lifts off it, which is the whole read of this
+   template. Cards are opaque here rather than glass — paper is not a window,
+   and an opaque card also means the Lottie backdrop behind it can never touch
+   the contrast of anything written on it.
+
+   One warm accent, Petra rose, carried over from MASTER: the notebook margin,
+   the links and the heading rules. Ink stays the fill of the course badge, so
+   a stamp still reads as a stamp.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='waraqa'] {
+  --nq-background: #e9dfcb; /* the desk */
+  --nq-foreground: #2b2019; /* 15.22:1 on the sheet · 12.00:1 on the desk */
+  --nq-muted-foreground: #5c4d3e; /*  7.79:1 on the sheet ·  6.14:1 on the desk
+                                    ·  4.70:1 over a backdrop plane, the binding case */
+  --nq-accent: #b8452f; /*  5.13:1 as text · paper on it 5.13:1 */
+  --nq-on-accent: #fdfaf3;
+  --nq-highlight: #2b2019; /* the course badge is an ink stamp on paper */
+  --nq-on-highlight: #fdfaf3; /* 15.22:1 */
+  --nq-border: rgba(43, 32, 25, 0.15);
+  --nq-border-strong: rgba(43, 32, 25, 0.32);
+  --nq-ring: #b8452f;
+
+  /* Opaque paper, not glass. The blur is switched off in effects.css. */
+  --glass-bg: #fdfaf3;
+  --glass-bg-subtle: #fdfaf3;
+  --glass-bg-strong: #fffdf8;
+  --glass-border-color: rgba(43, 32, 25, 0.12);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  /* A sheet on a desk, and under it a couple more. Each pair of shadows is one
+     leaf — its face, then the hairline beneath it — pulled in by a negative
+     spread so only the millimetre that would really stick out is drawn. The
+     last two are the cast shadow that lifts the whole stack off the desk. */
+  --glass-shadow:
+    0 2px 0 -1px #fdfaf3,
+    0 3px 0 -1px rgba(43, 32, 25, 0.13),
+    0 8px 0 -4px #fdfaf3,
+    0 9px 0 -4px rgba(43, 32, 25, 0.09),
+    0 16px 26px -16px rgba(43, 32, 25, 0.4),
+    0 44px 60px -44px rgba(43, 32, 25, 0.55);
+  --glass-fallback: #fdfaf3;
+  --glass-fallback-subtle: #fdfaf3;
+  --glass-fallback-strong: #fffdf8;
+
+  /* Paper has corners, not radii. Squaring these is what stops a sheet from
+     reading as a UI card, and it reaches the section cards, the link chips and
+     the gallery band alike because they all resolve the same tokens. */
+  --nq-radius-sm: 2px;
+  --nq-radius-md: 2px;
+  --nq-radius-lg: 3px;
+  --nq-radius-xl: 3px;
+
+  /* Paper craft (effects.css): the fold flap's lit and shaded faces, the
+     crease ridge and its highlight, the notebook rule, the pressed seal and
+     its inner ring, the letterpress relief, the printed chip. */
+  --paper-fold: #f3ecdd;
+  --paper-fold-deep: #d9cdb5;
+  --paper-grain-opacity: 0.07;
+  --paper-crease: rgba(43, 32, 25, 0.06);
+  --paper-crease-hi: rgba(255, 255, 255, 0.6);
+  --paper-rule: rgba(72, 104, 148, 0.13);
+  --paper-seal: #f4edde;
+  --paper-seal-ring: rgba(43, 32, 25, 0.3);
+  --paper-relief: rgba(255, 255, 255, 0.85);
+  --paper-chip: rgba(43, 32, 25, 0.04);
+  /* The footer sits straight on the desk, so this ceiling is set by the
+     worst case there: muted text over a solid plane, measured 4.70:1. */
+  --screen-art-opacity: 0.12;
+
+  --font-display: var(--font-naskh), Georgia, serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* Paper has no orbs. The gallery band and the thumbnail still render three,
+   so they are switched off here rather than special-cased in every caller. */
+[data-bg='paper'] .orb {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='waraqa'] {
+    --nq-background: #15120e; /* the desk, after dark */
+    --nq-foreground: #f6f1e6; /* 15.04:1 on the sheet */
+    --nq-muted-foreground: #c9bfae; /*  9.31:1 on the sheet */
+    --nq-accent: #f0a07a; /*  8.08:1 as text · sheet-dark on it 8.08:1 */
+    --nq-on-accent: #201c17;
+    --nq-highlight: #f6f1e6;
+    --nq-on-highlight: #201c17;
+    --nq-border: rgba(255, 255, 255, 0.14);
+    --nq-border-strong: rgba(255, 255, 255, 0.3);
+    --nq-ring: #f0a07a;
+    --glass-bg: #201c17;
+    --glass-bg-subtle: #201c17;
+    --glass-bg-strong: #262119;
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    --glass-shadow:
+      0 2px 0 -1px #201c17,
+      0 3px 0 -1px rgba(0, 0, 0, 0.6),
+      0 8px 0 -4px #201c17,
+      0 9px 0 -4px rgba(0, 0, 0, 0.45),
+      0 16px 26px -16px rgba(0, 0, 0, 0.7),
+      0 44px 60px -44px rgba(0, 0, 0, 0.9);
+    --glass-fallback: #201c17;
+    --glass-fallback-subtle: #201c17;
+    --glass-fallback-strong: #262119;
+    --nq-radius-sm: 2px;
+    --nq-radius-md: 2px;
+    --nq-radius-lg: 3px;
+    --nq-radius-xl: 3px;
+    --paper-fold: #2c2620;
+    --paper-fold-deep: #191512;
+    --paper-grain-opacity: 0.1;
+    --paper-crease: rgba(0, 0, 0, 0.5);
+    --paper-crease-hi: rgba(255, 255, 255, 0.045);
+    --paper-rule: rgba(150, 180, 220, 0.09);
+    --paper-seal: #262019;
+    --paper-seal-ring: rgba(255, 255, 255, 0.3);
+    --paper-relief: rgba(0, 0, 0, 0.55);
+    --paper-chip: rgba(255, 255, 255, 0.05);
+    --screen-art-opacity: 0.16;
+  }
+}
+:root[data-theme='dark'] [data-template='waraqa'] {
+  --nq-background: #15120e;
+  --nq-foreground: #f6f1e6;
+  --nq-muted-foreground: #c9bfae;
+  --nq-accent: #f0a07a;
+  --nq-on-accent: #201c17;
+  --nq-highlight: #f6f1e6;
+  --nq-on-highlight: #201c17;
+  --nq-border: rgba(255, 255, 255, 0.14);
+  --nq-border-strong: rgba(255, 255, 255, 0.3);
+  --nq-ring: #f0a07a;
+  --glass-bg: #201c17;
+  --glass-bg-subtle: #201c17;
+  --glass-bg-strong: #262119;
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  --glass-shadow:
+    0 2px 0 -1px #201c17,
+    0 3px 0 -1px rgba(0, 0, 0, 0.6),
+    0 8px 0 -4px #201c17,
+    0 9px 0 -4px rgba(0, 0, 0, 0.45),
+    0 16px 26px -16px rgba(0, 0, 0, 0.7),
+    0 44px 60px -44px rgba(0, 0, 0, 0.9);
+  --glass-fallback: #201c17;
+  --glass-fallback-subtle: #201c17;
+  --glass-fallback-strong: #262119;
+  --nq-radius-sm: 2px;
+  --nq-radius-md: 2px;
+  --nq-radius-lg: 3px;
+  --nq-radius-xl: 3px;
+  --paper-fold: #2c2620;
+  --paper-fold-deep: #191512;
+  --paper-grain-opacity: 0.1;
+  --paper-crease: rgba(0, 0, 0, 0.5);
+  --paper-crease-hi: rgba(255, 255, 255, 0.045);
+  --paper-rule: rgba(150, 180, 220, 0.09);
+  --paper-seal: #262019;
+  --paper-seal-ring: rgba(255, 255, 255, 0.3);
+  --paper-relief: rgba(0, 0, 0, 0.55);
+  --paper-chip: rgba(255, 255, 255, 0.05);
+  --screen-art-opacity: 0.16;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

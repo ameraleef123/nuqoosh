@@ -320,3 +320,411 @@
 :root[data-theme='dark'] .ink-paper {
   box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5);
 }
+
+/* ── ورقة: sheets of paper on a desk ───────────────────────────────────────
+   The page is a kraft desk and every card is a sheet laid on it, opaque and
+   shadowed. The one moving thing is paper itself: planes gliding behind the
+   sheets, and a sheet folding into a crane in the letterhead margin.
+
+   Everything else here is static CSS — grain, creases, notebook rules, the
+   folded corner, the seal, the ledger — so it costs nothing to run and
+   survives reduced motion and JS-off untouched.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* Paper is not glass. Opaque cards also mean the Lottie backdrop behind them
+   can never reach the contrast of anything written on them. */
+[data-template='waraqa'] .glass,
+[data-template='waraqa'] .glass-subtle,
+[data-template='waraqa'] .glass-strong {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+
+/* Grain: the same static noise texture as حبر, a touch denser and multiplied
+   so it reads as fibre in the paper rather than dust on the screen. */
+[data-bg='paper']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: var(--paper-grain-opacity, 0.07);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22180%22 height=%22180%22%3E%3Cfilter id=%22n%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%221.1%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23n)%22/%3E%3C/svg%3E");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-bg='paper']::after {
+    mix-blend-mode: screen;
+  }
+}
+:root[data-theme='dark'] [data-bg='paper']::after {
+  mix-blend-mode: screen;
+}
+
+/* Fold creases: the desk paper was folded in three to fit an envelope. Two
+   ridges, each a shadow with its highlight directly beneath — the way a crease
+   actually catches light. */
+[data-bg='paper']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(
+      to bottom,
+      transparent calc(33.33% - 2px),
+      var(--paper-crease) calc(33.33% - 1px),
+      var(--paper-crease-hi) calc(33.33% + 1px),
+      transparent calc(33.33% + 2px)
+    ),
+    linear-gradient(
+      to bottom,
+      transparent calc(66.66% - 2px),
+      var(--paper-crease) calc(66.66% - 1px),
+      var(--paper-crease-hi) calc(66.66% + 1px),
+      transparent calc(66.66% + 2px)
+    );
+}
+
+/* The paper planes gliding behind the sheets. Line art, so one static filter
+   tints them into the desk in light and inverts them to chalk on black paper
+   in dark. The cards above them are opaque, so the only text they sit behind
+   is the footer, measured at 5.31:1 light / 9.28:1 dark. */
+[data-template='waraqa'] .tpl-screen-art canvas {
+  filter: grayscale(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='waraqa'] .tpl-screen-art canvas {
+    filter: grayscale(1) invert(1);
+  }
+}
+:root[data-theme='dark'] [data-template='waraqa'] .tpl-screen-art canvas {
+  filter: grayscale(1) invert(1);
+}
+
+/* ── The sheet ─────────────────────────────────────────────────────────────
+   The letterhead is a page torn out of a notebook: faint blue rules across it
+   and a terracotta margin down the start edge. The rules are drawn on the
+   card's own background, under everything.
+
+   `isolation` matters: the card no longer has a backdrop-filter to create a
+   stacking context, and without one the folded corner's z-index would escape
+   and paint over the sections below it. */
+.paper-sheet {
+  position: relative;
+  isolation: isolate;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(2rem - 1px),
+    var(--paper-rule) calc(2rem - 1px) 2rem
+  );
+}
+
+/* The notebook margin: one terracotta rule down the start edge, full height. */
+.paper-margin {
+  position: absolute;
+  z-index: 0;
+  inset-block: 0;
+  inset-inline-start: 2.25rem;
+  inline-size: 1px;
+  background: var(--nq-accent);
+  opacity: 0.45;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .paper-margin {
+    inset-inline-start: 3.25rem;
+  }
+}
+
+/* The folded corner: two triangles in the top-end corner. The first paints the
+   desk colour over the corner (the cut), the second is the flap folded back
+   over it, lit along its outer edge and shading toward the crease. Gradients
+   take physical angles, so the RTL variant is spelled out rather than
+   mirrored. Both sit above everything: a fold covers what was printed under
+   it. */
+.paper-sheet::before,
+.paper-sheet::after {
+  content: '';
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  pointer-events: none;
+}
+/* LTR: the corner is top-right; 225deg runs toward the bottom-left, so the
+   first half of the gradient is the outer corner. */
+.paper-sheet::before {
+  background: linear-gradient(225deg, var(--nq-background) 50%, transparent 50%);
+}
+.paper-sheet::after {
+  background: linear-gradient(
+    225deg,
+    transparent 50%,
+    var(--paper-fold) 50%,
+    var(--paper-fold-deep) 100%
+  );
+  filter: drop-shadow(-1px 1px 1px rgba(43, 32, 25, 0.16));
+}
+/* RTL: the corner is top-left; 135deg runs toward the bottom-right. */
+[dir='rtl'] .paper-sheet::before {
+  background: linear-gradient(135deg, var(--nq-background) 50%, transparent 50%);
+}
+[dir='rtl'] .paper-sheet::after {
+  background: linear-gradient(
+    135deg,
+    transparent 50%,
+    var(--paper-fold) 50%,
+    var(--paper-fold-deep) 100%
+  );
+  filter: drop-shadow(1px 1px 1px rgba(43, 32, 25, 0.16));
+}
+@media (min-width: 768px) {
+  .paper-sheet::before,
+  .paper-sheet::after {
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
+  }
+}
+
+/* The crane, sketched in the far margin of the letterhead — the empty column a
+   centred page leaves on a wide screen. Only above 1280px: below that the
+   sheet is all text and the margin is gone. */
+.paper-crane {
+  display: none;
+}
+@media (min-width: 1280px) {
+  .paper-crane {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    inset-block-start: 50%;
+    inset-inline-end: 4rem;
+    transform: translateY(-50%);
+    inline-size: 12rem;
+    aspect-ratio: 1;
+    opacity: 0.6;
+  }
+}
+
+/* Where the letterhead ends and the letter begins: one hairline, edge to edge,
+   fading out before it reaches either margin. Symmetric, so it needs no RTL
+   variant. */
+.paper-divide {
+  display: block;
+  align-self: stretch;
+  block-size: 1px;
+  margin-block: 0.5rem;
+  background: var(--nq-border-strong);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 16%, #000 84%, transparent);
+}
+
+/* The rosette divider. Its hairlines stay 1px at any size
+   (vector-effect: non-scaling-stroke) and fade at their outer ends. */
+.paper-ornament {
+  inline-size: min(100%, 14rem);
+  block-size: auto;
+  color: var(--nq-accent);
+  opacity: 0.75;
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+  mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+}
+
+/* A letter is narrower than a web page. */
+.paper-lede {
+  margin-inline: auto;
+  max-inline-size: 58ch;
+}
+
+/* ── Paper detailing across the template ───────────────────────────────── */
+
+/* The avatar is recast as a seal pressed into the sheet: a disc a shade deeper
+   than the paper, ringed twice. The outer ring is the element border; the
+   inner one is an inset shadow drawn UNDER a wider one in the disc colour,
+   which is how a ring set in from the edge is expressed in CSS — the first
+   shadow paints on top and masks all but its last pixel. */
+[data-template='waraqa'] [data-avatar] {
+  background: var(--paper-seal);
+  border: 1px solid var(--nq-border-strong);
+  box-shadow:
+    0 0 0 5px var(--paper-seal) inset,
+    0 0 0 6px var(--paper-seal-ring) inset,
+    0 1px 0 var(--paper-relief) inset,
+    0 3px 8px -3px rgba(43, 32, 25, 0.35);
+}
+
+/* Letterpress: printed type is pressed INTO the sheet, so the light catches
+   the lower edge of every stroke. One text-shadow, no blur. */
+[data-template='waraqa'] h1,
+[data-template='waraqa'] h2 {
+  text-shadow: 0 1px 0 var(--paper-relief);
+}
+
+/* Naskh is a text face, not a poster face: at display size it wants a lighter
+   weight and much more leading than the shared heading rule gives it, or the
+   dots below the line collide with the line beneath. */
+[data-template='waraqa'] h1 {
+  font-weight: 500;
+  font-size: clamp(2.1rem, 6vw, 3.4rem);
+  line-height: 1.45;
+}
+
+/* Printed chips, not UI pills. */
+[data-template='waraqa'] [data-pill] {
+  border-radius: 2px;
+  border-color: var(--nq-border-strong);
+  background: var(--paper-chip);
+}
+/* The course-project badge stays an ink stamp: square, ink-filled, paper type. */
+[data-template='waraqa'] [data-badge] {
+  border-radius: 2px;
+}
+
+/* Section folios. The page is a document, so its sections are numbered, in the
+   same two-digit form as the ledger rows below them and in the reader's own
+   numerals. A CSS counter rather than a prop: the renderer is shared and no
+   other template wants this. */
+@counter-style folio-arabic {
+  system: numeric;
+  symbols: '٠' '١' '٢' '٣' '٤' '٥' '٦' '٧' '٨' '٩';
+  pad: 2 '٠';
+}
+[data-template='waraqa'] .tpl-content {
+  counter-reset: folio;
+}
+[data-template='waraqa'] h2.heading-rule::before {
+  counter-increment: folio;
+  content: counter(folio, decimal-leading-zero);
+  display: block;
+  margin-block-end: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.8125rem;
+  font-weight: 400;
+  /* Safe on digits, which have no joining forms; it would not be on a word. */
+  letter-spacing: 0.08em;
+  color: var(--nq-accent);
+  text-shadow: none;
+  font-variant-numeric: tabular-nums;
+}
+:root[lang='ar'] [data-template='waraqa'] h2.heading-rule::before {
+  content: counter(folio, folio-arabic);
+}
+
+/* Section headings on paper use the display face a size up: Naskh needs the
+   room to carry a heading, and its rule is a hairline rather than a bar. */
+[data-template='waraqa'] h2.heading-rule {
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+[data-template='waraqa'] .heading-rule::after {
+  block-size: 1px;
+  inline-size: 40px;
+  opacity: 0.7;
+}
+
+/* The sheet is wide, so the shared heading column — 16% of the content box —
+   left «Volunteering & Leadership» broken across three lines in English.
+   ورقة buys it more room; Arabic headings were always short enough not to
+   care. */
+@media (min-width: 1024px) {
+  [data-template='waraqa'] .section-grid {
+    grid-template-columns: minmax(11rem, 18%) 1fr;
+  }
+  [data-template='waraqa'] .section-grid[data-art-side='end'] {
+    grid-template-columns: minmax(11rem, 18%) 1fr auto;
+  }
+}
+
+/* Ledger rows: every project is a ruled entry, numbered in the margin, read
+   down rather than across — a ledger has one column by definition. The
+   description keeps its own measure, so a wide sheet gets white paper rather
+   than a 200-character line.
+
+   The number cell stretches to the row height (grid items do), so a single
+   border on its end edge draws the full-height margin rule for free. */
+.ledger {
+  display: flex;
+  flex-direction: column;
+}
+.ledger-row {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  column-gap: var(--space-md);
+  padding-block: var(--space-lg);
+  border-block-start: 1px solid var(--nq-border);
+}
+.ledger-row:first-child {
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+.ledger-row:last-child {
+  padding-block-end: 0;
+}
+.ledger-num {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1.3;
+  padding-block-start: 0.2rem;
+  padding-inline-end: var(--space-md);
+  border-inline-end: 1px solid var(--nq-border);
+  color: var(--nq-accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Section art in ink. The shared Lotties are coloured clip-art; on a warm
+   monochrome sheet they are toned down to a grey drawing. A static filter on a
+   canvas is cheap; in dark mode it is also inverted so dark line-work reads on
+   black paper. */
+[data-template='waraqa'] .tpl-content canvas {
+  filter: grayscale(1) contrast(1.05);
+  opacity: 0.8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='waraqa'] .tpl-content canvas {
+    filter: grayscale(1) invert(1) contrast(1.05);
+  }
+}
+:root[data-theme='dark'] [data-template='waraqa'] .tpl-content canvas {
+  filter: grayscale(1) invert(1) contrast(1.05);
+}
+
+/* Sheets laid out on a desk are not stacked edge to edge: the desk shows
+   between them, which is the only place the paper planes behind them can be
+   seen. This is also why ورقة never narrows its cards — the breathing room is
+   vertical, so a sheet keeps the full width of the page. */
+[data-template='waraqa'] .sections > * + * {
+  margin-block-start: 2.5rem;
+}
+@media (min-width: 768px) {
+  [data-template='waraqa'] .sections > * + * {
+    margin-block-start: 3.5rem;
+  }
+}
+
+/* The planes fly OVER the page, not behind it.
+
+   Every other template puts its backdrop under the cards, but ورقة's cards are
+   opaque sheets running the full width of the page, so anything behind them is
+   simply never seen. A paper plane passes above a desk anyway, which is the
+   honest reading — and it is measured: a solid plane crossing a sheet darkens
+   the type and the paper by the same amount, leaving ink at 12.18:1, muted at
+   6.88:1 and the accent at 4.74:1 (scripts/contrast.py). The layer is
+   pointer-events: none, so nothing under it becomes unclickable.
+
+   Three planes, not one drawn three times: the shared backdrop renders
+   identical tiles side by side, so each is flown at its own height, size and
+   angle. Transform only, so none of this costs a layout. */
+[data-template='waraqa'] .tpl-screen-art {
+  z-index: 2;
+}
+[data-template='waraqa'] .tpl-screen-tile:nth-child(1) {
+  transform: translateY(-30vh) scale(0.3) rotate(-8deg);
+}
+[data-template='waraqa'] .tpl-screen-tile:nth-child(2) {
+  transform: translateY(12vh) scale(0.46) rotate(4deg);
+}
+[data-template='waraqa'] .tpl-screen-tile:nth-child(3) {
+  transform: translateY(36vh) scale(0.24) rotate(-3deg);
+}

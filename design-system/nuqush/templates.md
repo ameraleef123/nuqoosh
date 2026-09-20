@@ -32,7 +32,7 @@ Section order variants (E = experience, only rendered when non-empty):
 | 2 | ballour | بلّور | لمعان متعدّد الألوان — Crystal | light | prismatic pastel mesh (lavender #C9B8FF, blush #F5A79E, honey #FFE7B8) | default | #4C3FD1 / #A99CFF | Almarai / IBM Plex Sans Arabic | drift | A | ✓ |
 | 3 | nada | ندى | نقاط صباح خضراء — Dew | light | mint mesh (#CFF3E6, #E8FBF4) + tiny droplet dots | subtle | #0F7A5F / #5EEAD4 | Tajawal / Noto Sans Arabic | soft | B | |
 | 4 | sarab | سراب | حرارة رمل بعيد — Mirage | light | warm sand → heat-shimmer horizontal gradient, 1 orb | subtle | #B8452F / #FF8A7A | Tajawal / Noto Sans Arabic | soft | A | |
-| 5 | waraqa | ورقة | ورق وحبر، بلا ضجيج — Paper | light | paper off-white (#FAF7F2) + faint grain, no orbs | matte (subtle, blur 10) | #1A1523 / #F4F1FA | Noto Naskh Arabic / IBM Plex Sans Arabic | editorial | B | ✓ |
+| 5 | waraqa | ورقة | ورق وحبر، بلا ضجيج — Paper | light | kraft desk (#E9DFCB) + warm ivory sheets (#FDFAF3), grain, fold creases, no orbs; Lottie paper planes glide OVER the page | opaque (no blur — paper is not glass) | #B8452F / #F0A07A | Noto Naskh Arabic / IBM Plex Sans Arabic | editorial | B | ✓ |
 | 6 | hams | همس | هادئ لدرجة الهمس — Whisper | light | very muted lilac-grey wash | subtle | #6B5FA8 / #B9AEE8 | Cairo (300/500) / Almarai | soft | C | |
 | 7 | fajr | فجر | أوّل ضوء — Dawn | dark→light | vertical indigo (#1E1838) → peach horizon (#FFB88C) | strong | #FFB88C / #FFB88C | Cairo / IBM Plex Sans Arabic | rise | A | ✓ |
 | 8 | shafaq | شفق | آخر ضوء بنفسجي — Twilight | dark | violet → magenta glow mesh (#3A2A6E, #7C3AED, #DB2777) | default | #E879F9 / #E879F9 | Cairo / Noto Sans Arabic | glow | A | |
@@ -60,6 +60,11 @@ Section order variants (E = experience, only rendered when non-empty):
 **Free tier (6):** صقيع، بلّور، ورقة، فجر، نسيم، حبر — 4 light-leaning, 2 dark-leaning; 2 calm, 2 vivid, 2 editorial. Chosen so a free page never looks like a demoted version of a paid one.
 
 **Phase 2 build order:** صقيع (1), بلّور (2), فجر (7), حبر (25).
+**Built since:** ورقة (5) — first of the Phase 5 batch, and the first template whose page colour is a *surface* rather than the paper: cards are opaque sheets laid on a kraft desk, each with a stack-of-leaves shadow. The hero is a page torn out of a notebook (blue rules, terracotta margin, pressed seal, carved rosette, folded corner, an origami crane sketched in the far margin); projects are numbered ledger rows with a margin rule; sections are numbered with a CSS counter in the reader's own numerals; study-first (order B) keeps education at the top instead of pairing it with contact.
+
+Two deviations from the row above, both deliberate:
+- **The accent is Petra rose, not ink.** The all-ink palette measured fine and looked dead; one warm accent on the margin rule, the folios, the seal and the links is what makes the sheet read as paper rather than as a grey UI card.
+- **Its backdrop flies over the page, not under it.** Every other template puts its background art behind the cards, but ورقة's sheets are opaque and full-width, so anything behind them is never seen. A paper plane passes above a desk anyway. Measured: a plane crossing a sheet darkens type and paper alike, leaving ink at 12.18:1 and the accent at 4.74:1.
 **Phase 5 batches (6 each):** [3,4,5,6,10,11] → [12,13,15,18,19,23] → [8,9,14,16,17,22] → [20,21,24,26,27,28].
 
 ## Accent contrast (measured with `scripts/contrast.py`)

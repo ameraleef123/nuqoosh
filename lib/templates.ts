@@ -13,7 +13,7 @@ import type { SectionOrderVariant } from './profile'
  * block in scripts/contrast.py.
  */
 
-export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink'
+export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper'
 export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial'
 export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover'
 export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger'
@@ -61,7 +61,7 @@ export type Template = {
   fonts: { display: string; body: string }
 }
 
-/* ── Built in Phase 2 ────────────────────────────────────────────────────── */
+/* ── Built in Phase 2 (+ ورقة, the first of Phase 5) ───────────────────── */
 
 export const TEMPLATES: Template[] = [
   {
@@ -155,9 +155,39 @@ export const TEMPLATES: Template[] = [
     },
     fonts: { display: 'naskh', body: 'plex-arabic' },
   },
+  {
+    id: 'waraqa',
+    name: 'ورقة',
+    mood: 'ورق وحبر، بلا ضجيج',
+    lean: 'light',
+    free: true,
+    built: true,
+    // Sheets of warm paper laid on a kraft desk. The signature is tactile
+    // rather than luminous: grain, fold creases, a notebook-ruled letterhead
+    // with a terracotta margin, ledger rows for the projects, and a real
+    // drop shadow under every sheet so it lifts off the desk.
+    background: 'paper',
+    glass: 'subtle',
+    motion: 'editorial',
+    hero: 'centered',
+    card: 'ledger',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // Paper planes gliding behind the sheets, tiled across the viewport the
+      // way صقيع tiles its snow. 2 KB of line art, so it tints to the page's
+      // own ink with one static filter and inverts cleanly on black paper.
+      background: '/lottie/paper-plane.lottie',
+      // The hero mark: a sheet folding itself into a crane. 2.6 KB, drawn in
+      // outline only — the one animation in the free catalogue that is made of
+      // paper rather than a picture of it.
+      hero: '/lottie/paper-crane.lottie',
+    },
+    fonts: { display: 'naskh', body: 'plex-arabic' },
+  },
 ]
 
-/* ── The remaining 24 identities (Phase 5) ───────────────────────────────────
+/* ── The remaining 23 identities (Phase 5) ───────────────────────────────────
    Listed so the gallery shows the full range of moods honestly, each marked as
    not yet built. Full identity sheets live in design-system/nuqush/templates.md.
    ────────────────────────────────────────────────────────────────────────── */
@@ -167,7 +197,6 @@ export type PlannedTemplate = { id: string; name: string; mood: string; lean: 'l
 export const PLANNED: PlannedTemplate[] = [
   { id: 'nada', name: 'ندى', mood: 'نقاط صباح خضراء', lean: 'light', free: false },
   { id: 'sarab', name: 'سراب', mood: 'حرارة رمل بعيد', lean: 'light', free: false },
-  { id: 'waraqa', name: 'ورقة', mood: 'ورق وحبر، بلا ضجيج', lean: 'light', free: true },
   { id: 'hams', name: 'همس', mood: 'هادئ لدرجة الهمس', lean: 'light', free: false },
   { id: 'shafaq', name: 'شفق', mood: 'آخر ضوء بنفسجي', lean: 'dark', free: false },
   { id: 'ghasaq', name: 'غسق', mood: 'جمر تحت رماد', lean: 'dark', free: false },

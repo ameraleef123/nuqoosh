@@ -125,31 +125,51 @@ export function TemplateThumb({
               'rounded-[var(--nq-radius-sm)] border border-[var(--nq-border)]',
               wide ? 'p-3' : 'p-2'
             ),
-          template.card === 'list' && cn('border-t border-[var(--nq-border)]', wide ? 'pt-3' : 'pt-2')
+          template.card === 'list' && cn('border-t border-[var(--nq-border)]', wide ? 'pt-3' : 'pt-2'),
+          // The ledger's numbered margin, at thumbnail scale.
+          template.card === 'ledger' &&
+            cn(
+              'grid grid-cols-[auto_1fr] border-t border-[var(--nq-border)]',
+              wide ? 'gap-3 pt-3' : 'gap-2 pt-2'
+            )
         )}
       >
-        <div className="flex flex-wrap items-center gap-1.5">
-          <span className={cn('font-bold', wide ? 'text-[0.9375rem]' : 'text-[0.6875rem]')}>
-            {resolveField(project.title, lang)?.text}
-          </span>
+        {template.card === 'ledger' ? (
           <span
+            aria-hidden="true"
             className={cn(
-              'rounded-full font-semibold',
-              wide ? 'px-2 py-0.5 text-[0.6875rem]' : 'px-1.5 py-px text-[0.5rem]'
+              'text-[var(--nq-muted-foreground)] tabular-nums',
+              wide ? 'text-[0.9375rem]' : 'text-[0.6875rem]'
             )}
-            style={{ background: 'var(--nq-highlight)', color: 'var(--nq-on-highlight)' }}
+            style={{ fontFamily: 'var(--font-display)' }}
           >
-            {t('courseProject', lang)}
+            {formatNumber(1, lang, { minimumIntegerDigits: 2 })}
           </span>
+        ) : null}
+        <div>
+          <div className="flex flex-wrap items-center gap-1.5">
+            <span className={cn('font-bold', wide ? 'text-[0.9375rem]' : 'text-[0.6875rem]')}>
+              {resolveField(project.title, lang)?.text}
+            </span>
+            <span
+              className={cn(
+                'rounded-full font-semibold',
+                wide ? 'px-2 py-0.5 text-[0.6875rem]' : 'px-1.5 py-px text-[0.5rem]'
+              )}
+              style={{ background: 'var(--nq-highlight)', color: 'var(--nq-on-highlight)' }}
+            >
+              {t('courseProject', lang)}
+            </span>
+          </div>
+          <p
+            className={cn(
+              'text-[var(--nq-muted-foreground)] mt-1 leading-snug',
+              wide ? 'text-[0.8125rem]' : 'line-clamp-2 text-[0.5625rem]'
+            )}
+          >
+            {resolveField(project.description, lang)?.text}
+          </p>
         </div>
-        <p
-          className={cn(
-            'text-[var(--nq-muted-foreground)] mt-1 leading-snug',
-            wide ? 'text-[0.8125rem]' : 'line-clamp-2 text-[0.5625rem]'
-          )}
-        >
-          {resolveField(project.description, lang)?.text}
-        </p>
       </div>
     </div>
   ) : null

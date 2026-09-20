@@ -10,7 +10,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { ArrowRight, Rocket } from 'lucide-react'
 import { TemplateRenderer } from '@/components/templates/renderer'
 import { LangToggle, ThemeToggle } from '@/components/toggles'
 import { useLang } from '@/components/providers'
@@ -31,7 +32,10 @@ const LABEL: Record<string, string> = {
 
 export default function ReviewPage() {
   const { lang } = useLang()
+  const router = useRouter()
   const [draft, setDraft] = useState<Draft | null | undefined>(undefined)
+  const [publishing, setPublishing] = useState(false)
+  const [hint, setHint] = useState<string | null>(null)
 
   useEffect(() => {
     setDraft(loadDraft())
@@ -56,6 +60,55 @@ export default function ReviewPage() {
     const next = { ...draft, profile: { ...draft.profile, templateId: id } }
     setDraft(next)
     saveDraft(next)
+  }
+
+  /**
+   * One press. A first publish claims the handles and returns the edit token;
+   * a later press on the same device updates the live page with that token.
+   */
+  const publish = async () => {
+    setPublishing(true)
+    setHint(null)
+    try {
+      const pub = draft.published
+      const res = pub
+        ? await fetch(`/api/profiles/${pub.id}`, {
+            method: 'PUT',
+            headers: { 'content-type': 'application/json', 'x-edit-token': pub.editToken },
+            body: JSON.stringify({ profile: draft.profile }),
+          })
+        : await fetch('/api/publish', {
+            method: 'POST',
+            headers: { 'content-type': 'application/json' },
+            body: JSON.stringify({ profile: draft.profile }),
+          })
+      const json = await res.json()
+      if (!res.ok) {
+        setHint(json.error ?? 'ما زبطت. جرّب مرّة ثانية.')
+        return
+      }
+      const published = pub
+        ? { ...pub, publishedAt: new Date().toISOString() }
+        : {
+            id: json.id as string,
+            handle: json.handle as string,
+            latinHandle: json.latinHandle as string,
+            editToken: json.editToken as string,
+            publishedAt: new Date().toISOString(),
+          }
+      const next: Draft = {
+        ...draft,
+        profile: { ...draft.profile, handle: published.handle, latinHandle: published.latinHandle },
+        published,
+      }
+      saveDraft(next)
+      setDraft(next)
+      router.push('/new/done')
+    } catch {
+      setHint('انقطع الاتصال. جرّب مرّة ثانية.')
+    } finally {
+      setPublishing(false)
+    }
   }
 
   return (
@@ -88,6 +141,16 @@ export default function ReviewPage() {
           <div className="flex items-center gap-2">
             <LangToggle />
             <ThemeToggle />
+            <button
+              type="button"
+              onClick={() => void publish()}
+              disabled={publishing}
+              className="inline-flex min-h-11 items-center gap-2 rounded-[var(--nq-radius-md)] px-5 font-semibold transition-opacity duration-200 disabled:opacity-60"
+              style={{ background: 'var(--nq-accent)', color: 'var(--nq-on-accent)' }}
+            >
+              <Rocket size={17} aria-hidden="true" />
+              {publishing ? 'عم ننشر…' : draft.published ? 'حدّث الصفحة' : 'انشر'}
+            </button>
           </div>
         </div>
 
@@ -97,6 +160,11 @@ export default function ReviewPage() {
             قرينا: {draft.found.filter((k) => LABEL[k]).map((k) => LABEL[k]).join('، ') || 'الاسم بس'}.
           </span>
           {missing.length ? <span>باقي بتعبّيه بالخطوات: {missing.map((k) => LABEL[k]).join('، ')}.</span> : null}
+          {hint ? (
+            <span role="status" className="basis-full">
+              {hint}
+            </span>
+          ) : null}
         </div>
       </div>
 

@@ -31,7 +31,7 @@ if (!executablePath) {
 }
 
 const WIDTHS = [375, 768, 1024, 1440]
-const TEMPLATES = ['saqee', 'ballour', 'fajr', 'hibr']
+const TEMPLATES = ['saqee', 'ballour', 'fajr', 'hibr', 'waraqa']
 
 /** The matrix the definition of done asks for, plus the two fixtures. */
 function plan() {

@@ -13,7 +13,7 @@ import {
   Twitter,
 } from 'lucide-react'
 import type { Profile, LinkKind } from '@/lib/schema'
-import { visibleSections, type SectionKey } from '@/lib/profile'
+import { SECTION_ORDERS, visibleSections, type SectionKey } from '@/lib/profile'
 import { formatGpa, formatNumber, formatRange, resolveField, t, type Lang } from '@/lib/i18n'
 import type { Template } from '@/lib/templates'
 import { cn } from '@/lib/cn'
@@ -21,6 +21,7 @@ import { LottieMark } from '@/components/lottie-mark'
 import { RetroGrid } from './retro-grid'
 import { DawnSun } from './dawn-sun'
 import { InkBlot } from './ink-blot'
+import { PaperOrnament } from './paper-ornament'
 
 /* ═══════════════════════════════════════════════════════════════════════════
    ONE renderer for every template. Templates are data plus component variants,
@@ -179,6 +180,11 @@ function Background({ template }: { template: Template }) {
       </div>
     )
   }
+  // Paper has no orbs at all: the ground colour plus a static grain, drawn by
+  // CSS on this layer. Nothing here ever animates — paper does not move.
+  if (template.background === 'paper') {
+    return <div className="tpl-bg" data-bg="paper" aria-hidden="true" />
+  }
   return (
     <div className="tpl-bg" data-bg={template.background} aria-hidden="true">
       {template.background === 'dawn' ? <span className="tpl-sky" /> : null}
@@ -279,8 +285,14 @@ function SkillGroups({ skills, lang }: { skills: Profile['sections']['skills']; 
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
+  // `data-pill` is the hook a template uses to restyle these without the
+  // renderer knowing which template is asking — ورقة squares them off into
+  // printed chips, for instance.
   return (
-    <span className="inline-flex items-center rounded-full border border-[var(--nq-border)] px-2.5 py-0.5 text-sm">
+    <span
+      data-pill
+      className="inline-flex items-center rounded-full border border-[var(--nq-border)] px-2.5 py-0.5 text-sm"
+    >
       {children}
     </span>
   )
@@ -289,6 +301,7 @@ function Pill({ children }: { children: React.ReactNode }) {
 function Badge({ children, tone = 'highlight' }: { children: React.ReactNode; tone?: 'highlight' | 'quiet' }) {
   return (
     <span
+      data-badge
       className="inline-flex shrink-0 items-center rounded-full px-2.5 py-0.5 text-xs font-semibold"
       style={
         tone === 'highlight'
@@ -331,11 +344,14 @@ function SectionShell({
             reads as a label/value pair, which is what these sections are. */}
         <div
           className={cn(
-            'grid gap-5 lg:gap-10',
+            'section-grid grid gap-5 lg:gap-10',
             artSide === 'end' && art
               ? 'lg:grid-cols-[minmax(8rem,14%)_1fr_auto] lg:items-center'
               : 'lg:grid-cols-[minmax(9rem,16%)_1fr]'
           )}
+          // A stable hook so a template can retune the heading column without
+          // the renderer knowing which one is asking.
+          data-art-side={art ? artSide : undefined}
         >
           <div>
             <h2 className="heading-rule text-2xl">{title}</h2>
@@ -360,9 +376,7 @@ const CONTACT_ART = '/lottie/contact.lottie'
    renders an empty circle or a placeholder silhouette.
    ────────────────────────────────────────────────────────────────────────── */
 
-function Avatar({ profile, lang }: { profile: Profile; lang: Lang }) {
-  const name = resolveField(profile.fields.fullName, lang)?.text ?? ''
-
+function initialsOf(name: string): string {
   // Two things Arabic needs that a naive first-letter-of-each-word does not do.
   //
   // Strip the definite article: the first letter of «الشوابكة» is the alif of
@@ -372,19 +386,27 @@ function Avatar({ profile, lang }: { profile: Profile; lang: Lang }) {
   // Then join with a zero-width non-joiner: Arabic letters connect, so «ل» and
   // «ش» set next to each other fuse into a shape that reads as a different
   // word. U+200C keeps them as two separate initials.
-  const initials = name
+  return name
     .split(/\s+/)
     .filter(Boolean)
     .slice(0, 2)
     .map((w) => Array.from(w.replace(/^ال(?=.)/, ''))[0])
     .filter(Boolean)
     .join('‌')
+}
+
+function Avatar({ profile, lang }: { profile: Profile; lang: Lang }) {
+  const name = resolveField(profile.fields.fullName, lang)?.text ?? ''
+  const initials = initialsOf(name)
 
   return (
     <div
       data-hero-item
+      data-avatar
       // glass-strong, not subtle: on the فجر cover the circle overlaps a peach
       // band and the accent initials measured 4.31:1 on subtle glass — a fail.
+      // `data-avatar` lets a template recast the circle entirely — ورقة turns
+      // it into an embossed seal.
       className="glass-strong flex size-28 shrink-0 items-center justify-center overflow-hidden rounded-full md:size-32"
     >
       {profile.avatar ? (
@@ -449,8 +471,10 @@ function Hero({ profile, template, lang }: RenderProps) {
   // joining forms and the word stops being readable.
   const words = (name?.text ?? '').split(/\s+/).filter(Boolean)
 
+  const centered = template.hero === 'centered'
+
   const pills = (
-    <div className="flex flex-wrap gap-2" data-hero-item>
+    <div className={cn('flex flex-wrap gap-2', centered && 'justify-center')} data-hero-item>
       {edu?.university ? <Pill>{resolveField(edu.university, lang)?.text}</Pill> : null}
       {edu?.major ? <Pill>{resolveField(edu.major, lang)?.text}</Pill> : null}
       {edu?.year ? (
@@ -494,7 +518,10 @@ function Hero({ profile, template, lang }: RenderProps) {
       />
       {location ? (
         <p
-          className="text-[var(--nq-muted-foreground)] mt-1 flex items-center gap-1.5 text-sm"
+          className={cn(
+            'text-[var(--nq-muted-foreground)] mt-1 flex items-center gap-1.5 text-sm',
+            centered && 'justify-center'
+          )}
           lang={location.lang}
           dir={location.lang === 'ar' ? 'rtl' : 'ltr'}
         >
@@ -505,7 +532,9 @@ function Hero({ profile, template, lang }: RenderProps) {
     </>
   )
 
-  const about = <Txt value={profile.fields.about} lang={lang} as="p" className="measure" />
+  const about = (
+    <Txt value={profile.fields.about} lang={lang} as="p" className={cn('measure', centered && 'mx-auto')} />
+  )
 
   if (template.hero === 'feature') {
     const art = template.media?.hero
@@ -565,13 +594,42 @@ function Hero({ profile, template, lang }: RenderProps) {
   }
 
   if (template.hero === 'centered') {
+    // A page torn out of a notebook. Every element is a real thing such a page
+    // has, and together they are the template's identity — ورقة spends its
+    // budget on paper craft rather than on colour:
+    //
+    //   · faint blue rules across the sheet, and a terracotta margin down the
+    //     start edge, exactly where a school notebook prints one
+    //   · the avatar recast as a seal pressed into the sheet (effects.css)
+    //   · a carved rosette between two fading hairlines. Arabic letters join,
+    //     so a drop cap is impossible; the ornament carries that weight
+    //   · one full-bleed hairline where the letterhead ends and the letter
+    //     begins, so the paragraph below reads as the body of a letter
+    //   · a sheet of paper folding itself into a crane, sketched in the far
+    //     margin — the hero mark, and the only moving thing on the sheet
+    //   · the corner folded over all of it, and a real shadow under the whole
+    //     page so it lifts off the desk
+    const art = template.media?.hero
     return (
-      <header className={cn(glass, 'tilt p-7 text-center md:p-12')} data-tilt>
-        <div className="mx-auto flex max-w-4xl flex-col items-center gap-4">
+      <header
+        className={cn(glass, 'tilt paper-sheet relative overflow-hidden px-6 py-10 text-center md:px-14 md:py-16')}
+        data-tilt
+      >
+        <span className="paper-margin" aria-hidden="true" />
+        {/* display:none below xl, and a display:none LottieMark is never
+            fetched or started — a phone renders the page, not the scenery. */}
+        {art ? <LottieMark src={art} className="paper-crane" /> : null}
+
+        <div className="relative z-[1] flex flex-col items-center gap-4">
+          <Avatar profile={profile} lang={lang} />
           <div data-hero-item>{headline}</div>
-          <div data-hero-item>{tagline}</div>
+          <PaperOrnament />
+          <div data-hero-item className="paper-lede">{tagline}</div>
           {pills}
-          <div data-hero-item>{about}</div>
+          <span className="paper-divide -mx-6 md:-mx-14" aria-hidden="true" />
+          <div data-hero-item className="paper-lede">
+            {about}
+          </div>
         </div>
       </header>
     )
@@ -669,10 +727,13 @@ function ProjectItem({
   project,
   lang,
   shape,
+  index,
 }: {
   project: Profile['sections']['projects'][number]
   lang: Lang
   shape: Template['card']
+  /** Position in the list, for the numbered ledger margin. */
+  index: number
 }) {
   const kindLabel =
     project.kind === 'course'
@@ -723,6 +784,19 @@ function ProjectItem({
   if (shape === 'list') {
     return (
       <li>{body}</li>
+    )
+  }
+  if (shape === 'ledger') {
+    // A ruled ledger: each project is a row under a hairline, numbered in the
+    // margin the way an index is. The number is rendered, not a CSS counter,
+    // so it follows the page's numerals (٠١ in Arabic, 01 in English).
+    return (
+      <li className="ledger-row">
+        <span className="ledger-num" aria-hidden="true">
+          {formatNumber(index + 1, lang, { useGrouping: false, minimumIntegerDigits: 2 })}
+        </span>
+        <div className="min-w-0">{body}</div>
+      </li>
     )
   }
   if (shape === 'tile') {
@@ -781,9 +855,13 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
             />
           }
         >
-          <ul className={template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'}>
-            {s.projects.map((p) => (
-              <ProjectItem key={p.id} project={p} lang={lang} shape={template.card} />
+          <ul
+            className={
+              template.card === 'ledger' ? 'ledger' : template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'
+            }
+          >
+            {s.projects.map((p, i) => (
+              <ProjectItem key={p.id} project={p} lang={lang} shape={template.card} index={i} />
             ))}
           </ul>
         </SectionShell>
@@ -960,7 +1038,13 @@ export function TemplateRenderer({
   // The single gate: only sections that actually have content, in template
   // order. Nothing downstream can render an empty section.
   const sections = visibleSections(profile, template.order)
-  const pairable = sections.includes('education') && sections.includes('links')
+  // Education and contact share a row at the foot of the page — unless the
+  // template is study-first (order B), where education is the point and stays
+  // at the top at full width. Pairing would have dragged it down to contact.
+  const pairable =
+    SECTION_ORDERS[template.order][0] !== 'education' &&
+    sections.includes('education') &&
+    sections.includes('links')
 
   return (
     <div
@@ -1021,7 +1105,9 @@ export function TemplateRenderer({
             closes the gap they would otherwise leave. */}
         <div
           className={cn(
-            'mt-6 md:mt-8',
+            // `sections` is a stable hook: ورقة opens the gaps up so the desk
+            // shows between its sheets.
+            'sections mt-6 md:mt-8',
             template.layout === 'bento' ? 'bento' : 'space-y-6 md:space-y-8'
           )}
         >

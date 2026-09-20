@@ -71,12 +71,16 @@ BANDS = {
  'fajr   dark ': ('#1e1838', 0.55, ['#ff9e6b','#6d4aa8','#3a2a6e'], '#f6f1ff', '#c9bfe4'),
  'hibr   light': ('#f7f5fb', 0.6,  ['#ede9f5','#e4dff0','#f0edf8'], '#14121c', '#4a4458'),
  'hibr   dark ': ('#0f0d17', 0.75, ['#2a2440','#3a3159','#1e1a2e'], '#f4f1fa', '#c4bdd6'),
+ # ورقة has no orbs: the only ground is the paper itself.
+ 'waraqa light': ('#faf7f2', 0.0,  ['#faf7f2'], '#1a1523', '#4a4458'),
+ 'waraqa dark ': ('#161413', 0.0,  ['#161413'], '#f4f1fa', '#cdc7c0'),
 }
 # The meta column sits on .glass, whose alpha is per-template (app/templates.css).
 GLASS_TINT = {'saqee  light':((255,255,255),0.50),'saqee  dark ':((20,28,48),0.60),
  'ballour light':((255,255,255),0.30),'ballour dark ':((30,24,48),0.60),
  'fajr   light':((255,255,255),0.50),'fajr   dark ':((30,24,48),0.62),
- 'hibr   light':((255,255,255),0.42),'hibr   dark ':((30,24,48),0.60)}
+ 'hibr   light':((255,255,255),0.42),'hibr   dark ':((30,24,48),0.60),
+ 'waraqa light':((255,255,255),0.55),'waraqa dark ':((255,255,255),0.06)}
 for name,(base,alpha,orbs,fg,muted) in BANDS.items():
     lo_fg = lo_mu = 99
     bare_fg = bare_mu = 99
@@ -91,3 +95,38 @@ for name,(base,alpha,orbs,fg,muted) in BANDS.items():
     f1 = 'PASS' if lo_fg>=4.5 else '*** FAIL ***'
     f2 = 'PASS' if lo_mu>=4.5 else '*** FAIL ***'
     print(f"  {name}  name {lo_fg:5.2f}:1 {f1:<7} (bare {bare_fg:5.2f})   mood {lo_mu:5.2f}:1 {f2:<7} (bare {bare_mu:5.2f})")
+
+# -- Phase 5 . waraqa: sheets on a desk --------------------------------------
+# The cards are OPAQUE here, so the Lottie backdrop can never reach text on a
+# sheet. What it can reach is the footer, which sits straight on the desk. Each
+# added surface is measured as a surface.
+print()
+print("== waraqa: text over every surface (sheet, desk, seal, chip, backdrop) ==")
+PAPER = {
+  'light': dict(sheet='#fdfaf3', desk='#e9dfcb', fg='#2b2019', muted='#5c4d3e',
+                accent='#b8452f', seal='#f4edde', chip=((43,32,25),0.04),
+                crease=((43,32,25),0.06), plane=((0,0,0),0.12)),
+  'dark ': dict(sheet='#201c17', desk='#15120e', fg='#f6f1e6', muted='#c9bfae',
+                accent='#f0a07a', seal='#262019', chip=((255,255,255),0.05),
+                crease=((0,0,0),0.50), plane=((255,255,255),0.16)),
+}
+for theme, v in PAPER.items():
+    rows = [
+      ('sheet',            hex2rgb(v['sheet'])),
+      ('sheet + chip',     composite(v['chip'][0], v['chip'][1], hex2rgb(v['sheet']))),
+      ('seal',             hex2rgb(v['seal'])),
+      ('desk',             hex2rgb(v['desk'])),
+      ('desk + crease',    composite(v['crease'][0], v['crease'][1], hex2rgb(v['desk']))),
+      ('desk + paper plane', composite(v['plane'][0], v['plane'][1], hex2rgb(v['desk']))),
+    ]
+    for label, surf in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        # Accent type only ever appears on a sheet (links, folios, rules);
+        # the desk carries nothing but the footer's muted text.
+        on_sheet = label.startswith(('sheet', 'seal'))
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_sheet else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_sheet else 'accent    - '
+        print(f"  {theme} {label:<20} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")

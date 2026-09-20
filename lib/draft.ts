@@ -12,11 +12,22 @@ import type { Profile } from '@/lib/schema'
 
 const KEY = 'nuqush-draft'
 
+export type Published = {
+  id: string
+  handle: string
+  latinHandle: string
+  /** Kept on this device only, so «حدّث» works without pasting the link back. */
+  editToken: string
+  publishedAt: string
+}
+
 export type Draft = {
   profile: Profile
   found: string[]
   unrecognised: string[]
   importedAt: string
+  /** Set once the page is live; the review's button becomes «حدّث». */
+  published?: Published
 }
 
 export function saveDraft(d: Draft): void {
@@ -42,4 +53,20 @@ export function clearDraft(): void {
   } catch {
     /* ignore */
   }
+}
+
+/** What a profile already holds, in the review's "قرينا" vocabulary. */
+export function foundFromProfile(p: Profile): string[] {
+  const s = p.sections
+  const has = (v?: { ar?: string; en?: string }) => Boolean(v?.ar?.trim() || v?.en?.trim())
+  const out: string[] = []
+  if (has(p.fields.about)) out.push('about')
+  if (s.education && (has(s.education.university) || has(s.education.major))) out.push('education')
+  if (s.projects.length) out.push('projects')
+  if (s.volunteering.length) out.push('volunteering')
+  if (s.activities.length) out.push('activities')
+  if (s.experience.length) out.push('experience')
+  if (s.skills.length) out.push('skills')
+  if (s.links.length) out.push('links')
+  return out
 }
