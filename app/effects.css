@@ -728,3 +728,201 @@
 [data-template='waraqa'] .tpl-screen-tile:nth-child(3) {
   transform: translateY(36vh) scale(0.24) rotate(-3deg);
 }
+
+/* ── بادِرة: a stem with buds on it ────────────────────────────────────────
+   Projects are not cards here. Each one is a bud on a stem that runs down the
+   section, because the argument of this template is that the student is
+   growing rather than finished. Both the stem and the bud are pseudo-elements,
+   so the markup stays a plain list and a screen reader hears no decoration.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.branch {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+.branch-node {
+  position: relative;
+  padding-inline-start: 1.9rem;
+}
+/* The stem segment: from just under this bud to just under the next one, so
+   the line runs continuously through the gaps. The last node has no segment —
+   a stem ends at its newest growth. */
+.branch-node::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0.34rem;
+  inset-block-start: 1.15rem;
+  inset-block-end: calc(var(--space-xl) * -1);
+  inline-size: 2px;
+  background: var(--nq-accent);
+  opacity: 0.28;
+}
+.branch-node:last-child::before {
+  display: none;
+}
+.branch-node::after {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0;
+  inset-block-start: 0.34rem;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+  border-radius: 50%;
+  background: var(--nq-accent);
+}
+
+/* The wheat keeps its own gold and teal — a wheat field beside green leaves is
+   a real pairing, and tinting it would have made it a smudge. What is tuned
+   instead is opacity, and it is measured rather than chosen: see the badira
+   block in scripts/contrast.py. */
+
+/* ── ثُرَيّا: the chart and the cluster ─────────────────────────────────────
+   The student sits at the centre of their own orbit diagram, and everything
+   on the page is lit from above rather than lifted off a surface. The one
+   looping animation in the template is the halo behind the portrait, which is
+   what the glow motion signature means here.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.orbit-frame {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: clamp(13rem, 32vw, 19rem);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+.orbit-rings {
+  position: absolute;
+  inset: 0;
+}
+/* The halo: a soft accent glow under the portrait, sized to the avatar rather
+   than to the rings so it reads as the star itself and not as a fog. */
+.orbit-frame::before {
+  content: '';
+  position: absolute;
+  inline-size: 60%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--halo), transparent 70%);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion-sig='glow'] .orbit-frame::before {
+    animation: halo-breathe 9s ease-in-out infinite alternate;
+  }
+}
+:root[data-motion='paused'] .orbit-frame::before {
+  animation-play-state: paused;
+}
+@keyframes halo-breathe {
+  from {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+/* Lume cards: a tile lit along its top edge, the way a surface catches light
+   from a star above it. The line is a gradient so it fades at both ends, which
+   is symmetric and needs no RTL variant. */
+.lume-card {
+  position: relative;
+  overflow: hidden;
+}
+.lume-card::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 1px;
+  background: linear-gradient(to right, transparent, var(--lume), transparent);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .lume-card {
+    transition: box-shadow var(--dur-hover) ease;
+  }
+  .lume-card:hover {
+    box-shadow: 0 0 0 1px var(--halo), 0 12px 30px -14px var(--halo);
+  }
+}
+
+/* The star field is white dots on transparent, which is right on the night and
+   invisible on the parchment. In light mode it is inverted, so the same sky
+   reads as a chart printed in ink. */
+[data-template='thurayya'] .tpl-screen-art canvas {
+  filter: invert(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='thurayya'] .tpl-screen-art canvas {
+    filter: none;
+  }
+}
+:root[data-theme='dark'] [data-template='thurayya'] .tpl-screen-art canvas {
+  filter: none;
+}
+
+/* The rings are white line art. On the night they are already right; on the
+   parchment they invert with the stars, so the whole chart is drawn in one
+   ink. */
+[data-template='thurayya'] .orbit-rings canvas {
+  filter: invert(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='thurayya'] .orbit-rings canvas {
+    filter: none;
+  }
+}
+:root[data-theme='dark'] [data-template='thurayya'] .orbit-rings canvas {
+  filter: none;
+}
+
+/* Two things protect the one piece of text that sits on the sky rather than on
+   a card — the footer.
+   1. The sky thins out toward the bottom of the viewport, the way a real one
+      does at the horizon. A mask, so it costs nothing.
+   2. The footer is given the template's own glass. A solid star behind bare
+      footer type measures 2.34:1 in dark and 4.11:1 in light — both failures —
+      while the same star seen through this glass measures 4.59:1.
+   Text on every other surface was never at risk: the cards already sit over
+   the sky. */
+[data-template='thurayya'] .tpl-screen-art {
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 55%, transparent 88%);
+  mask-image: linear-gradient(to bottom, #000 0 55%, transparent 88%);
+}
+[data-template='thurayya'] .tpl-content > footer {
+  margin-block-start: 2.5rem;
+  border: 1px solid var(--glass-border-color);
+  border-radius: var(--nq-radius-lg);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 0.9rem 1.25rem;
+}
+
+/* The shared section illustrations are six-colour cartoons. On a page whose
+   whole palette is gold and night they are the loudest thing on the screen and
+   they read as someone else's artwork, so they are desaturated until they sit
+   inside the template rather than on top of it. Not removed: they still do
+   their job of making an empty-looking section feel finished. */
+[data-template='thurayya'] .tpl-content canvas {
+  filter: saturate(0.4);
+}
+[data-template='thurayya'] .orbit-rings canvas,
+[data-template='thurayya'] .tpl-screen-art canvas {
+  filter: invert(1);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='thurayya'] .orbit-rings canvas,
+  :root:not([data-theme='light']) [data-template='thurayya'] .tpl-screen-art canvas {
+    filter: none;
+  }
+}
+:root[data-theme='dark'] [data-template='thurayya'] .orbit-rings canvas,
+:root[data-theme='dark'] [data-template='thurayya'] .tpl-screen-art canvas {
+  filter: none;
+}

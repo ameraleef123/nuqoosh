@@ -321,6 +321,7 @@ function SectionShell({
   span = 1,
   art,
   artSide = 'start',
+  stacked = false,
 }: {
   title: string
   glass: string
@@ -331,7 +332,27 @@ function SectionShell({
   art?: React.ReactNode
   /** 'start' = under the heading; 'end' = its own column on the far side. */
   artSide?: 'start' | 'end'
+  /** Heading above the content instead of beside it. */
+  stacked?: boolean
 }) {
+  // A bento tile is roughly a third of the page, and giving a heading its own
+  // column inside one leaves the content about 250px wide: «الجامعة الأردنية»
+  // broke over two lines and the skill pills stacked one per row. In a tile
+  // the heading goes on top, with the art tucked into the space beside it.
+  if (stacked) {
+    return (
+      <section data-reveal className={span > 1 ? `span-${span}` : undefined}>
+        <div className={cn(GLASS[glass as Template['glass']], 'tilt h-full p-6 md:p-8')} data-tilt>
+          <div className="mb-5 flex items-start justify-between gap-4">
+            <h2 className="heading-rule text-2xl">{title}</h2>
+            {art ? <div className="w-16 shrink-0 md:w-20">{art}</div> : null}
+          </div>
+          {children}
+        </div>
+      </section>
+    )
+  }
+
   // The reveal animates the outer element and the tilt animates the inner one.
   // Sharing a node would mean two rules writing `transform`, and the reveal's
   // `transform: none` end state would cancel the tilt.
@@ -668,16 +689,56 @@ function Hero({ profile, template, lang }: RenderProps) {
     )
   }
 
-  if (template.hero === 'stacked') {
+  if (template.hero === 'orbit') {
+    // The rings turn around the avatar rather than beside it: the student is
+    // the star at the centre of their own chart, and the bright points on the
+    // orbits are everything else on the page. Nothing else in the set puts the
+    // portrait inside the art.
+    const art = template.media?.hero
     return (
-      <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
-        <div className="grid gap-6 xl:grid-cols-2 xl:items-end">
+      <header className={cn(glass, 'tilt relative overflow-hidden p-7 md:p-10 lg:p-12')} data-tilt>
+        <div className="grid items-center gap-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
           <div className="flex flex-col gap-4">
-            {pills}
             <div data-hero-item>{headline}</div>
             <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
           </div>
-          <div data-hero-item>{about}</div>
+          <div className="orbit-frame">
+            {art ? <LottieMark src={art} className="orbit-rings" /> : null}
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'stacked') {
+    // Two columns that read as one sentence: who they are on the start side,
+    // what they are about on the end side, with the hero mark between them so
+    // the art sits inside the thought rather than beside it.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt p-7 md:p-10')} data-tilt>
+        <div className="grid gap-7 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)] xl:items-center xl:gap-12">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-5">
+              <Avatar profile={profile} lang={lang} />
+              <div data-hero-item className="min-w-0 flex-1">
+                {headline}
+              </div>
+            </div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+          </div>
+          <div className="flex items-center gap-6">
+            {/* Hidden below lg rather than stacked: on a phone the card is the
+                student's name, and a display:none LottieMark is never fetched. */}
+            {art ? <LottieMark src={art} className="hidden size-36 shrink-0 lg:block xl:size-44" /> : null}
+            <div data-hero-item className="min-w-0">
+              {about}
+            </div>
+          </div>
         </div>
       </header>
     )
@@ -786,6 +847,17 @@ function ProjectItem({
       <li>{body}</li>
     )
   }
+  if (shape === 'lume') {
+    // A tile lit along its top edge, the way a card catches light from a star
+    // above it. The glow itself is a pseudo-element (effects.css).
+    return <li className="lume-card glass-subtle rounded-[var(--nq-radius-md)] p-5">{body}</li>
+  }
+  if (shape === 'branch') {
+    // Each project is a bud on a stem that runs down the section. The stem and
+    // the bud are both pseudo-elements (effects.css), so the markup stays a
+    // plain list item and the screen reader hears nothing decorative.
+    return <li className="branch-node">{body}</li>
+  }
   if (shape === 'ledger') {
     // A ruled ledger: each project is a row under a hairline, numbered in the
     // margin the way an index is. The number is rendered, not a CSS counter,
@@ -836,7 +908,8 @@ type RenderProps = { profile: Profile; template: Template; lang: Lang }
 function Section({ which, profile, template, lang }: RenderProps & { which: SectionKey }) {
   const s = profile.sections
   const glass = template.glass
-  const span = template.layout === 'bento' ? sectionSpan(which, profile) : 1
+  const bento = template.layout === 'bento'
+  const span = bento ? sectionSpan(which, profile) : 1
 
   switch (which) {
     case 'projects':
@@ -845,6 +918,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
           title={t('projects', lang)}
           glass={glass}
           span={span}
+          stacked={bento}
           art={
             // The same team illustration in every template — it lives in the
             // heading column, which sits empty beside the grid at full width.
@@ -857,7 +931,13 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
         >
           <ul
             className={
-              template.card === 'ledger' ? 'ledger' : template.card === 'list' ? 'auto-cols-lg' : 'auto-cols'
+              template.card === 'ledger'
+                ? 'ledger'
+                : template.card === 'branch'
+                  ? 'branch'
+                  : template.card === 'list'
+                    ? 'auto-cols-lg'
+                    : 'auto-cols'
             }
           >
             {s.projects.map((p, i) => (
@@ -870,7 +950,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
     case 'volunteering':
       // Leadership and teaching, not a footnote.
       return (
-        <SectionShell title={t('volunteering', lang)} glass={glass} span={span}>
+        <SectionShell title={t('volunteering', lang)} glass={glass} span={span} stacked={bento}>
           <ul className="auto-cols-lg">
             {s.volunteering.map((v) => (
               <li key={v.id}>
@@ -889,7 +969,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'activities':
       return (
-        <SectionShell title={t('activities', lang)} glass={glass} span={span}>
+        <SectionShell title={t('activities', lang)} glass={glass} span={span} stacked={bento}>
           <ul className="auto-cols">
             {s.activities.map((a) => (
               <li key={a.id}>
@@ -908,7 +988,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
 
     case 'experience':
       return (
-        <SectionShell title={t('experience', lang)} glass={glass} span={span}>
+        <SectionShell title={t('experience', lang)} glass={glass} span={span} stacked={bento}>
           <ul className="auto-cols-lg">
             {s.experience.map((e) => (
               <li key={e.id}>
@@ -932,6 +1012,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
           title={t('education', lang)}
           glass={glass}
           span={span}
+          stacked={bento}
           artSide="end"
           art={
             // A single object rather than a scene, so it is sized smaller than
@@ -973,6 +1054,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
           title={t('skills', lang)}
           glass={glass}
           span={span}
+          stacked={bento}
           artSide="end"
           art={
             <LottieMark
@@ -991,6 +1073,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
           title={t('links', lang)}
           glass={glass}
           span={span}
+          stacked={bento}
           artSide="end"
           art={
             <LottieMark
@@ -1083,6 +1166,10 @@ export function TemplateRenderer({
             // One wide scene covering the viewport — a landscape, not a loop
             // to repeat. Cropped by `cover`, never stretched.
             <LottieMark src={template.media.background} className="tpl-screen-cover" fit="cover" />
+          ) : template.media.backgroundFit === 'band' ? (
+            // One wide strip along the foot of the viewport: the page grows
+            // out of it. Sized by its own aspect ratio in CSS, never stretched.
+            <LottieMark src={template.media.background} className="tpl-screen-band" />
           ) : (
             [0, 1, 2].map((i) => (
               <LottieMark
@@ -1133,19 +1220,18 @@ export function TemplateRenderer({
           })}
         </div>
 
-        <footer className="text-[var(--nq-muted-foreground)] mt-10 flex flex-wrap items-center justify-between gap-3 border-t border-[var(--nq-border)] pt-6 text-sm">
-          <a
-            href={`/report?handle=${encodeURIComponent(profile.handle)}`}
-            className="min-h-11 underline underline-offset-4"
-          >
-            {t('report', lang)}
-          </a>
-          {profile.plan === 'free' ? (
+        {/* The footer carries the free-plan credit and nothing else. There was
+            a «report this page» link here; it pointed at a /report route that
+            was never built, and the owner asked for it gone. Reporting still
+            exists server-side (POST /api/report) for whatever moderation
+            surface replaces it. */}
+        {profile.plan === 'free' ? (
+          <footer className="text-[var(--nq-muted-foreground)] mt-10 flex flex-wrap items-center justify-end gap-3 border-t border-[var(--nq-border)] pt-6 text-sm">
             <a href="/" className="min-h-11 underline underline-offset-4">
               {t('builtWith', lang)}
             </a>
-          ) : null}
-        </footer>
+          </footer>
+        ) : null}
       </div>
     </div>
   )

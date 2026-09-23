@@ -40,7 +40,8 @@ step('content rules on built HTML', () => {
     ['no-experience: phone absent from the DOM', !a.includes('tel:')],
     ['no-experience: course-project badge shown', a.includes('مشروع مساق')],
     ['no-experience: volunteering framed as leadership', a.includes('تطوّع وقيادة')],
-    ['no-experience: report link present', a.includes('الإبلاغ عن هذه الصفحة')],
+    // The owner removed the report link from the public page; it must stay gone.
+    ['no-experience: report link absent', !a.includes('الإبلاغ عن هذه الصفحة')],
     ['free tier shows the badge', a.includes('مبني بنُقوش')],
     ['full: experience section present', b.includes('خبرة عملية')],
     ['full: phone present', b.includes('tel:')],

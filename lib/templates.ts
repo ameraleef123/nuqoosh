@@ -13,10 +13,10 @@ import type { SectionOrderVariant } from './profile'
  * block in scripts/contrast.py.
  */
 
-export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper'
-export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial'
-export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover'
-export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger'
+export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper' | 'sprout' | 'night'
+export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial' | 'glow'
+export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit'
+export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger' | 'branch' | 'lume'
 export type GlassIntensity = 'subtle' | 'default' | 'strong'
 
 /** How the sections below the hero are arranged. */
@@ -30,8 +30,9 @@ export type TemplateMedia = {
   /** Fixed backdrop behind the whole screen, under every card. */
   background?: string
   /** 'tile' repeats a small loop across the width (snow); 'cover' fills the
-   *  viewport with one wide scene. Defaults to tile. */
-  backgroundFit?: 'tile' | 'cover' 
+   *  viewport with one wide scene; 'band' anchors one wide strip to the foot
+   *  of the viewport, so the page grows out of it. Defaults to tile. */
+  backgroundFit?: 'tile' | 'cover' | 'band' 
   /** Art inside the hero card itself. */
   hero?: string
   /** A quiet mark in the page corner. */
@@ -184,6 +185,71 @@ export const TEMPLATES: Template[] = [
       hero: '/lottie/paper-crane.lottie',
     },
     fonts: { display: 'naskh', body: 'plex-arabic' },
+  },
+  {
+    id: 'badira',
+    name: 'بادِرة',
+    mood: 'أوّل خضرة تطلع، وأنت لسّا بالبداية',
+    lean: 'light',
+    free: true,
+    built: true,
+    // The name carries the whole argument of this product: بادِرة is both the
+    // seedling that first breaks the soil AND the first sign a person shows of
+    // what they will become. A student with no job has exactly that to show.
+    //
+    // It is also the first template that is green, the first laid out as a
+    // bento rather than a stack, the first to lead with skills (order C), and
+    // the first whose backdrop is anchored to the foot of the screen instead
+    // of tiled or covering — so it shares no silhouette with the other five.
+    background: 'sprout',
+    glass: 'default',
+    motion: 'rise',
+    hero: 'stacked',
+    card: 'branch',
+    order: 'C',
+    layout: 'bento',
+    media: {
+      // A field growing along the bottom edge of the viewport, under every
+      // card: the page rises out of it. 7 KB.
+      background: '/lottie/wheat-field.lottie',
+      backgroundFit: 'band',
+      // The hero mark: a hand, open, with a seedling breaking out of it. Line
+      // art, 3 KB, so it takes the page's own ink in either theme.
+      hero: '/lottie/sprout-hand.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'thurayya',
+    name: 'ثُرَيّا',
+    mood: 'نجوم صغيرة كثيرة، ومع بعضها بتضوّي',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // الثريّا is the Pleiades: a cluster of small stars that are faint alone
+    // and unmistakable together. It is also the word for a chandelier. For a
+    // student whose CV is a dozen small things and no single big one, that is
+    // the argument, and it is the second half of what بادِرة says.
+    //
+    // It is the first template of the seven that is dark AND vivid — فجر is
+    // dark and warm, حبر is dark and silent — and the first to use the glow
+    // motion signature, an orbit hero and lume cards.
+    background: 'night',
+    glass: 'default',
+    motion: 'glow',
+    hero: 'orbit',
+    card: 'lume',
+    order: 'A',
+    layout: 'stack',
+    media: {
+      // A sky of small stars with one crescent, transparent, so it takes the
+      // page's own night rather than bringing its own black. 5 KB.
+      background: '/lottie/star-field.lottie',
+      // The hero: concentric orbits with a bright point on each. The avatar
+      // sits at the centre of them — the student's own chart. 1.2 KB.
+      hero: '/lottie/orbit-rings.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
   },
 ]
 

@@ -1,4 +1,4 @@
-# Nuqush — Template Identity Matrix (28)
+# Nuqush — Template Identity Matrix (30)
 
 > Every template is a real identity: background system + glass intensity + palette + type pair + motion signature + section order.
 > Every template is designed and QA'd **first** with `fixtures/no-experience.json`, then with `fixtures/full.json`.
@@ -56,13 +56,37 @@ Section order variants (E = experience, only rendered when non-empty):
 | 26 | raml | رمل | كثبان دافئة — Sand | light | dune gradient (#F1E4C8 → #E7CFA3), grain | subtle | #92400E / #FCD34D | Tajawal / Almarai | soft | A | |
 | 27 | sahab | سحاب | غيم أبيض على أزرق — Clouds | light | blue-white cloud blobs (blur 20) | strong | #1D4ED8 / #93C5FD | Almarai / Noto Sans Arabic | drift | B | |
 | 28 | thalj | ثلج | أبيض ناصع بظلّ أزرق — Snow | light | pure white + crisp cool shadows, no orbs | strong (blur 12) | #1E40AF / #93C5FD | Cairo / IBM Plex Sans Arabic | crisp | A | |
+| 29 | badira | بادِرة | أوّل خضرة تطلع — Sprout | light | leaf mesh (#CFE8D2, #E4F0D6) + a Lottie wheat field anchored to the foot of the viewport | default | #2F6B45 / #8FD0A0 | Cairo / IBM Plex Sans Arabic | rise | C | ✓ |
+| 30 | thurayya | ثُرَيّا | نجوم صغيرة كثيرة — Pleiades | dark | night (#080A17) + a Lottie star field, tiled and masked out at the horizon | default | #7D5F10 / #F5B942 | Cairo / IBM Plex Sans Arabic | glow | A | ✓ |
 
-**Free tier (6):** صقيع، بلّور، ورقة، فجر، نسيم، حبر — 4 light-leaning, 2 dark-leaning; 2 calm, 2 vivid, 2 editorial. Chosen so a free page never looks like a demoted version of a paid one.
+**Free tier (8):** صقيع، بلّور، ورقة، فجر، نسيم، حبر، بادِرة، ثُرَيّا — 4 light-leaning, 2 dark-leaning; 2 calm, 2 vivid, 2 editorial. Chosen so a free page never looks like a demoted version of a paid one.
 
 **Phase 2 build order:** صقيع (1), بلّور (2), فجر (7), حبر (25).
 **Built since:** ورقة (5) — first of the Phase 5 batch, and the first template whose page colour is a *surface* rather than the paper: cards are opaque sheets laid on a kraft desk, each with a stack-of-leaves shadow. The hero is a page torn out of a notebook (blue rules, terracotta margin, pressed seal, carved rosette, folded corner, an origami crane sketched in the far margin); projects are numbered ledger rows with a margin rule; sections are numbered with a CSS counter in the reader's own numerals; study-first (order B) keeps education at the top instead of pairing it with contact.
 
-Two deviations from the row above, both deliberate:
+**Built since ورقة:** بادِرة (29) — a new identity, not one of the 28 planned. The name means both the seedling that first breaks the soil and the first sign a person shows of what they will become, which is the argument of this whole product stated in one word.
+
+It was built to share no silhouette with the five before it, and it is the first of each of these:
+- **green**, where the others are ice, prism, dawn, ink and kraft
+- **bento** rather than a stack, so section tiles are sized by how much the student actually wrote
+- **skills-first** (order C), the last unused section order
+- **`card: 'branch'`** — projects are buds on a stem that runs down the section, because the claim is that the student is growing rather than finished
+- **`backgroundFit: 'band'`** — the backdrop is anchored to the foot of the viewport rather than tiled or covering, so the page grows out of a wheat field
+
+A bento tile is about a third of the page, and the shared heading column left roughly 250px for content: «الجامعة الأردنية» broke over two lines and the skill pills stacked one per row. `SectionShell` now takes `stacked`, set whenever the layout is bento, and puts the heading above the content with the art beside it.
+
+**Built since بادِرة:** ثُرَيّا (30) — the Pleiades, a cluster of small stars that are faint alone and unmistakable together, and also the ordinary word for a chandelier. It is the second half of what بادِرة argues: a CV of a dozen small things is not an empty CV.
+
+It is the first template that is dark AND vivid — فجر is dark and warm, حبر is dark and silent — and it introduces three things the codebase did not have:
+- **`motion: 'glow'`**, the fifth signature and the only one whose character is a loop rather than an entrance: the halo behind the portrait breathes, everything else enters normally
+- **`hero: 'orbit'`**, the seventh hero layout — the avatar sits at the CENTRE of the Lottie's concentric orbits, so the student is the star of their own chart. Nothing else in the set puts the portrait inside the art
+- **`card: 'lume'`** — a tile lit along its top edge by a fading accent gradient, and glowing at its border on hover
+
+Light mode is not a washed-out night. It is the same sky printed as a star chart on parchment: the star field and the orbit rings are inverted to ink, and the gold darkens to #7D5F10 so it can carry text.
+
+The binding measurement is a solid star behind text. Bare on the page it is 1.06:1 in dark and 4.44:1 in light — both failures — so two things were done: the sky is masked out over the bottom of the viewport, the way a real one thins at the horizon, and the footer (the only text that ever sits on the page rather than on a card) was given the template's own glass. The star opacity itself is set by the gold: at 0.35 the accent measured 4.30:1 where a card crosses a star, so light runs at 0.22.
+
+Two deviations from the ورقة row above, both deliberate:
 - **The accent is Petra rose, not ink.** The all-ink palette measured fine and looked dead; one warm accent on the margin rule, the folios, the seal and the links is what makes the sheet read as paper rather than as a grey UI card.
 - **Its backdrop flies over the page, not under it.** Every other template puts its background art behind the cards, but ورقة's sheets are opaque and full-width, so anything behind them is never seen. A paper plane passes above a desk anyway. Measured: a plane crossing a sheet darkens type and paper alike, leaving ink at 12.18:1 and the accent at 4.74:1.
 **Phase 5 batches (6 each):** [3,4,5,6,10,11] → [12,13,15,18,19,23] → [8,9,14,16,17,22] → [20,21,24,26,27,28].

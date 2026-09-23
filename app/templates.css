@@ -65,6 +65,18 @@
   position: absolute;
   inset: 0;
 }
+/* A band anchored to the foot of the viewport: the page grows out of it. Sized
+   by the art's own 1920x600 ratio so it is never stretched, and capped so it
+   cannot eat a short screen. */
+.tpl-screen-band {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  /* Exactly the art's own 1920x600 ratio, so `contain` fills the box with no
+     letterbox and no crop — a cap here would shrink the art to the middle of
+     the screen, which is the one place the cards already cover. */
+  block-size: calc(100vw / 3.2);
+}
 /* One tile on a phone. These are display:none, and a display:none element has
    no intersection, so its observer never fires and it is never fetched or
    started — a phone renders one animation, not three. */
@@ -712,6 +724,252 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   بادِرة — Sprout. The first green, and the first sign of what someone will
+   become. The only green in the set, and the only page that grows out of its
+   own bottom edge: a field of wheat is anchored there, under every card.
+
+   The accent is a deep leaf green that carries text as well as fill, and the
+   course-project badge is wheat gold — the one warm note, taken straight out
+   of the backdrop so the page reads as one field.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='badira'] {
+  --nq-background: #f1f5ec;
+  --nq-foreground: #16251b; /* 15.38:1 on leaf glass */
+  --nq-muted-foreground: #3f5245; /*  8.07:1 on leaf glass · 7.59:1 on the page
+                                    ·  5.28:1 over the wheat, the binding case */
+  --nq-accent: #2f6b45; /*  6.11:1 as text · white on it 6.34:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #f5b942; /* wheat · ink on it 9.60:1 */
+  --nq-on-highlight: #16251b;
+  --nq-border: rgba(22, 37, 27, 0.12);
+  --nq-border-strong: rgba(22, 37, 27, 0.24);
+  --nq-ring: #2f6b45;
+
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.44);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border-color: rgba(255, 255, 255, 0.72);
+  --glass-edge: 0 0 0 1px rgba(22, 37, 27, 0.05);
+  --glass-shadow: 0 10px 34px rgba(22, 50, 30, 0.12);
+  --glass-fallback: #fafbf8;
+  --glass-fallback-subtle: #f7faf4;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 14px;
+  --orb-opacity: 0.8;
+
+  /* The wheat band. The ceiling is set by the footer, the only text that sits
+     on the page rather than on a card: muted type over the teal leaf of a
+     stalk measures 5.28:1 here, and fails by 0.35 at half opacity. */
+  --screen-art-opacity: 0.3;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='sprout'] .orb[data-orb='1'] {
+  background: #cfe8d2;
+}
+[data-bg='sprout'] .orb[data-orb='2'] {
+  background: #e4f0d6;
+}
+[data-bg='sprout'] .orb[data-orb='3'] {
+  background: #d8ecdf;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='badira'] {
+    --nq-background: #0d1310;
+    --nq-foreground: #e9f2e9; /* 14.90:1 on leaf glass */
+    --nq-muted-foreground: #b5c7b8; /*  9.61:1 */
+    --nq-accent: #8fd0a0; /*  9.50:1 as text · ink on it 10.47:1 */
+    --nq-on-accent: #0d1310;
+    --nq-highlight: #f5b942;
+    --nq-on-highlight: #16251b;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.22);
+    --nq-ring: #8fd0a0;
+    --glass-bg: rgba(24, 34, 27, 0.72);
+    --glass-bg-subtle: rgba(24, 34, 27, 0.55);
+    --glass-bg-strong: rgba(24, 34, 27, 0.84);
+    --glass-border-color: rgba(255, 255, 255, 0.12);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 10px 34px rgba(0, 0, 0, 0.45);
+    --glass-fallback: #151e18;
+    --glass-fallback-subtle: #121a14;
+    --glass-fallback-strong: #18241b;
+    --orb-opacity: 0.45;
+    --screen-art-opacity: 0.3;
+  }
+  :root:not([data-theme='light']) [data-bg='sprout'] .orb[data-orb='1'] {
+    background: #1d3a27;
+  }
+  :root:not([data-theme='light']) [data-bg='sprout'] .orb[data-orb='2'] {
+    background: #24402a;
+  }
+  :root:not([data-theme='light']) [data-bg='sprout'] .orb[data-orb='3'] {
+    background: #17301f;
+  }
+}
+:root[data-theme='dark'] [data-template='badira'] {
+  --nq-background: #0d1310;
+  --nq-foreground: #e9f2e9;
+  --nq-muted-foreground: #b5c7b8;
+  --nq-accent: #8fd0a0;
+  --nq-on-accent: #0d1310;
+  --nq-highlight: #f5b942;
+  --nq-on-highlight: #16251b;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.22);
+  --nq-ring: #8fd0a0;
+  --glass-bg: rgba(24, 34, 27, 0.72);
+  --glass-bg-subtle: rgba(24, 34, 27, 0.55);
+  --glass-bg-strong: rgba(24, 34, 27, 0.84);
+  --glass-border-color: rgba(255, 255, 255, 0.12);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 10px 34px rgba(0, 0, 0, 0.45);
+  --glass-fallback: #151e18;
+  --glass-fallback-subtle: #121a14;
+  --glass-fallback-strong: #18241b;
+  --orb-opacity: 0.45;
+  --screen-art-opacity: 0.3;
+}
+:root[data-theme='dark'] [data-bg='sprout'] .orb[data-orb='1'] {
+  background: #1d3a27;
+}
+:root[data-theme='dark'] [data-bg='sprout'] .orb[data-orb='2'] {
+  background: #24402a;
+}
+:root[data-theme='dark'] [data-bg='sprout'] .orb[data-orb='3'] {
+  background: #17301f;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   ثُرَيّا — Pleiades. A cluster of small stars, and the word for a chandelier.
+   The first template that is dark AND vivid: فجر is dark and warm, حبر is
+   dark and silent. Gold on deep night, with a sky of real stars behind it.
+
+   Light mode is not a washed-out night. It is the same sky printed as a star
+   chart on parchment: the stars invert to ink, and the gold darkens until it
+   can carry text (effects.css does the inversion).
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='thurayya'] {
+  --nq-background: #f7f4ec;
+  --nq-foreground: #1c1b33; /* 16.18:1 on chart glass */
+  --nq-muted-foreground: #4e4c66; /*  7.96:1 */
+  --nq-accent: #7d5f10; /*  5.77:1 as text · white on it 5.97:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #1c1b33;
+  --nq-on-highlight: #f7f4ec;
+  --nq-border: rgba(28, 27, 51, 0.12);
+  --nq-border-strong: rgba(28, 27, 51, 0.24);
+  --nq-ring: #7d5f10;
+
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.44);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border-color: rgba(255, 255, 255, 0.7);
+  --glass-edge: 0 0 0 1px rgba(28, 27, 51, 0.05);
+  --glass-shadow: 0 10px 34px rgba(28, 27, 51, 0.1);
+  --glass-fallback: #fcfbf8;
+  --glass-fallback-subtle: #faf8f3;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 14px;
+  --orb-opacity: 0.75;
+
+  /* Ink stars on parchment, and this is the binding number of the template:
+     the gold has to stay legible where a card crosses a solid star. At 0.35
+     it measured 4.30:1 and failed; at 0.22 it is 4.79:1. */
+  --screen-art-opacity: 0.22;
+  /* The halo behind the avatar, and the lit edge of a lume card. */
+  --lume: rgba(125, 95, 16, 0.5);
+  --halo: rgba(125, 95, 16, 0.18);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='night'] .orb[data-orb='1'] {
+  background: #e4dfd0;
+}
+[data-bg='night'] .orb[data-orb='2'] {
+  background: #efe7cf;
+}
+[data-bg='night'] .orb[data-orb='3'] {
+  background: #e0dee8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='thurayya'] {
+    --nq-background: #080a17;
+    --nq-foreground: #f2eee0; /* 15.70:1 on night glass */
+    --nq-muted-foreground: #c3bda9; /*  9.70:1 */
+    --nq-accent: #f5b942; /* 10.34:1 as text · night on it 11.16:1 */
+    --nq-on-accent: #080a17;
+    --nq-highlight: #f5b942;
+    --nq-on-highlight: #080a17;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #f5b942;
+    --glass-bg: rgba(20, 24, 46, 0.7);
+    --glass-bg-subtle: rgba(20, 24, 46, 0.52);
+    --glass-bg-strong: rgba(20, 24, 46, 0.84);
+    --glass-border-color: rgba(255, 255, 255, 0.12);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+    --glass-fallback: #101427;
+    --glass-fallback-subtle: #0d1020;
+    --glass-fallback-strong: #141830;
+    --orb-opacity: 0.4;
+    --screen-art-opacity: 0.75;
+    --lume: rgba(245, 185, 66, 0.55);
+    --halo: rgba(245, 185, 66, 0.16);
+  }
+  :root:not([data-theme='light']) [data-bg='night'] .orb[data-orb='1'] {
+    background: #1b2150;
+  }
+  :root:not([data-theme='light']) [data-bg='night'] .orb[data-orb='2'] {
+    background: #2a2352;
+  }
+  :root:not([data-theme='light']) [data-bg='night'] .orb[data-orb='3'] {
+    background: #14183a;
+  }
+}
+:root[data-theme='dark'] [data-template='thurayya'] {
+  --nq-background: #080a17;
+  --nq-foreground: #f2eee0;
+  --nq-muted-foreground: #c3bda9;
+  --nq-accent: #f5b942;
+  --nq-on-accent: #080a17;
+  --nq-highlight: #f5b942;
+  --nq-on-highlight: #080a17;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #f5b942;
+  --glass-bg: rgba(20, 24, 46, 0.7);
+  --glass-bg-subtle: rgba(20, 24, 46, 0.52);
+  --glass-bg-strong: rgba(20, 24, 46, 0.84);
+  --glass-border-color: rgba(255, 255, 255, 0.12);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
+  --glass-fallback: #101427;
+  --glass-fallback-subtle: #0d1020;
+  --glass-fallback-strong: #141830;
+  --orb-opacity: 0.4;
+  --screen-art-opacity: 0.75;
+  --lume: rgba(245, 185, 66, 0.55);
+  --halo: rgba(245, 185, 66, 0.16);
+}
+:root[data-theme='dark'] [data-bg='night'] .orb[data-orb='1'] {
+  background: #1b2150;
+}
+:root[data-theme='dark'] [data-bg='night'] .orb[data-orb='2'] {
+  background: #2a2352;
+}
+:root[data-theme='dark'] [data-bg='night'] .orb[data-orb='3'] {
+  background: #14183a;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
    Motion signatures. Public-route motion is CSS only — the measured
    framework floor leaves no room for GSAP here (pages/public.md).
    All of it is transform/opacity, and all of it is inside a
@@ -802,6 +1060,12 @@
 [data-motion-sig='editorial'] {
   --reveal-rx: 0deg;
   --tilt-max: 1.5;
+}
+/* ثُرَيّا barely pitches either, but for the opposite reason: the depth is
+   carried by light rather than by angle. */
+[data-motion-sig='glow'] {
+  --reveal-rx: 4deg;
+  --tilt-max: 5;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -911,6 +1175,12 @@ html.motion-failsafe .tpl .word {
 [data-motion-sig='editorial'] {
   --dur-reveal: 400ms;
   --dur-hero: 500ms;
+}
+/* Glow: the only signature whose character is a loop rather than an entrance —
+   the accent halos breathe (effects.css). Entrances stay ordinary. */
+[data-motion-sig='glow'] {
+  --dur-reveal: 340ms;
+  --dur-hero: 550ms;
 }
 @media (prefers-reduced-motion: no-preference) {
   html.js [data-motion-sig='editorial'] [data-reveal] {

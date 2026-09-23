@@ -130,3 +130,62 @@ for theme, v in PAPER.items():
         f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
         acc = f"accent {c:5.2f}" if on_sheet else 'accent    - '
         print(f"  {theme} {label:<20} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# -- Phase 5 . badira: leaf palette under a wheat band ------------------------
+# The cards are glass here, so the band reaches BOTH the footer (bare on the
+# page) and every card (through the glass). The binding case is the teal leaf
+# of a stalk under the footer's muted type.
+print()
+print("== badira: text over the leaf palette and the wheat band ==")
+STALKS = ['#F5B942', '#F9A825', '#0E8F6E', '#F7C948']
+BADIRA = {
+  'light': dict(page='#f1f5ec', glass=((255,255,255),0.62), fg='#16251b',
+                muted='#3f5245', accent='#2f6b45', band=0.30),
+  'dark ': dict(page='#0d1310', glass=((24,34,27),0.72), fg='#e9f2e9',
+                muted='#b5c7b8', accent='#8fd0a0', band=0.30),
+}
+for theme, v in BADIRA.items():
+    tint, ga = v['glass']
+    card = composite(tint, ga, hex2rgb(v['page']))
+    plain = [('card', card), ('page', hex2rgb(v['page']))]
+    for label, surf in plain:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        f = 'PASS' if min(a, b, c) >= 4.5 else '*** FAIL ***'
+        print(f"  {theme} {label:<22} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  accent {c:5.2f}  {f}")
+    # Worst stalk colour, on the bare page and again seen through a card.
+    worst_page = min(contrast(hex2rgb(v['muted']), composite(hex2rgb(st), v['band'], hex2rgb(v['page']))) for st in STALKS)
+    worst_card = min(contrast(hex2rgb(v['muted']), composite(tint, ga, composite(hex2rgb(st), v['band'], hex2rgb(v['page'])))) for st in STALKS)
+    f1 = 'PASS' if worst_page >= 4.5 else '*** FAIL ***'
+    f2 = 'PASS' if worst_card >= 4.5 else '*** FAIL ***'
+    print(f"  {theme} footer over wheat                  muted {worst_page:5.2f}  {f1}")
+    print(f"  {theme} card text over wheat               muted {worst_card:5.2f}  {f2}")
+
+# -- Phase 5 . thurayya: a star field under everything ------------------------
+# The binding case is a SOLID star sitting behind text. Bare on the page it
+# fails in both themes, which is why the footer is given the template's glass
+# and the sky is masked out toward the bottom of the viewport (effects.css).
+print()
+print("== thurayya: text over the night, the chart, and a solid star ==")
+THUR = {
+  'light': dict(page='#f7f4ec', glass=((255,255,255),0.62), fg='#1c1b33',
+                muted='#4e4c66', accent='#7d5f10', star=((0,0,0),0.22)),
+  'dark ': dict(page='#080a17', glass=((20,24,46),0.70), fg='#f2eee0',
+                muted='#c3bda9', accent='#f5b942', star=((255,255,255),0.75)),
+}
+for theme, v in THUR.items():
+    tint, ga = v['glass']
+    card = composite(tint, ga, hex2rgb(v['page']))
+    star_page = composite(v['star'][0], v['star'][1], hex2rgb(v['page']))
+    star_card = composite(tint, ga, star_page)
+    rows = [('card', card), ('page', hex2rgb(v['page'])),
+            ('card over a star', star_card), ('footer glass over a star', star_card)]
+    for label, surf in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        f = 'PASS' if min(a, b, c) >= 4.5 else '*** FAIL ***'
+        print(f"  {theme} {label:<26} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  accent {c:5.2f}  {f}")
+    bare = contrast(hex2rgb(v['muted']), star_page)
+    print(f"  {theme} {'BARE text over a star':<26} {rgb2hex(star_page)}  muted {bare:5.2f}  <- why the footer is on glass")
