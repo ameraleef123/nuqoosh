@@ -45,6 +45,9 @@ export function LottieMark({
   className,
   style,
   loop = true,
+  /** Playback rate. Below 1 for art whose own loop is faster than the page
+   *  wants — a 0.9s cycle reads as busy on a template built to feel calm. */
+  speed = 1,
   /** Rendered until the animation loads, and forever under reduced motion. */
   poster,
   label,
@@ -54,6 +57,7 @@ export function LottieMark({
   className?: string
   style?: React.CSSProperties
   loop?: boolean
+  speed?: number
   /** 'cover' for a backdrop that must fill its band; 'contain' for a mark. */
   fit?: 'contain' | 'cover'
   poster?: React.ReactNode
@@ -108,6 +112,7 @@ export function LottieMark({
         <DotLottieReact
           src={src}
           loop={loop}
+          speed={speed}
           autoplay
           dotLottieRefCallback={setPlayer}
           layout={{ fit, align: [0.5, 0.5] }}

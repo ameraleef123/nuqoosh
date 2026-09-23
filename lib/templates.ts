@@ -13,10 +13,10 @@ import type { SectionOrderVariant } from './profile'
  * block in scripts/contrast.py.
  */
 
-export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper' | 'sprout' | 'night'
-export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial' | 'glow'
-export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit'
-export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger' | 'branch' | 'lume'
+export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper' | 'sprout' | 'night' | 'air' | 'stone' | 'grid' | 'deep' | 'shade' | 'spark'
+export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial' | 'glow' | 'soft'
+export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit' | 'ribbon' | 'gate' | 'blocks' | 'porthole' | 'sunlit' | 'breakout'
+export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger' | 'branch' | 'lume' | 'float' | 'carved' | 'block' | 'pebble' | 'cast' | 'ember'
 export type GlassIntensity = 'subtle' | 'default' | 'strong'
 
 /** How the sections below the hero are arranged. */
@@ -248,6 +248,201 @@ export const TEMPLATES: Template[] = [
       // The hero: concentric orbits with a bright point on each. The avatar
       // sits at the centre of them — the student's own chart. 1.2 KB.
       hero: '/lottie/orbit-rings.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'rafif',
+    name: 'رَفيف',
+    mood: 'رفّة هوا خفيفة، وكل شي فيه مساحة',
+    lean: 'light',
+    free: true,
+    built: true,
+    // رَفيف is the word for the faint quiver of something light in moving air:
+    // a leaf, a wing, the surface of water. It is the quietest template in the
+    // set and the one with the most empty space — the argument being that a
+    // page with four things on it should look deliberate, not unfinished.
+    //
+    // It completes the motion signatures: soft is the sixth and last, and the
+    // only one that changes the easing rather than the duration. Nothing here
+    // snaps.
+    background: 'air',
+    glass: 'subtle',
+    motion: 'soft',
+    hero: 'ribbon',
+    card: 'float',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // Bundles of fine lines drifting across the viewport at three different
+      // heights — moving air, drawn. 8 KB.
+      background: '/lottie/air-lines.lottie',
+      // A band of contour lines crossing the whole hero, edge to edge: the
+      // only thing on the page that moves near the text. Pure strokes, no
+      // fills, so it tints and inverts cleanly.
+      hero: '/lottie/air-current.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'siq',
+    name: 'سِيق',
+    mood: 'ممرّ محفور بالصخر، وآخره ضوء',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // السِّيق is the narrow canyon you walk before the Treasury appears: rose
+    // rock on both sides and a slot of light at the end. For a student it is
+    // the passage rather than the arrival, which is the honest place to be.
+    //
+    // It is the bold one. Eight templates in, everything in the set was calm,
+    // crafted or quiet, and a student who wants their page to feel strong had
+    // no option. It is also the first to use the brand's own Petra rose as its
+    // primary, and the first whose surfaces are cut INTO the ground rather
+    // than laid on it.
+    background: 'stone',
+    glass: 'strong',
+    motion: 'crisp',
+    hero: 'gate',
+    card: 'carved',
+    order: 'C',
+    layout: 'stack',
+    media: {
+      // The canyon itself: red walls, a gap of sky, birds crossing it. One
+      // wide scene fixed to the viewport, under every card. 10 KB.
+      background: '/lottie/canyon.lottie',
+      backgroundFit: 'cover',
+      // The hero mark: a carved gate drawn in rose line, with light fanning
+      // out behind it. 4.6 KB, and already the template's own colour.
+      hero: '/lottie/gate-sun.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'takwin',
+    name: 'تَكوين',
+    mood: 'أشكال بسيطة، مرتّبة بقصد',
+    lean: 'light',
+    free: true,
+    built: true,
+    // تَكوين is the word an Arabic art school uses for a composition: the
+    // arrangement of simple elements into one deliberate thing. That is
+    // literally what a student's first page is — a dozen small pieces placed
+    // on purpose — and it is the only template that says so in its layout.
+    //
+    // It is the graphic one. Nine templates in, everything was atmospheric:
+    // weather, paper, sky, rock, air. This one has no scene at all, only flat
+    // shapes, hard edges, a visible grid and two colours.
+    background: 'grid',
+    glass: 'default',
+    motion: 'crisp',
+    hero: 'blocks',
+    card: 'block',
+    order: 'B',
+    layout: 'bento',
+    media: {
+      // Outlined forms drifting: the same vocabulary as the hero, hollow.
+      // 2 KB.
+      background: '/lottie/float-forms.lottie',
+      // The hero mark: a diamond, a disc, a bar and a half-round stacked into
+      // a column — the composition in miniature. 3 KB.
+      hero: '/lottie/shape-totem.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'muheet',
+    name: 'مُحيط',
+    mood: 'قاع هادي، وضوء نازل من فوق',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // The owner's own idea, and the first template in the set that is a place
+    // rather than a material or a mood: you are under the sea. Light comes
+    // down from a surface you cannot see, a shoal crosses the middle water,
+    // and a wreck has been settling on the bottom for a long time.
+    //
+    // For a student, the reading is the one the page is for: what is down
+    // here is quiet and unfinished, and the light still reaches it.
+    background: 'deep',
+    glass: 'default',
+    motion: 'drift',
+    hero: 'porthole',
+    card: 'pebble',
+    order: 'C',
+    layout: 'stack',
+    media: {
+      // A shoal crossing the middle water, tiled at three depths. 9 KB.
+      background: '/lottie/shoal.lottie',
+      // The hero: a jellyfish drifting behind the porthole glass. 20 KB, and
+      // the only thing in the template with colour of its own.
+      hero: '/lottie/jellyfish.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'fayi',
+    name: 'فَيء',
+    mood: 'ضوء بعد الظهر، وظلّ بيطوّل',
+    lean: 'light',
+    free: true,
+    built: true,
+    // فَيء is not any shade: it is the shadow that comes back in the afternoon
+    // and lengthens as the day goes. The word exists because that shade is a
+    // different thing from the morning's.
+    //
+    // It is the one template with no colour to speak of. Every other page in
+    // the set is built on a hue; this one is built on a light SOURCE. There is
+    // a lit side and a shaded side, every surface throws a long shadow away
+    // from the same sun, and the only chromatic note is the violet that real
+    // shadows take late in the day.
+    background: 'shade',
+    glass: 'default',
+    motion: 'soft',
+    hero: 'sunlit',
+    card: 'cast',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // Leaf shadows drifting down the wall. Tinted to the shade colour, never
+      // to green: what reaches this wall is the shadow, not the leaf. 26 KB.
+      background: '/lottie/drift-leaves.lottie',
+      // The frond doing the casting, in the shaded half of the hero — and it
+      // throws a real drop-shadow of its own silhouette. 14 KB.
+      hero: '/lottie/frond.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'himma',
+    name: 'هِمّة',
+    mood: 'اندفاع، وشغف ما بستنى إذن',
+    lean: 'light',
+    free: true,
+    built: true,
+    // هِمّة is the word Arabs use about a young person with drive: زeal, high
+    // aspiration, the thing someone has before they have a record. It is the
+    // most on-message name in the set, because it is exactly what a student
+    // with no experience brings.
+    //
+    // Twelve templates in, the whole set was elegant, atmospheric, crafted or
+    // quiet. Nothing in it was LOUD. This is the loud one: a saturated crimson
+    // on warm white, an amber stamp, and a hero whose art refuses to stay
+    // inside the card.
+    background: 'spark',
+    glass: 'default',
+    motion: 'rise',
+    hero: 'breakout',
+    card: 'ember',
+    order: 'A',
+    layout: 'bento',
+    media: {
+      // Embers drifting up the page, tinted to the crimson. 3 KB.
+      background: '/lottie/embers.lottie',
+      // The hero mark: a starburst that throws itself open and pulls back in,
+      // over and over. It is the one thing on the page that breaks the card's
+      // edge, and it is already the template's own crimson. 3 KB.
+      hero: '/lottie/burst-star.lottie',
     },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },

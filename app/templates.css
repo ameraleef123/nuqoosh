@@ -970,6 +970,815 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   رَفيف — the faint quiver of something light in moving air. The quietest
+   template of the eight and the one with the most empty space: the glass is
+   the subtle tier, the orbs are pale and slow, and the only strong colour on
+   the page is one teal that appears on rules and links.
+
+   A page with four things on it should look deliberate rather than
+   unfinished, and that is done with space rather than with decoration.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='rafif'] {
+  --nq-background: #f2f7fa;
+  --nq-foreground: #13202b; /* 15.95:1 on air glass */
+  --nq-muted-foreground: #3c4d59; /*  8.12:1 on the page — two steps darker
+                                     than this palette needs, which is what
+                                     buys 5.83:1 over a drifting line */
+  --nq-accent: #0e6d8a; /*  5.67:1 as text · white on it 5.88:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #cfe9f2;
+  --nq-on-highlight: #13202b;
+  --nq-border: rgba(19, 32, 43, 0.1);
+  --nq-border-strong: rgba(19, 32, 43, 0.2);
+  --nq-ring: #0e6d8a;
+
+  --glass-bg: rgba(255, 255, 255, 0.55);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.55);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-border-color: rgba(255, 255, 255, 0.7);
+  --glass-edge: 0 0 0 1px rgba(19, 32, 43, 0.04);
+  --glass-shadow: 0 14px 40px rgba(19, 50, 70, 0.07);
+  --glass-fallback: #f9fbfd;
+  --glass-fallback-subtle: #f9fbfd;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+  --glass-blur-subtle: 12px;
+  --orb-opacity: 0.7;
+
+  /* The drifting lines. The ceiling is the footer, the one piece of text that
+     sits on the page rather than on a card: muted type over a solid stroke
+     measures 5.83:1 here, and failed at 4.17:1 when this was 0.4. */
+  --screen-art-opacity: 0.26;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='air'] .orb[data-orb='1'] {
+  background: #d8ecf5;
+}
+[data-bg='air'] .orb[data-orb='2'] {
+  background: #e6f1f7;
+}
+[data-bg='air'] .orb[data-orb='3'] {
+  background: #cfe4ef;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='rafif'] {
+    --nq-background: #0a1119;
+    --nq-foreground: #e8f1f6; /* 15.76:1 on air glass */
+    --nq-muted-foreground: #b0c2ce; /*  9.84:1 */
+    --nq-accent: #7dd3fc; /* 10.82:1 as text · night on it 11.38:1 */
+    --nq-on-accent: #0a1119;
+    --nq-highlight: #163445;
+    --nq-on-highlight: #e8f1f6;
+    --nq-border: rgba(255, 255, 255, 0.1);
+    --nq-border-strong: rgba(255, 255, 255, 0.2);
+    --nq-ring: #7dd3fc;
+    --glass-bg: rgba(16, 26, 38, 0.66);
+    --glass-bg-subtle: rgba(16, 26, 38, 0.66);
+    --glass-bg-strong: rgba(16, 26, 38, 0.8);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+    --glass-fallback: #0e1722;
+    --glass-fallback-subtle: #0e1722;
+    --glass-fallback-strong: #14202c;
+    --orb-opacity: 0.4;
+    --screen-art-opacity: 0.45;
+  }
+  :root:not([data-theme='light']) [data-bg='air'] .orb[data-orb='1'] {
+    background: #143348;
+  }
+  :root:not([data-theme='light']) [data-bg='air'] .orb[data-orb='2'] {
+    background: #10283a;
+  }
+  :root:not([data-theme='light']) [data-bg='air'] .orb[data-orb='3'] {
+    background: #17394f;
+  }
+}
+:root[data-theme='dark'] [data-template='rafif'] {
+  --nq-background: #0a1119;
+  --nq-foreground: #e8f1f6;
+  --nq-muted-foreground: #b0c2ce;
+  --nq-accent: #7dd3fc;
+  --nq-on-accent: #0a1119;
+  --nq-highlight: #163445;
+  --nq-on-highlight: #e8f1f6;
+  --nq-border: rgba(255, 255, 255, 0.1);
+  --nq-border-strong: rgba(255, 255, 255, 0.2);
+  --nq-ring: #7dd3fc;
+  --glass-bg: rgba(16, 26, 38, 0.66);
+  --glass-bg-subtle: rgba(16, 26, 38, 0.66);
+  --glass-bg-strong: rgba(16, 26, 38, 0.8);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
+  --glass-fallback: #0e1722;
+  --glass-fallback-subtle: #0e1722;
+  --glass-fallback-strong: #14202c;
+  --orb-opacity: 0.4;
+  --screen-art-opacity: 0.45;
+}
+:root[data-theme='dark'] [data-bg='air'] .orb[data-orb='1'] {
+  background: #143348;
+}
+:root[data-theme='dark'] [data-bg='air'] .orb[data-orb='2'] {
+  background: #10283a;
+}
+:root[data-theme='dark'] [data-bg='air'] .orb[data-orb='3'] {
+  background: #17394f;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   سِيق — the narrow canyon before the Treasury. Rose rock on both sides and a
+   slot of light at the end.
+
+   The bold one. Eight templates in, the whole set was calm, crafted or quiet,
+   and a student who wanted their page to feel strong had nothing to pick. It
+   is also the first to make the brand's own Petra rose the primary accent
+   rather than a second voice, and the first whose surfaces are cut INTO the
+   ground rather than laid on it.
+
+   Every number below that touches the backdrop was measured against the
+   scene's real pixels, not guessed: its brightest opaque pixel is #F3DDC9
+   (sampled across the loop), and that is the value the opacities are set by.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='siq'] {
+  --nq-background: #f7ece0;
+  --nq-foreground: #2a140d; /* 16.76:1 on sandstone glass */
+  --nq-muted-foreground: #634336; /*  8.46:1 · 7.09:1 bare on the lit scene */
+  --nq-accent: #b8452f; /*  5.13:1 as text · white on it 5.34:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #2a140d;
+  --nq-on-highlight: #f7ece0;
+  --nq-border: rgba(42, 20, 13, 0.12);
+  --nq-border-strong: rgba(42, 20, 13, 0.24);
+  --nq-ring: #b8452f;
+
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.42);
+  --glass-bg-strong: rgba(255, 255, 255, 0.72);
+  --glass-border-color: rgba(255, 255, 255, 0.7);
+  --glass-edge: 0 0 0 1px rgba(42, 20, 13, 0.05);
+  --glass-shadow: 0 12px 36px rgba(60, 24, 14, 0.14);
+  --glass-fallback: #fdfaf6;
+  --glass-fallback-subtle: #fcf7f1;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 16px;
+  /* The scene is a mass of saturated red, and lightening it does not make a
+     paler canyon — it makes a pink cloud, because the structure lives in the
+     contrast between the walls and the slot of sky. So light mode does not
+     pretend: the canyon is dropped to a warm blush on the sandstone and the
+     template carries its weight through the rose accent and the carved
+     surfaces instead. Dark is where the scene is actually read, and dark's
+     opacity is the one set by measurement. */
+  --screen-art-opacity: 0.12;
+
+  /* A carved surface: the top inner edge in shadow, the bottom one catching
+     the light. The inverse of a raised panel. */
+  --carved-fill: rgba(42, 20, 13, 0.05);
+  --carved-shadow: rgba(42, 20, 13, 0.28);
+  --carved-lip: rgba(255, 255, 255, 0.85);
+  /* The niche cut into the hero. */
+  --gate-fill: rgba(42, 20, 13, 0.07);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='siq'] {
+    --nq-background: #1c0f0b;
+    --nq-foreground: #f7ece4; /* 11.24:1 even where a card crosses the lit rock */
+    --nq-muted-foreground: #d0b8aa; /*  6.91:1 there */
+    --nq-accent: #e8836b; /*  4.91:1 there — the value that caps the backdrop */
+    --nq-on-accent: #1c0f0b;
+    --nq-highlight: #e8836b;
+    --nq-on-highlight: #1c0f0b;
+    --nq-border: rgba(255, 255, 255, 0.13);
+    --nq-border-strong: rgba(255, 255, 255, 0.26);
+    --nq-ring: #e8836b;
+    --glass-bg: rgba(34, 18, 13, 0.7);
+    --glass-bg-subtle: rgba(34, 18, 13, 0.55);
+    --glass-bg-strong: rgba(34, 18, 13, 0.82);
+    --glass-border-color: rgba(255, 255, 255, 0.12);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+    --glass-fallback: #21110d;
+    --glass-fallback-subtle: #1d0f0b;
+    --glass-fallback-strong: #261410;
+    --screen-art-opacity: 0.7;
+    --carved-fill: rgba(0, 0, 0, 0.26);
+    --carved-shadow: rgba(0, 0, 0, 0.6);
+    --carved-lip: rgba(255, 255, 255, 0.09);
+    --gate-fill: rgba(0, 0, 0, 0.3);
+  }
+}
+:root[data-theme='dark'] [data-template='siq'] {
+  --nq-background: #1c0f0b;
+  --nq-foreground: #f7ece4;
+  --nq-muted-foreground: #d0b8aa;
+  --nq-accent: #e8836b;
+  --nq-on-accent: #1c0f0b;
+  --nq-highlight: #e8836b;
+  --nq-on-highlight: #1c0f0b;
+  --nq-border: rgba(255, 255, 255, 0.13);
+  --nq-border-strong: rgba(255, 255, 255, 0.26);
+  --nq-ring: #e8836b;
+  --glass-bg: rgba(34, 18, 13, 0.7);
+  --glass-bg-subtle: rgba(34, 18, 13, 0.55);
+  --glass-bg-strong: rgba(34, 18, 13, 0.82);
+  --glass-border-color: rgba(255, 255, 255, 0.12);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 12px 36px rgba(0, 0, 0, 0.5);
+  --glass-fallback: #21110d;
+  --glass-fallback-subtle: #1d0f0b;
+  --glass-fallback-strong: #261410;
+  --screen-art-opacity: 0.7;
+  --carved-fill: rgba(0, 0, 0, 0.26);
+  --carved-shadow: rgba(0, 0, 0, 0.6);
+  --carved-lip: rgba(255, 255, 255, 0.09);
+  --gate-fill: rgba(0, 0, 0, 0.3);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   تَكوين — composition, in the sense an art school means it: simple elements
+   arranged on purpose. The graphic one. Nine templates in, every background
+   in the set was atmospheric — weather, paper, sky, rock, air — and this one
+   has no scene at all: flat shapes, hard edges, a visible grid, two colours.
+
+   Navy and yellow on warm white, the classic modernist triad, and the only
+   palette here that is a triad rather than a wash. Radii go to zero: a
+   composition is made of rectangles.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='takwin'] {
+  --nq-background: #faf6ee;
+  --nq-foreground: #151d33; /* 16.19:1 on the cell */
+  --nq-muted-foreground: #454e68; /*  8.00:1 · two steps darker than needed,
+                                     to clear the drifting forms behind it */
+  --nq-accent: #1e3a8a; /* 10.03:1 as text · white on it 10.36:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #f0b429; /* ink on it 8.97:1 */
+  --nq-on-highlight: #151d33;
+  --nq-border: rgba(21, 29, 51, 0.14);
+  --nq-border-strong: rgba(21, 29, 51, 0.28);
+  --nq-ring: #1e3a8a;
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.44);
+  --glass-bg-strong: rgba(255, 255, 255, 0.76);
+  --glass-border-color: rgba(21, 29, 51, 0.14);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 8px 26px rgba(21, 29, 51, 0.07);
+  --glass-fallback: #fdfbf8;
+  --glass-fallback-subtle: #fcf9f4;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+
+  /* A composition is made of rectangles. */
+  --nq-radius-sm: 0;
+  --nq-radius-md: 0;
+  --nq-radius-lg: 0;
+  --nq-radius-xl: 0;
+
+  /* The hero's cells are solid: the rules between them are the ruled ground
+     showing through a 1px gap, and a translucent cell would tint itself with
+     that rule. */
+  --block-cell: #fdfbf8;
+  /* The page's own grid, made visible. */
+  --grid-line: rgba(21, 29, 51, 0.055);
+  --screen-art-opacity: 0.5;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* No orbs: a blurred blob is the opposite of everything this template says. */
+[data-bg='grid'] .orb {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='takwin'] {
+    --nq-background: #0e1424;
+    --nq-foreground: #eef1f7; /* 15.32:1 on the cell */
+    --nq-muted-foreground: #b4bdd0; /*  9.19:1 */
+    --nq-accent: #8ba6f0; /*  7.27:1 as text · page on it 7.70:1 */
+    --nq-on-accent: #0e1424;
+    --nq-highlight: #f0b429;
+    --nq-on-highlight: #151d33;
+    --nq-border: rgba(255, 255, 255, 0.14);
+    --nq-border-strong: rgba(255, 255, 255, 0.26);
+    --nq-ring: #8ba6f0;
+    --glass-bg: rgba(20, 28, 48, 0.72);
+    --glass-bg-subtle: rgba(20, 28, 48, 0.56);
+    --glass-bg-strong: rgba(20, 28, 48, 0.85);
+    --glass-border-color: rgba(255, 255, 255, 0.14);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+    --glass-fallback: #121a2d;
+    --glass-fallback-subtle: #101728;
+    --glass-fallback-strong: #161f36;
+    --nq-radius-sm: 0;
+    --nq-radius-md: 0;
+    --nq-radius-lg: 0;
+    --nq-radius-xl: 0;
+    --block-cell: #121a2d;
+    --grid-line: rgba(255, 255, 255, 0.05);
+    /* Yellow on navy is the highest-contrast pair in the template, which makes
+       it the most dangerous thing to put behind the footer: at 0.55 bare muted
+       type over a solid stroke measured 2.62:1. At 0.28 it is 5.2:1, and the
+       forms still read clearly because the pair is so bright to begin with. */
+    --screen-art-opacity: 0.28;
+  }
+}
+:root[data-theme='dark'] [data-template='takwin'] {
+  --nq-background: #0e1424;
+  --nq-foreground: #eef1f7;
+  --nq-muted-foreground: #b4bdd0;
+  --nq-accent: #8ba6f0;
+  --nq-on-accent: #0e1424;
+  --nq-highlight: #f0b429;
+  --nq-on-highlight: #151d33;
+  --nq-border: rgba(255, 255, 255, 0.14);
+  --nq-border-strong: rgba(255, 255, 255, 0.26);
+  --nq-ring: #8ba6f0;
+  --glass-bg: rgba(20, 28, 48, 0.72);
+  --glass-bg-subtle: rgba(20, 28, 48, 0.56);
+  --glass-bg-strong: rgba(20, 28, 48, 0.85);
+  --glass-border-color: rgba(255, 255, 255, 0.14);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 8px 26px rgba(0, 0, 0, 0.45);
+  --glass-fallback: #121a2d;
+  --glass-fallback-subtle: #101728;
+  --glass-fallback-strong: #161f36;
+  --nq-radius-sm: 0;
+  --nq-radius-md: 0;
+  --nq-radius-lg: 0;
+  --nq-radius-xl: 0;
+  --block-cell: #121a2d;
+  --grid-line: rgba(255, 255, 255, 0.05);
+  --screen-art-opacity: 0.28;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   مُحيط — the deep. The owner's idea, and the first template in the set that
+   is a PLACE rather than a material or a mood: you are under the sea. Light
+   comes down from a surface you cannot see, a shoal crosses the middle water,
+   and a wreck has been settling on the bottom for a long time.
+
+   The page has a depth gradient rather than one flat ground — the only
+   template that does — so scrolling reads as descending.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='muheet'] {
+  --nq-background: #eaf6f7;
+  --nq-foreground: #0b2a33; /* 14.56:1 on shallow glass */
+  --nq-muted-foreground: #2f545e; /*  7.46:1 · 5.29:1 over a solid fish */
+  --nq-accent: #0b707e; /*  5.58:1 as text · white on it 5.78:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #b9e6ea;
+  --nq-on-highlight: #0b2a33;
+  --nq-border: rgba(11, 42, 51, 0.12);
+  --nq-border-strong: rgba(11, 42, 51, 0.24);
+  --nq-ring: #0b707e;
+
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.46);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border-color: rgba(255, 255, 255, 0.72);
+  --glass-edge: 0 0 0 1px rgba(11, 42, 51, 0.04);
+  --glass-shadow: 0 14px 38px rgba(11, 50, 62, 0.1);
+  --glass-fallback: #f7fcfc;
+  --glass-fallback-subtle: #f3fafb;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 14px;
+  --orb-opacity: 0.55;
+
+  /* The shoal. Its fish are a solid navy, which is why this number is low:
+     bare muted type over one measures 5.29:1 here and failed at 4.42:1 when
+     it was 0.20 higher. */
+  --screen-art-opacity: 0.2;
+
+  /* The water column: pale at the surface, deeper toward the foot. */
+  --sea-top: #f3fbfb;
+  --sea-mid: #dff1f4;
+  --sea-deep: #bcdfe5;
+  /* Surface light, and the wreck lying under it. */
+  --shaft: rgba(255, 255, 255, 0.75);
+  --bed: rgba(11, 42, 51, 0.1);
+  --wreck: rgba(11, 42, 51, 0.16);
+  --wreck-deck: rgba(11, 42, 51, 0.24);
+  /* The porthole. */
+  --rim: #cfe3e6;
+  --rim-edge: rgba(11, 42, 51, 0.3);
+  --rivet: rgba(11, 42, 51, 0.35);
+  --pane: #cfeaf0;
+  --pane-deep: #8fc6d2;
+  --pebble-lip: rgba(255, 255, 255, 0.9);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='deep'] .orb[data-orb='1'] {
+  background: #bfe6ea;
+}
+[data-bg='deep'] .orb[data-orb='2'] {
+  background: #d3eef0;
+}
+[data-bg='deep'] .orb[data-orb='3'] {
+  background: #aadbe3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='muheet'] {
+    --nq-background: #04141c;
+    --nq-foreground: #e4f4f6; /* 15.31:1 on deep glass */
+    --nq-muted-foreground: #9dc0c7; /*  8.90:1 · 5.11:1 over a solid fish */
+    --nq-accent: #4fd1c5; /*  9.28:1 as text · the deep on it 10.03:1 */
+    --nq-on-accent: #04141c;
+    --nq-highlight: #4fd1c5;
+    --nq-on-highlight: #04141c;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #4fd1c5;
+    --glass-bg: rgba(8, 32, 42, 0.72);
+    --glass-bg-subtle: rgba(8, 32, 42, 0.56);
+    --glass-bg-strong: rgba(8, 32, 42, 0.85);
+    --glass-border-color: rgba(255, 255, 255, 0.11);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.5);
+    --glass-fallback: #071d26;
+    --glass-fallback-subtle: #061921;
+    --glass-fallback-strong: #09222d;
+    --orb-opacity: 0.32;
+    --screen-art-opacity: 0.26;
+    --sea-top: #0e3a4c;
+    --sea-mid: #072632;
+    --sea-deep: #061d27;
+    /* Raised from 0.16: at that value the shafts were invisible against the
+       column. 0.22 is the ceiling the footer allows (5.53:1). */
+    --shaft: rgba(143, 227, 240, 0.22);
+    /* The wreck is a black silhouette, so the floor it lies on must NOT be
+       black too — at #020C12 the hull disappeared into the water. */
+    --bed: rgba(0, 0, 0, 0.5);
+    --wreck: rgba(0, 0, 0, 0.72);
+    --wreck-deck: rgba(120, 190, 205, 0.22);
+    --rim: #123745;
+    --rim-edge: rgba(255, 255, 255, 0.16);
+    --rivet: rgba(255, 255, 255, 0.28);
+    --pane: #0a2c3a;
+    --pane-deep: #041a24;
+    --pebble-lip: rgba(255, 255, 255, 0.07);
+  }
+  :root:not([data-theme='light']) [data-bg='deep'] .orb[data-orb='1'] {
+    background: #0d4152;
+  }
+  :root:not([data-theme='light']) [data-bg='deep'] .orb[data-orb='2'] {
+    background: #0a3344;
+  }
+  :root:not([data-theme='light']) [data-bg='deep'] .orb[data-orb='3'] {
+    background: #114b5e;
+  }
+}
+:root[data-theme='dark'] [data-template='muheet'] {
+  --nq-background: #04141c;
+  --nq-foreground: #e4f4f6;
+  --nq-muted-foreground: #9dc0c7;
+  --nq-accent: #4fd1c5;
+  --nq-on-accent: #04141c;
+  --nq-highlight: #4fd1c5;
+  --nq-on-highlight: #04141c;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #4fd1c5;
+  --glass-bg: rgba(8, 32, 42, 0.72);
+  --glass-bg-subtle: rgba(8, 32, 42, 0.56);
+  --glass-bg-strong: rgba(8, 32, 42, 0.85);
+  --glass-border-color: rgba(255, 255, 255, 0.11);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.5);
+  --glass-fallback: #071d26;
+  --glass-fallback-subtle: #061921;
+  --glass-fallback-strong: #09222d;
+  --orb-opacity: 0.32;
+  --screen-art-opacity: 0.26;
+  --sea-top: #0e3a4c;
+  --sea-mid: #072632;
+  --sea-deep: #061d27;
+  --shaft: rgba(143, 227, 240, 0.22);
+  --bed: rgba(0, 0, 0, 0.5);
+  --wreck: rgba(0, 0, 0, 0.72);
+  --wreck-deck: rgba(120, 190, 205, 0.22);
+  --rim: #123745;
+  --rim-edge: rgba(255, 255, 255, 0.16);
+  --rivet: rgba(255, 255, 255, 0.28);
+  --pane: #0a2c3a;
+  --pane-deep: #041a24;
+  --pebble-lip: rgba(255, 255, 255, 0.07);
+}
+:root[data-theme='dark'] [data-bg='deep'] .orb[data-orb='1'] {
+  background: #0d4152;
+}
+:root[data-theme='dark'] [data-bg='deep'] .orb[data-orb='2'] {
+  background: #0a3344;
+}
+:root[data-theme='dark'] [data-bg='deep'] .orb[data-orb='3'] {
+  background: #114b5e;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   فَيء — not any shade, but the shadow that comes back in the afternoon and
+   lengthens as the day goes. Arabic has the word because that shade is a
+   different thing from the morning's.
+
+   The one template with no colour to speak of. Every other page in the set is
+   built on a hue; this one is built on a light SOURCE. There is a lit side and
+   a shaded side, every surface throws its shadow away from the same sun, and
+   the only chromatic note is the violet that real shadows take late in the
+   day — which is also what keeps a grey page from reading as a dead one.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='fayi'] {
+  --nq-background: #f4f1ec;
+  --nq-foreground: #1c1a18; /* 16.52:1 on the lit card · 15.42:1 in the shade */
+  --nq-muted-foreground: #4a4641; /*  8.65:1 lit · 4.88:1 for the footer where
+                                     the shade is deepest, which is the binding
+                                     case: at #514D48 it sat exactly on 4.50 */
+  --nq-accent: #6b4d6e; /*  6.87:1 as text · white on it 7.21:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #1c1a18;
+  --nq-on-highlight: #f4f1ec;
+  --nq-border: rgba(28, 26, 24, 0.12);
+  --nq-border-strong: rgba(28, 26, 24, 0.24);
+  --nq-ring: #6b4d6e;
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.44);
+  --glass-bg-strong: rgba(255, 255, 255, 0.76);
+  --glass-border-color: rgba(255, 255, 255, 0.7);
+  --glass-edge: 0 0 0 0 transparent;
+  /* Not a halo under the card but a shadow thrown to one side, like everything
+     else lit by the same low sun. The RTL variant is below. */
+  --glass-shadow: 26px 30px 56px -34px var(--cast);
+  --glass-fallback: #fbf9f7;
+  --glass-fallback-subtle: #f9f7f4;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+  --orb-opacity: 0.5;
+
+  /* The drifting leaf shadows. Tinted to the shade, never to green. */
+  --screen-art-opacity: 0.16;
+
+  /* Late-afternoon shadows are violet, not grey. Everything shaded on this
+     page is tinted with the same one. */
+  --frond-opacity: 0.32;
+  --cast: rgba(70, 54, 78, 0.55);
+  --shade-wash: rgba(107, 95, 116, 0.2);
+  --shade-deep: rgba(107, 95, 116, 0.36);
+  --lit: rgba(255, 252, 245, 0.55);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* The shadow falls away from the sun, and the sun is always on the reading
+   side, so the offset flips with the direction. */
+[dir='rtl'] [data-template='fayi'] {
+  --glass-shadow: -26px 30px 56px -34px var(--cast);
+}
+[data-bg='shade'] .orb[data-orb='1'] {
+  background: #e7e2dc;
+}
+[data-bg='shade'] .orb[data-orb='2'] {
+  background: #ded7d9;
+}
+[data-bg='shade'] .orb[data-orb='3'] {
+  background: #eae5df;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='fayi'] {
+    --nq-background: #191719;
+    --nq-foreground: #f2efe9; /* 14.55:1 on the card */
+    --nq-muted-foreground: #c0b9b2; /*  8.60:1 */
+    --nq-accent: #c9a8cd; /*  7.92:1 as text · the page on it 8.46:1 */
+    --nq-on-accent: #191719;
+    --nq-highlight: #f2efe9;
+    --nq-on-highlight: #191719;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #c9a8cd;
+    --glass-bg: rgba(34, 31, 35, 0.74);
+    --glass-bg-subtle: rgba(34, 31, 35, 0.58);
+    --glass-bg-strong: rgba(34, 31, 35, 0.86);
+    --glass-border-color: rgba(255, 255, 255, 0.11);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 26px 30px 56px -34px var(--cast);
+    --glass-fallback: #201d20;
+    --glass-fallback-subtle: #1d1a1d;
+    --glass-fallback-strong: #252126;
+    --orb-opacity: 0.3;
+    --screen-art-opacity: 0.2;
+    --frond-opacity: 0.18;
+    --cast: rgba(0, 0, 0, 0.75);
+    --shade-wash: rgba(0, 0, 0, 0.3);
+    --shade-deep: rgba(0, 0, 0, 0.45);
+    --lit: rgba(255, 246, 232, 0.07);
+  }
+  :root:not([data-theme='light']) [dir='rtl'] [data-template='fayi'],
+  [dir='rtl'] :root:not([data-theme='light']) [data-template='fayi'] {
+    --glass-shadow: -26px 30px 56px -34px var(--cast);
+  }
+  :root:not([data-theme='light']) [data-bg='shade'] .orb[data-orb='1'] {
+    background: #2a262b;
+  }
+  :root:not([data-theme='light']) [data-bg='shade'] .orb[data-orb='2'] {
+    background: #241f26;
+  }
+  :root:not([data-theme='light']) [data-bg='shade'] .orb[data-orb='3'] {
+    background: #2e2930;
+  }
+}
+:root[data-theme='dark'] [data-template='fayi'] {
+  --nq-background: #191719;
+  --nq-foreground: #f2efe9;
+  --nq-muted-foreground: #c0b9b2;
+  --nq-accent: #c9a8cd;
+  --nq-on-accent: #191719;
+  --nq-highlight: #f2efe9;
+  --nq-on-highlight: #191719;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #c9a8cd;
+  --glass-bg: rgba(34, 31, 35, 0.74);
+  --glass-bg-subtle: rgba(34, 31, 35, 0.58);
+  --glass-bg-strong: rgba(34, 31, 35, 0.86);
+  --glass-border-color: rgba(255, 255, 255, 0.11);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 26px 30px 56px -34px var(--cast);
+  --glass-fallback: #201d20;
+  --glass-fallback-subtle: #1d1a1d;
+  --glass-fallback-strong: #252126;
+  --orb-opacity: 0.3;
+  --screen-art-opacity: 0.2;
+  --frond-opacity: 0.18;
+  --cast: rgba(0, 0, 0, 0.75);
+  --shade-wash: rgba(0, 0, 0, 0.3);
+  --shade-deep: rgba(0, 0, 0, 0.45);
+  --lit: rgba(255, 246, 232, 0.07);
+}
+:root[data-theme='dark'] [dir='rtl'] [data-template='fayi'],
+[dir='rtl'] :root[data-theme='dark'] [data-template='fayi'] {
+  --glass-shadow: -26px 30px 56px -34px var(--cast);
+}
+:root[data-theme='dark'] [data-bg='shade'] .orb[data-orb='1'] {
+  background: #2a262b;
+}
+:root[data-theme='dark'] [data-bg='shade'] .orb[data-orb='2'] {
+  background: #241f26;
+}
+:root[data-theme='dark'] [data-bg='shade'] .orb[data-orb='3'] {
+  background: #2e2930;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   هِمّة — drive. The word Arabs use about a young person with zeal: the thing
+   someone has before they have a record, which is exactly what a student with
+   no experience brings.
+
+   Twelve templates in, the whole set was elegant, atmospheric, crafted or
+   quiet. Nothing in it was LOUD. This is the loud one: a saturated crimson on
+   warm white, an amber stamp, embers drifting up the page, and a hero whose
+   art refuses to stay inside the card.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='himma'] {
+  --nq-background: #fff7f4;
+  --nq-foreground: #2b1016; /* 17.31:1 on the card */
+  --nq-muted-foreground: #663a43; /*  9.14:1 · 5.72:1 over a solid ember */
+  --nq-accent: #c41e4f; /*  5.64:1 as text · white on it 5.76:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #f5a524; /* amber · ink on it 8.66:1 */
+  --nq-on-highlight: #2b1016;
+  --nq-border: rgba(43, 16, 22, 0.13);
+  --nq-border-strong: rgba(43, 16, 22, 0.26);
+  --nq-ring: #c41e4f;
+
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.45);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border-color: rgba(255, 255, 255, 0.72);
+  --glass-edge: 0 0 0 1px rgba(43, 16, 22, 0.05);
+  --glass-shadow: 0 16px 40px -18px rgba(150, 30, 60, 0.22);
+  --glass-fallback: #fffcfb;
+  --glass-fallback-subtle: #fffaf8;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 13px;
+  --orb-opacity: 0.6;
+
+  /* Embers drifting up. Their marks are small and saturated, so the ceiling is
+     the footer: muted type over a solid one measures 5.72:1 here. */
+  --screen-art-opacity: 0.4;
+
+  /* The coal under every card, and the warmth behind the hero's burst. The
+     hot value is capped by the crimson itself: a project link sits low in a
+     card, and at 0.16 it measured 4.34:1 against its own glow. */
+  --ember: rgba(196, 30, 79, 0.06);
+  --ember-hot: rgba(196, 30, 79, 0.1);
+  --burst-halo: rgba(245, 165, 36, 0.28);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='spark'] .orb[data-orb='1'] {
+  background: #ffd9cf;
+}
+[data-bg='spark'] .orb[data-orb='2'] {
+  background: #ffe6c2;
+}
+[data-bg='spark'] .orb[data-orb='3'] {
+  background: #ffcfd8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='himma'] {
+    --nq-background: #1c0a10;
+    --nq-foreground: #ffeef1; /* 16.23:1 on the card */
+    --nq-muted-foreground: #dbb2bb; /*  9.61:1 */
+    --nq-accent: #ff7a95; /*  7.33:1 as text · the page on it 7.70:1 */
+    --nq-on-accent: #1c0a10;
+    --nq-highlight: #f5a524;
+    --nq-on-highlight: #2b1016;
+    --nq-border: rgba(255, 255, 255, 0.13);
+    --nq-border-strong: rgba(255, 255, 255, 0.26);
+    --nq-ring: #ff7a95;
+    --glass-bg: rgba(42, 16, 22, 0.74);
+    --glass-bg-subtle: rgba(42, 16, 22, 0.58);
+    --glass-bg-strong: rgba(42, 16, 22, 0.86);
+    --glass-border-color: rgba(255, 255, 255, 0.12);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.6);
+    --glass-fallback: #260e14;
+    --glass-fallback-subtle: #220c12;
+    --glass-fallback-strong: #2c1118;
+    --orb-opacity: 0.34;
+    /* Lowered from 0.5: bare footer type over a colourised ember measured
+       4.11:1 there, and 5.61:1 here. */
+    --screen-art-opacity: 0.35;
+    --ember: rgba(255, 122, 149, 0.1);
+    --ember-hot: rgba(255, 122, 149, 0.18);
+    --burst-halo: rgba(245, 165, 36, 0.2);
+  }
+  :root:not([data-theme='light']) [data-bg='spark'] .orb[data-orb='1'] {
+    background: #5a1424;
+  }
+  :root:not([data-theme='light']) [data-bg='spark'] .orb[data-orb='2'] {
+    background: #63241a;
+  }
+  :root:not([data-theme='light']) [data-bg='spark'] .orb[data-orb='3'] {
+    background: #4a1020;
+  }
+}
+:root[data-theme='dark'] [data-template='himma'] {
+  --nq-background: #1c0a10;
+  --nq-foreground: #ffeef1;
+  --nq-muted-foreground: #dbb2bb;
+  --nq-accent: #ff7a95;
+  --nq-on-accent: #1c0a10;
+  --nq-highlight: #f5a524;
+  --nq-on-highlight: #2b1016;
+  --nq-border: rgba(255, 255, 255, 0.13);
+  --nq-border-strong: rgba(255, 255, 255, 0.26);
+  --nq-ring: #ff7a95;
+  --glass-bg: rgba(42, 16, 22, 0.74);
+  --glass-bg-subtle: rgba(42, 16, 22, 0.58);
+  --glass-bg-strong: rgba(42, 16, 22, 0.86);
+  --glass-border-color: rgba(255, 255, 255, 0.12);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 16px 40px -18px rgba(0, 0, 0, 0.6);
+  --glass-fallback: #260e14;
+  --glass-fallback-subtle: #220c12;
+  --glass-fallback-strong: #2c1118;
+  --orb-opacity: 0.34;
+  --screen-art-opacity: 0.35;
+  --ember: rgba(255, 122, 149, 0.1);
+  --ember-hot: rgba(255, 122, 149, 0.18);
+  --burst-halo: rgba(245, 165, 36, 0.2);
+}
+:root[data-theme='dark'] [data-bg='spark'] .orb[data-orb='1'] {
+  background: #5a1424;
+}
+:root[data-theme='dark'] [data-bg='spark'] .orb[data-orb='2'] {
+  background: #63241a;
+}
+:root[data-theme='dark'] [data-bg='spark'] .orb[data-orb='3'] {
+  background: #4a1020;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
    Motion signatures. Public-route motion is CSS only — the measured
    framework floor leaves no room for GSAP here (pages/public.md).
    All of it is transform/opacity, and all of it is inside a
@@ -1066,6 +1875,11 @@
 [data-motion-sig='glow'] {
   --reveal-rx: 4deg;
   --tilt-max: 5;
+}
+/* رَفيف tilts least of all: air moves things, it does not tip them. */
+[data-motion-sig='soft'] {
+  --reveal-rx: 3deg;
+  --tilt-max: 3;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1181,6 +1995,21 @@ html.motion-failsafe .tpl .word {
 [data-motion-sig='glow'] {
   --dur-reveal: 340ms;
   --dur-hero: 550ms;
+}
+/* Soft: the sixth and last signature, and the only one that changes the EASING
+   rather than the duration. Everything else in the set decelerates on an expo
+   curve, which arrives fast and stops hard; this one is a cubic, so nothing
+   snaps. Overriding the token on the wrapper reaches every transition and
+   keyframe inside the template at once. */
+[data-motion-sig='soft'] {
+  --dur-reveal: 400ms;
+  --dur-hero: 650ms;
+  --ease-out: cubic-bezier(0.33, 1, 0.68, 1);
+}
+@media (prefers-reduced-motion: no-preference) {
+  [data-motion-sig='soft'] .orb {
+    animation-duration: 28s;
+  }
 }
 @media (prefers-reduced-motion: no-preference) {
   html.js [data-motion-sig='editorial'] [data-reveal] {

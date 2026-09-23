@@ -21,6 +21,7 @@ import { LottieMark } from '@/components/lottie-mark'
 import { RetroGrid } from './retro-grid'
 import { DawnSun } from './dawn-sun'
 import { InkBlot } from './ink-blot'
+import { DeepWater } from './deep-water'
 import { PaperOrnament } from './paper-ornament'
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -199,6 +200,7 @@ function Background({ template }: { template: Template }) {
         </>
       ) : null}
       {template.background === 'ink' ? <InkBlot /> : null}
+      {template.background === 'deep' ? <DeepWater /> : null}
 
       {orb(1, {
         inlineSize: '52vmax',
@@ -689,6 +691,173 @@ function Hero({ profile, template, lang }: RenderProps) {
     )
   }
 
+  if (template.hero === 'breakout') {
+    // The art hangs ABOVE the card, over its top edge, which is the one thing
+    // no other hero here does — every other template keeps its art inside the
+    // frame. A card that cannot hold its own contents is the whole idea.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt breakout-hero')} data-tilt>
+        {art ? <LottieMark src={art} className="breakout-art" /> : null}
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-wrap items-center gap-5">
+            <Avatar profile={profile} lang={lang} />
+            <div data-hero-item className="min-w-0 flex-1">
+              {headline}
+            </div>
+          </div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'sunlit') {
+    // One card, two halves: the lit one carries who they are, the shaded one
+    // carries what they say, and the edge between them is the only hard line
+    // on the page. The frond sits in the shade and throws a real drop-shadow
+    // of its own silhouette, which is where the template's name comes from.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt sunlit-hero')} data-tilt>
+        <div className="sunlit-lit">
+          <div className="flex flex-wrap items-center gap-5">
+            <Avatar profile={profile} lang={lang} />
+            <div data-hero-item className="min-w-0 flex-1">
+              {headline}
+            </div>
+          </div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+        </div>
+        <div className="sunlit-shade">
+          {/* Behind the paragraph on purpose: the sentence is read THROUGH the
+              shadow, which is the whole picture. What makes that legible is
+              the shadow's strength, not its position — see the opacity note in
+              effects.css. */}
+          {art ? <LottieMark src={art} className="sunlit-frond" /> : null}
+          <div data-hero-item className="relative">
+            {about}
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'porthole') {
+    // A window onto the deep, with the glass between you and it: a thick rim,
+    // eight rivets, a curved highlight across the pane, and one creature
+    // drifting behind it. Nothing else in the set frames its art as something
+    // you are looking THROUGH.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt p-7 md:p-10 lg:p-12')} data-tilt>
+        <div className="grid items-center gap-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center gap-5">
+              <Avatar profile={profile} lang={lang} />
+              <div data-hero-item className="min-w-0 flex-1">
+                {headline}
+              </div>
+            </div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
+          </div>
+          <div className="porthole">
+            <div className="porthole-glass">
+              {art ? <LottieMark src={art} className="porthole-art" /> : null}
+            </div>
+            <span className="porthole-shine" aria-hidden="true" />
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'blocks') {
+    // The hero IS a composition: five cells in a grid, separated by the rules
+    // that a 1px gap over a ruled background draws for free. No other hero in
+    // the set is built out of cells; the rest are all text beside a picture.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt blocks-hero')} data-tilt>
+        <div className="blocks-cell blocks-name">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item className="mt-3">
+            {tagline}
+          </div>
+        </div>
+        <div className="blocks-cell blocks-art">
+          {art ? <LottieMark src={art} className="blocks-art-inner" /> : null}
+        </div>
+        <div className="blocks-cell blocks-about" data-hero-item>
+          {about}
+        </div>
+        <div className="blocks-cell blocks-pills">{pills}</div>
+        <div className="blocks-cell blocks-face">
+          <Avatar profile={profile} lang={lang} />
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'gate') {
+    // A niche cut into the card: an arch with the carved gate inside it and
+    // the portrait standing in the doorway, overlapping its lower edge. Where
+    // ثُرَيّا's orbit puts the student inside a diagram, this puts them inside
+    // a piece of architecture.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt p-7 md:p-10 lg:p-12')} data-tilt>
+        <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
+          <div className="flex flex-col gap-4">
+            <div data-hero-item>{headline}</div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
+          </div>
+          <div className="gate-frame">
+            <div className="gate-niche">
+              {art ? <LottieMark src={art} className="gate-art" /> : null}
+            </div>
+            <div className="gate-figure">
+              <Avatar profile={profile} lang={lang} />
+            </div>
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'ribbon') {
+    // Two registers with one moving line between them: who they are above it,
+    // what they carry below. The line runs the full width of the card, past
+    // the padding on both sides, so the hero reads as a surface something
+    // crossed rather than as a box with a picture in it.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt overflow-hidden px-7 pt-9 pb-8 md:px-12 md:pt-14 md:pb-10')} data-tilt>
+        <div className="flex max-w-4xl flex-col gap-4">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          <div data-hero-item>{about}</div>
+        </div>
+
+        <span className="ribbon-stroke -mx-7 md:-mx-12" aria-hidden="true">
+          {art ? <LottieMark src={art} className="ribbon-art" fit="cover" speed={0.35} /> : null}
+        </span>
+
+        <div className="flex flex-wrap items-center gap-5">
+          <Avatar profile={profile} lang={lang} />
+          {pills}
+        </div>
+      </header>
+    )
+  }
+
   if (template.hero === 'orbit') {
     // The rings turn around the avatar rather than beside it: the student is
     // the star at the centre of their own chart, and the bright points on the
@@ -847,6 +1016,38 @@ function ProjectItem({
       <li>{body}</li>
     )
   }
+  if (shape === 'ember') {
+    // Lit from below rather than above: a coal, not a stone. The inverse of
+    // مُحيط's pebble, and the glow rises when the pointer is on it.
+    return <li className="ember-card">{body}</li>
+  }
+  if (shape === 'cast') {
+    // Flat on the wall, throwing one long shadow away from the same sun as
+    // everything else on the page.
+    return <li className="cast-card">{body}</li>
+  }
+  if (shape === 'pebble') {
+    // Worn smooth and lit from above, the way anything is that has been
+    // sitting on a seabed for a while.
+    return <li className="pebble-card">{body}</li>
+  }
+  if (shape === 'block') {
+    // A flat rectangle with a bar down its start edge. No radius, no shadow:
+    // on this template depth is expressed by the grid, not by lifting things
+    // off it.
+    return <li className="block-card">{body}</li>
+  }
+  if (shape === 'carved') {
+    // Cut into the stone rather than laid on it: the top inner edge sits in
+    // shadow and the bottom one catches the light, which is the exact inverse
+    // of a raised panel (effects.css).
+    return <li className="carved-card">{body}</li>
+  }
+  if (shape === 'float') {
+    // No panel at all: an entry separated from the next by a hairline and a
+    // lot of air, lifting a little when the pointer is on it.
+    return <li className="float-card">{body}</li>
+  }
   if (shape === 'lume') {
     // A tile lit along its top edge, the way a card catches light from a star
     // above it. The glow itself is a pseudo-element (effects.css).
@@ -935,9 +1136,11 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
                 ? 'ledger'
                 : template.card === 'branch'
                   ? 'branch'
-                  : template.card === 'list'
-                    ? 'auto-cols-lg'
-                    : 'auto-cols'
+                  : template.card === 'float'
+                    ? 'floats'
+                    : template.card === 'list'
+                      ? 'auto-cols-lg'
+                      : 'auto-cols'
             }
           >
             {s.projects.map((p, i) => (
@@ -1135,6 +1338,10 @@ export function TemplateRenderer({
       className="tpl"
       data-template={template.id}
       data-motion-sig={template.motion}
+      // A covering scene reaches the footer, which is the one piece of text
+      // with no card under it. Exposing the fit lets one rule protect every
+      // template that uses one (effects.css) instead of each finding out.
+      data-bg-fit={template.media?.backgroundFit}
       data-preview={preview ? 'true' : undefined}
     >
       <Background template={template} />

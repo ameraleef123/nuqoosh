@@ -189,3 +189,192 @@ for theme, v in THUR.items():
         print(f"  {theme} {label:<26} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  accent {c:5.2f}  {f}")
     bare = contrast(hex2rgb(v['muted']), star_page)
     print(f"  {theme} {'BARE text over a star':<26} {rgb2hex(star_page)}  muted {bare:5.2f}  <- why the footer is on glass")
+
+# -- Phase 5 . rafif: drifting lines under an airy page -----------------------
+# Same shape of risk as every Lottie backdrop: the footer sits on the page, not
+# on a card. The lines are drawn in blue, so the worst case is a solid stroke.
+print()
+print("== rafif: text over the air palette and a drifting line ==")
+LINE = '#3B6FD4'
+RAFIF = {
+  'light': dict(page='#f2f7fa', glass=((255,255,255),0.55), fg='#13202b',
+                muted='#3c4d59', accent='#0e6d8a', band=0.26),
+  'dark ': dict(page='#0a1119', glass=((16,26,38),0.66), fg='#e8f1f6',
+                muted='#b0c2ce', accent='#7dd3fc', band=0.45),
+}
+for theme, v in RAFIF.items():
+    tint, ga = v['glass']
+    card = composite(tint, ga, hex2rgb(v['page']))
+    line_page = composite(hex2rgb(LINE), v['band'], hex2rgb(v['page']))
+    rows = [('card', card, True), ('page', hex2rgb(v['page']), False),
+            ('footer over a line', line_page, False),
+            ('card over a line', composite(tint, ga, line_page), True)]
+    for label, surf, on_card in rows:
+        # The accent sets type only on cards: links, heading rules, badges.
+        # The page carries nothing but the footer, which is muted.
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<22} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# -- Phase 5 . siq: a covering canyon ----------------------------------------
+# The backdrop is a painted scene, so its worst case is not a guess: #F3DDC9 is
+# the brightest OPAQUE pixel it produces, sampled across the whole loop with a
+# canvas readback. Everything below is measured against that pixel.
+print()
+print("== siq: text over the canyon at its brightest ==")
+BRIGHT = '#F3DDC9'
+SIQ = {
+  'light': dict(page='#f7ece0', glass=((255,255,255),0.72), fg='#2a140d',
+                muted='#634336', accent='#b8452f', art=0.12),
+  'dark ': dict(page='#1c0f0b', glass=((34,18,13),0.82), fg='#f7ece4',
+                muted='#d0b8aa', accent='#e8836b', art=0.70),
+}
+for theme, v in SIQ.items():
+    tint, ga = v['glass']
+    lit = composite(hex2rgb(BRIGHT), v['art'], hex2rgb(v['page']))
+    rows = [('card on bare ground', composite(tint, ga, hex2rgb(v['page'])), True),
+            ('card over the lit rock', composite(tint, ga, lit), True),
+            ('FOOTER glass over it', composite(tint, ga, lit), True),
+            ('bare text over lit rock', lit, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        note = '  <- why every cover template footer is on glass' if not on_card else ''
+        print(f"  {theme} {label:<24} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}{note}")
+
+# -- Phase 5 . takwin: hollow forms over a ruled page -------------------------
+# The backdrop is outlined geometry drawn in the highlight yellow. Worst case
+# is a solid stroke of it behind the footer, which sits on the page with no
+# card under it.
+print()
+print("== takwin: text over the composition ==")
+STROKE = '#F0B429'
+TAKWIN = {
+  'light': dict(page='#faf6ee', glass=((255,255,255),0.60), fg='#151d33',
+                muted='#454e68', accent='#1e3a8a', art=0.50),
+  'dark ': dict(page='#0e1424', glass=((20,28,48),0.72), fg='#eef1f7',
+                muted='#b4bdd0', accent='#8ba6f0', art=0.28),
+}
+for theme, v in TAKWIN.items():
+    tint, ga = v['glass']
+    lit = composite(hex2rgb(STROKE), v['art'], hex2rgb(v['page']))
+    rows = [('card', composite(tint, ga, hex2rgb(v['page'])), True),
+            ('card over a stroke', composite(tint, ga, lit), True),
+            ('hero cell (solid)', hex2rgb('#fdfbf8' if theme.strip() == 'light' else '#121a2d'), True),
+            ('footer over a stroke', lit, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<22} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+    # The yellow cell is the one place ink sits on the highlight itself.
+    print(f"  {theme} ink on the yellow cell     {STROKE}  {contrast(hex2rgb('#151d33'), hex2rgb(STROKE)):5.2f}  PASS")
+
+# -- Phase 5 . muheet: a water column ----------------------------------------
+# Three things sit behind text here: the depth gradient itself, a shaft of
+# surface light, and a solid fish from the shoal. The fish is the binding case
+# in light (it is drawn in a solid navy) and the shaft is the binding case in
+# dark.
+print()
+print("== muheet: text down the water column ==")
+FISH_LIGHT, FISH_DARK, SHAFT = '#1F3BA8', '#8FE3F0', '#8FE3F0'
+MUHEET = {
+  'light': dict(page='#eaf6f7', deep='#bcdfe5', glass=((255,255,255),0.62), fg='#0b2a33',
+                muted='#2f545e', accent='#0b707e', fish=(FISH_LIGHT, 0.20), shaft=('#ffffff', 0.18)),
+  'dark ': dict(page='#04141c', deep='#061d27', glass=((8,32,42),0.72), fg='#e4f4f6',
+                muted='#9dc0c7', accent='#4fd1c5', fish=(FISH_DARK, 0.26), shaft=(SHAFT, 0.22)),
+}
+for theme, v in MUHEET.items():
+    tint, ga = v['glass']
+    fish = composite(hex2rgb(v['fish'][0]), v['fish'][1], hex2rgb(v['page']))
+    shaft = composite(hex2rgb(v['shaft'][0]), v['shaft'][1], hex2rgb(v['page']))
+    rows = [('card', composite(tint, ga, hex2rgb(v['page'])), True),
+            ('card at the sea floor', composite(tint, ga, hex2rgb(v['deep'])), True),
+            ('card over a fish', composite(tint, ga, fish), True),
+            ('footer over a fish', fish, False),
+            ('footer in a light shaft', shaft, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<24} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# -- Phase 5 . fayi: one sun, and everything it throws ------------------------
+# Two things darken this page under the text: the shade wash lying across it,
+# and the leaf shadows drifting down it. The leaves are drained to greyscale
+# and re-levelled per theme, so the values below are the levelled ones.
+print()
+print("== fayi: text in the light and in the shade ==")
+FAYI = {
+  'light': dict(page='#f4f1ec', glass=((255,255,255),0.60), fg='#1c1a18',
+                muted='#4a4641', accent='#6b4d6e',
+                shade=((107,95,116),0.36), leaf=((42,42,42),0.16)),
+  'dark ': dict(page='#191719', glass=((34,31,35),0.74), fg='#f2efe9',
+                muted='#c0b9b2', accent='#c9a8cd',
+                shade=((0,0,0),0.45), leaf=((200,200,200),0.20)),
+}
+for theme, v in FAYI.items():
+    tint, ga = v['glass']
+    shaded_page = composite(v['shade'][0], v['shade'][1], hex2rgb(v['page']))
+    leafy_page = composite(v['leaf'][0], v['leaf'][1], hex2rgb(v['page']))
+    rows = [('lit card', composite(tint, ga, hex2rgb(v['page'])), True),
+            ('card in deepest shade', composite(tint, ga, shaded_page), True),
+            ('card over a leaf shadow', composite(tint, ga, leafy_page), True),
+            ('footer in deepest shade', shaded_page, False),
+            ('footer over a leaf shadow', leafy_page, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<26} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# -- Phase 5 . himma: the loud one -------------------------------------------
+# Two things sit under text: the coal at the foot of every card, and the embers
+# drifting up the page. The embers are colourised to one warm tone before they
+# are measured (effects.css), so the value below is the colourised one.
+print()
+print("== himma: text over the coal and the embers ==")
+EMBER_MARK = '#D2842A'
+HIMMA = {
+  'light': dict(page='#fff7f4', glass=((255,255,255),0.60), fg='#2b1016',
+                muted='#663a43', accent='#c41e4f',
+                coal=((196,30,79),0.10), mark=0.40),
+  'dark ': dict(page='#1c0a10', glass=((42,16,22),0.74), fg='#ffeef1',
+                muted='#dbb2bb', accent='#ff7a95',
+                coal=((255,122,149),0.18), mark=0.35),
+}
+for theme, v in HIMMA.items():
+    tint, ga = v['glass']
+    card = composite(tint, ga, hex2rgb(v['page']))
+    coal = composite(v['coal'][0], v['coal'][1], card)     # the glow is INSIDE the card
+    mark = composite(hex2rgb(EMBER_MARK), v['mark'], hex2rgb(v['page']))
+    rows = [('card', card, True),
+            ('card at its hottest coal', coal, True),
+            ('card over an ember', composite(tint, ga, mark), True),
+            ('footer over an ember', mark, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<26} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+    print(f"  {theme} ink on the amber stamp    #F5A524  {contrast(hex2rgb('#2b1016'), hex2rgb('#f5a524')):5.2f}  PASS")
