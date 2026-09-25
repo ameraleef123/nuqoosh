@@ -1779,6 +1779,1326 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
+   مَدى — range: the distance a signal actually reaches. It is what a radar
+   measures, and it is what a student is trying to extend by putting a page on
+   the internet at all.
+
+   Thirteen templates in, the set had weather, paper, sky, rock, sea, air,
+   shade and fire, and nothing technical — which is odd for an audience of
+   computing students. This is the instrument panel: near-black with one
+   electric blue, a scan grid ruled across the page, and no orbs, because a
+   blurred blob has no place on an instrument.
+
+   The blue is also what the art is natively drawn in, so the stream needs no
+   colour correction at all — only the reticle is turned, and only once.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='mada'] {
+  --nq-background: #eaeff4;
+  --nq-foreground: #0f1720; /* 17.10:1 on the card */
+  --nq-muted-foreground: #3a4753; /*  9.02:1 · two steps darker than needed, to
+                                     clear the data stream behind the footer */
+  --nq-accent: #0e6b9c; /*  5.52:1 as text · white on it 5.83:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #56ccf2;
+  --nq-on-highlight: #0f1720;
+  --nq-border: rgba(15, 23, 32, 0.13);
+  --nq-border-strong: rgba(15, 23, 32, 0.26);
+  --nq-ring: #0e6b9c;
+
+  --glass-bg: rgba(255, 255, 255, 0.62);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.46);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-border-color: rgba(255, 255, 255, 0.72);
+  --glass-edge: 0 0 0 1px rgba(15, 23, 32, 0.05);
+  --glass-shadow: 0 12px 34px rgba(15, 35, 60, 0.1);
+  --glass-fallback: #f7f9fb;
+  --glass-fallback-subtle: #f3f6f9;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+
+  /* An instrument has corners. */
+  --nq-radius-sm: 2px;
+  --nq-radius-md: 3px;
+  --nq-radius-lg: 4px;
+  --nq-radius-xl: 4px;
+
+  /* The data stream. Its points are a solid blue, which is the binding case
+     for the footer — the one piece of text that sits on the page rather than
+     on a card. */
+  --screen-art-opacity: 0.3;
+
+  --scan-line: rgba(15, 23, 32, 0.05);
+  --ping-glow: rgba(14, 107, 156, 0.35);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* No orbs: a blurred blob has no place on an instrument. */
+[data-bg='signal'] .orb {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='mada'] {
+    --nq-background: #06090f;
+    --nq-foreground: #e6f1fa; /* 16.65:1 on the card */
+    --nq-muted-foreground: #a6bccd; /*  9.71:1 */
+    --nq-accent: #56ccf2; /* 10.28:1 as text · the page on it 10.74:1 */
+    --nq-on-accent: #06090f;
+    --nq-highlight: #56ccf2;
+    --nq-on-highlight: #06090f;
+    --nq-border: rgba(255, 255, 255, 0.13);
+    --nq-border-strong: rgba(255, 255, 255, 0.26);
+    --nq-ring: #56ccf2;
+    --glass-bg: rgba(12, 18, 28, 0.74);
+    --glass-bg-subtle: rgba(12, 18, 28, 0.58);
+    --glass-bg-strong: rgba(12, 18, 28, 0.86);
+    --glass-border-color: rgba(255, 255, 255, 0.11);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+    --glass-fallback: #0a1019;
+    --glass-fallback-subtle: #080d15;
+    --glass-fallback-strong: #0d141f;
+    --nq-radius-sm: 2px;
+    --nq-radius-md: 3px;
+    --nq-radius-lg: 4px;
+    --nq-radius-xl: 4px;
+    --screen-art-opacity: 0.32;
+    --scan-line: rgba(86, 204, 242, 0.055);
+    --ping-glow: rgba(86, 204, 242, 0.4);
+  }
+}
+:root[data-theme='dark'] [data-template='mada'] {
+  --nq-background: #06090f;
+  --nq-foreground: #e6f1fa;
+  --nq-muted-foreground: #a6bccd;
+  --nq-accent: #56ccf2;
+  --nq-on-accent: #06090f;
+  --nq-highlight: #56ccf2;
+  --nq-on-highlight: #06090f;
+  --nq-border: rgba(255, 255, 255, 0.13);
+  --nq-border-strong: rgba(255, 255, 255, 0.26);
+  --nq-ring: #56ccf2;
+  --glass-bg: rgba(12, 18, 28, 0.74);
+  --glass-bg-subtle: rgba(12, 18, 28, 0.58);
+  --glass-bg-strong: rgba(12, 18, 28, 0.86);
+  --glass-border-color: rgba(255, 255, 255, 0.11);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+  --glass-fallback: #0a1019;
+  --glass-fallback-subtle: #080d15;
+  --glass-fallback-strong: #0d141f;
+  --nq-radius-sm: 2px;
+  --nq-radius-md: 3px;
+  --nq-radius-lg: 4px;
+  --nq-radius-xl: 4px;
+  --screen-art-opacity: 0.32;
+  --scan-line: rgba(86, 204, 242, 0.055);
+  --ping-glow: rgba(86, 204, 242, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   تسلا — named for Nikola Tesla, and for the unit, which is what the word
+   means outside the car company. One idea taken all the way: a page under
+   voltage.
+
+   Violet on a near-black with a purple cast, static in the air, card borders
+   that go live under the pointer, and a hero split into two plates with an arc
+   jumping the gap. It is the only template whose hero is not one card.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='tesla'] {
+  --nq-background: #f4f0fb;
+  --nq-foreground: #19102a; /* 17.47:1 on the card */
+  --nq-muted-foreground: #473b5e; /*  9.77:1 · two steps darker than needed, to
+                                     clear the sparks behind the footer */
+  --nq-accent: #7c22ce; /*  6.74:1 as text · white on it 7.05:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #c084fc;
+  --nq-on-highlight: #19102a;
+  --nq-border: rgba(25, 16, 42, 0.13);
+  --nq-border-strong: rgba(25, 16, 42, 0.26);
+  --nq-ring: #7c22ce;
+
+  /* The plates are nearly solid, and that is a contrast decision as much as a
+     design one: a white-hot core passing behind a translucent card dropped the
+     accent to 3.31:1. At 0.86 it is 5.4:1, and an instrument plate should not
+     be transparent to the weather anyway. */
+  --glass-bg: rgba(255, 255, 255, 0.86);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.76);
+  --glass-bg-strong: rgba(255, 255, 255, 0.94);
+  --glass-border-color: rgba(255, 255, 255, 0.72);
+  --glass-edge: 0 0 0 1px rgba(25, 16, 42, 0.05);
+  --glass-shadow: 0 14px 38px rgba(60, 20, 110, 0.12);
+  --glass-fallback: #fbf9fd;
+  --glass-fallback-subtle: #f8f5fc;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 13px;
+  --orb-opacity: 0.55;
+
+  /* Static in the air. The ceiling is the footer, which sits on the page
+     rather than on a card. */
+  --screen-art-opacity: 0.35;
+
+  /* A live edge, and what it throws when it is energised. */
+  --live-edge: rgba(124, 34, 206, 0.28);
+  --live-glow: rgba(124, 34, 206, 0.45);
+  --arc-trace: rgba(124, 34, 206, 0.3);
+  /* The three strokes of a bolt, widest and softest first. On the pale page a
+     strike reads as a dark discharge rather than a bright one — a white core
+     on white is nothing — so the core here is the violet, not the white. */
+  --bolt-halo: rgba(124, 34, 206, 0.28);
+  --bolt-sheath: rgba(124, 34, 206, 0.6);
+  --bolt-core: #5b1a99;
+  --bolt-flash: rgba(124, 34, 206, 0.05);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='volt'] .orb[data-orb='1'] {
+  background: #e3d4fb;
+}
+[data-bg='volt'] .orb[data-orb='2'] {
+  background: #efe2fd;
+}
+[data-bg='volt'] .orb[data-orb='3'] {
+  background: #d9c6f8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='tesla'] {
+    --nq-background: #0b0714;
+    --nq-foreground: #f3ecfd; /* 16.63:1 on the card */
+    --nq-muted-foreground: #bcaed4; /*  9.25:1 */
+    --nq-accent: #c084fc; /*  7.25:1 as text · the page on it 7.54:1 */
+    --nq-on-accent: #0b0714;
+    --nq-highlight: #c084fc;
+    --nq-on-highlight: #0b0714;
+    --nq-border: rgba(255, 255, 255, 0.13);
+    --nq-border-strong: rgba(255, 255, 255, 0.26);
+    --nq-ring: #c084fc;
+    --glass-bg: rgba(20, 13, 32, 0.9);
+    --glass-bg-subtle: rgba(20, 13, 32, 0.82);
+    --glass-bg-strong: rgba(20, 13, 32, 0.95);
+    --glass-border-color: rgba(255, 255, 255, 0.11);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+    --glass-fallback: #120c1d;
+    --glass-fallback-subtle: #100a1a;
+    --glass-fallback-strong: #160f24;
+    --orb-opacity: 0.3;
+    --screen-art-opacity: 0.45;
+    --live-edge: rgba(192, 132, 252, 0.3);
+    --live-glow: rgba(192, 132, 252, 0.5);
+    --arc-trace: rgba(192, 132, 252, 0.35);
+    --bolt-halo: rgba(168, 85, 247, 0.45);
+    --bolt-sheath: rgba(216, 180, 254, 0.85);
+    --bolt-core: #ffffff;
+    --bolt-flash: rgba(192, 132, 252, 0.07);
+  }
+  :root:not([data-theme='light']) [data-bg='volt'] .orb[data-orb='1'] {
+    background: #34175c;
+  }
+  :root:not([data-theme='light']) [data-bg='volt'] .orb[data-orb='2'] {
+    background: #26124a;
+  }
+  :root:not([data-theme='light']) [data-bg='volt'] .orb[data-orb='3'] {
+    background: #3d1c68;
+  }
+}
+:root[data-theme='dark'] [data-template='tesla'] {
+  --nq-background: #0b0714;
+  --nq-foreground: #f3ecfd;
+  --nq-muted-foreground: #bcaed4;
+  --nq-accent: #c084fc;
+  --nq-on-accent: #0b0714;
+  --nq-highlight: #c084fc;
+  --nq-on-highlight: #0b0714;
+  --nq-border: rgba(255, 255, 255, 0.13);
+  --nq-border-strong: rgba(255, 255, 255, 0.26);
+  --nq-ring: #c084fc;
+  --glass-bg: rgba(20, 13, 32, 0.9);
+  --glass-bg-subtle: rgba(20, 13, 32, 0.82);
+  --glass-bg-strong: rgba(20, 13, 32, 0.95);
+  --glass-border-color: rgba(255, 255, 255, 0.11);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+  --glass-fallback: #120c1d;
+  --glass-fallback-subtle: #100a1a;
+  --glass-fallback-strong: #160f24;
+  --orb-opacity: 0.3;
+  --screen-art-opacity: 0.45;
+  --live-edge: rgba(192, 132, 252, 0.3);
+  --live-glow: rgba(192, 132, 252, 0.5);
+  --arc-trace: rgba(192, 132, 252, 0.35);
+  --bolt-halo: rgba(168, 85, 247, 0.45);
+  --bolt-sheath: rgba(216, 180, 254, 0.85);
+  --bolt-core: #ffffff;
+  --bolt-flash: rgba(192, 132, 252, 0.07);
+}
+:root[data-theme='dark'] [data-bg='volt'] .orb[data-orb='1'] {
+  background: #34175c;
+}
+:root[data-theme='dark'] [data-bg='volt'] .orb[data-orb='2'] {
+  background: #26124a;
+}
+:root[data-theme='dark'] [data-bg='volt'] .orb[data-orb='3'] {
+  background: #3d1c68;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   ساكورا — زهر الكرز. The owner's pick, and the one template in the set that
+   is named after a season rather than a mood.
+
+   The trap with sakura is to think it is a colour. It is not: a pink page is
+   a birthday card. What makes it read as Japanese is the COMPOSITION —
+   asymmetry, a great deal of deliberate emptiness, and one branch placed off
+   in a corner rather than centred. So this is the only hero in the set that is
+   mostly empty on purpose, and the only card shape with one corner cut square.
+
+   The page is a warm ivory with the faintest rose in it, not pink. The pink is
+   spent in two places only: the petals falling, and the blossoms in the hero
+   corner. Everything the reader has to read is plum on ivory.
+
+   The one loud mark is the portrait, which becomes a hanko — the vermilion
+   square seal a Japanese signature ends with — with the initials cut white out
+   of it. Vermilion against plum-on-ivory is the whole identity in one square
+   centimetre, and it is what keeps this from reading as another هِمّة.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='sakura'] {
+  --nq-background: #fdf2f4;
+  --nq-foreground: #2b1a21; /* 16.04:1 on the card */
+  --nq-muted-foreground: #63454e; /*  8.19:1 · darker than the floor asks, so it
+                                     still clears a petal that drifts behind
+                                     the footer */
+  --nq-accent: #8e3c5d; /*  6.91:1 as text · white on it 7.11:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #f0a5c0;
+  --nq-on-highlight: #2b1a21;
+  --nq-border: rgba(43, 26, 33, 0.12);
+  --nq-border-strong: rgba(43, 26, 33, 0.24);
+  --nq-ring: #8e3c5d;
+
+  --glass-bg: rgba(255, 255, 255, 0.66);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.5);
+  --glass-bg-strong: rgba(255, 255, 255, 0.8);
+  --glass-border-color: rgba(255, 255, 255, 0.76);
+  --glass-edge: 0 0 0 1px rgba(43, 26, 33, 0.04);
+  --glass-shadow: 0 14px 36px rgba(120, 40, 70, 0.1);
+  --glass-fallback: #fefbfb;
+  --glass-fallback-subtle: #fdf8f9;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+  --orb-opacity: 0.5;
+
+  /* The petals. They fall over the whole page including the footer, which is
+     the one piece of text with no card under it — so that is the ceiling. */
+  --screen-art-opacity: 0.55;
+
+  /* Full strength in daylight; the night page dims them so they do not
+     outshout the seal. */
+  --bloom-opacity: 1;
+
+  /* The seal. A hanko is traditionally pressed in vermilion, and that is where
+     this started — but the owner wanted the square in baby pink, which makes
+     it part of the blossom rather than a shout against it. The consequence is
+     that the initials can no longer be white: white on baby pink measures
+     1.48:1. They are cut in deep plum instead, at 6.07:1, and the square is
+     given a plum ring so it still reads as a stamp on a near-white card. */
+  --hanko: #f8c8d4;
+  --hanko-ink: #7a2f4c; /* 6.07:1 on the seal */
+  --hanko-edge: rgba(122, 47, 76, 0.45);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='bloom'] .orb[data-orb='1'] {
+  background: #fcdfe7;
+}
+[data-bg='bloom'] .orb[data-orb='2'] {
+  background: #fdeef1;
+}
+[data-bg='bloom'] .orb[data-orb='3'] {
+  background: #f9d3de;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='sakura'] {
+    --nq-background: #1a1015;
+    --nq-foreground: #fbeef2; /* 15.46:1 on the card */
+    --nq-muted-foreground: #d3b5bf; /*  9.25:1 */
+    --nq-accent: #f0a5c0; /*  9.01:1 as text · the page on it 9.37:1 */
+    --nq-on-accent: #1a1015;
+    --nq-highlight: #f0a5c0;
+    --nq-on-highlight: #1a1015;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #f0a5c0;
+    --glass-bg: rgba(38, 24, 31, 0.76);
+    --glass-bg-subtle: rgba(38, 24, 31, 0.6);
+    --glass-bg-strong: rgba(38, 24, 31, 0.88);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+    --glass-fallback: #23161d;
+    --glass-fallback-subtle: #1f131a;
+    --glass-fallback-strong: #281a21;
+    --orb-opacity: 0.26;
+    /* 0.28, not the 0.38 this started at: the lightest petal in the art is
+       #ffb7b7, and at 0.38 the footer's muted type over one measured 3.78:1.
+       At 0.28 it is 5.02:1. */
+    --screen-art-opacity: 0.28;
+    --bloom-opacity: 0.78;
+    /* The same seal in both themes: a pale square is already 11.80:1 against
+       the night card, so nothing needs to change for it to read. */
+    --hanko: #f8c8d4;
+    --hanko-ink: #7a2f4c;
+    --hanko-edge: rgba(122, 47, 76, 0.45);
+  }
+  :root:not([data-theme='light']) [data-bg='bloom'] .orb[data-orb='1'] {
+    background: #4a1f31;
+  }
+  :root:not([data-theme='light']) [data-bg='bloom'] .orb[data-orb='2'] {
+    background: #3a1826;
+  }
+  :root:not([data-theme='light']) [data-bg='bloom'] .orb[data-orb='3'] {
+    background: #55253a;
+  }
+}
+:root[data-theme='dark'] [data-template='sakura'] {
+  --nq-background: #1a1015;
+  --nq-foreground: #fbeef2;
+  --nq-muted-foreground: #d3b5bf;
+  --nq-accent: #f0a5c0;
+  --nq-on-accent: #1a1015;
+  --nq-highlight: #f0a5c0;
+  --nq-on-highlight: #1a1015;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #f0a5c0;
+  --glass-bg: rgba(38, 24, 31, 0.76);
+  --glass-bg-subtle: rgba(38, 24, 31, 0.6);
+  --glass-bg-strong: rgba(38, 24, 31, 0.88);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 36px rgba(0, 0, 0, 0.55);
+  --glass-fallback: #23161d;
+  --glass-fallback-subtle: #1f131a;
+  --glass-fallback-strong: #281a21;
+  --orb-opacity: 0.26;
+  --screen-art-opacity: 0.28;
+  --bloom-opacity: 0.78;
+  --hanko: #f8c8d4;
+  --hanko-ink: #7a2f4c;
+  --hanko-edge: rgba(122, 47, 76, 0.45);
+}
+:root[data-theme='dark'] [data-bg='bloom'] .orb[data-orb='1'] {
+  background: #4a1f31;
+}
+:root[data-theme='dark'] [data-bg='bloom'] .orb[data-orb='2'] {
+  background: #3a1826;
+}
+:root[data-theme='dark'] [data-bg='bloom'] .orb[data-orb='3'] {
+  background: #55253a;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   نسيم — هواء وفراغ. The last of the free tier, and the one that had to argue
+   with its own identity sheet.
+
+   The sheet asked for a sky-blue WASH with a #0369A1 accent. By the time it
+   came to be built, صقيع, رَفيف, مُحيط and مَدى had all taken pale-blue grounds,
+   and a fifth would have been the weakest page in the set — four templates you
+   cannot tell apart in a gallery thumbnail is worse than three.
+
+   So نسيم keeps the sky and gives up the wash. It is the only template whose
+   page is a SATURATED colour rather than a near-white: an actual blue sky with
+   the cards floating on it as white paper. That is the difference you can see
+   at thumbnail size, which is the only size that matters for choosing.
+
+   It also has no art of its own. You cannot draw air, so nothing is drawn —
+   three soft clouds cross the page on a transform and that is the whole
+   decoration. No Lottie, no player, no wasm; what the page costs is the four
+   shared section illustrations, and nothing on top of them.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='naseem'] {
+  /* Deeper than the first pass (#cfe3f5). On a sky that pale, a white cloud
+     has nothing to show against — both the clouds and the paper cards were
+     disappearing into the ground. */
+  --nq-background: #bcd9f2;
+  --nq-foreground: #0f2436; /* 15.47:1 on the card · 10.82:1 on the bare sky */
+  --nq-muted-foreground: #334f68; /*  8.35:1 on the card · 5.83:1 on the bare
+                                     sky, which is where the footer sits — the
+                                     binding case on a coloured ground */
+  --nq-accent: #0b4f8a; /*  8.25:1 as text · white on it 8.40:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #7cc0f5;
+  --nq-on-highlight: #0f2436;
+  --nq-border: rgba(15, 36, 54, 0.1);
+  --nq-border-strong: rgba(15, 36, 54, 0.2);
+  --nq-ring: #0b4f8a;
+
+  /* Paper, not glass. On a coloured ground a translucent card picks up the sky
+     and stops reading as a sheet lying on top of it, so these are close to
+     opaque and the blur is small. */
+  --glass-bg: rgba(255, 255, 255, 0.93);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.82);
+  --glass-bg-strong: rgba(255, 255, 255, 0.97);
+  --glass-border-color: rgba(255, 255, 255, 0.9);
+  --glass-edge: 0 0 0 1px rgba(15, 36, 54, 0.04);
+  /* The float is the whole idea, so the shadow is the one thing here that is
+     not restrained: long, soft, and tinted with the sky rather than grey. */
+  --glass-shadow: 0 18px 44px rgba(20, 60, 100, 0.16);
+  --glass-fallback: #fcfdfe;
+  --glass-fallback-subtle: #f7fafd;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 6px;
+
+  /* Clouds. White at this strength lightens the ground under the footer, which
+     only ever helps the contrast above. */
+  --cloud-tint: rgba(255, 255, 255, 0.78);
+  --sky-high: #a6cdee; /* overhead */
+  --sky-low: #d8e9f8; /* toward the horizon */
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* No orbs: the sky is the colour, and a blurred blob on top of it reads as a
+   smudge rather than as light. */
+[data-bg='breeze'] .orb {
+  display: none;
+}
+/* A real sky is not a flat fill — it is deepest overhead and washes out toward
+   the horizon. One gradient does more for the illusion than any decoration,
+   and it is vertical, so it needs no RTL twin. */
+[data-bg='breeze'] {
+  background-image: linear-gradient(to bottom, var(--sky-high) 0%, var(--sky-low) 62%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='naseem'] {
+    --nq-background: #0a1723;
+    --nq-foreground: #e9f3fc; /* 14.82:1 on the card */
+    --nq-muted-foreground: #a9c2d8; /*  9.04:1 on the card · 9.83:1 on the page */
+    --nq-accent: #9ec5ff; /*  9.43:1 as text · the page on it 9.79:1 · leaning
+                              periwinkle on purpose, so it is not رَفيف's cyan */
+    --nq-on-accent: #0a1723;
+    --nq-highlight: #9ec5ff;
+    --nq-on-highlight: #0a1723;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #9ec5ff;
+    --glass-bg: rgba(18, 32, 48, 0.9);
+    --glass-bg-subtle: rgba(18, 32, 48, 0.74);
+    --glass-bg-strong: rgba(18, 32, 48, 0.96);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+    --glass-fallback: #111f2f;
+    --glass-fallback-subtle: #0e1b29;
+    --glass-fallback-strong: #142334;
+    /* At night a cloud is haze, not a white shape. */
+    --cloud-tint: rgba(210, 232, 255, 0.07);
+    --sky-high: #071220;
+    --sky-low: #12243a;
+  }
+}
+:root[data-theme='dark'] [data-template='naseem'] {
+  --nq-background: #0a1723;
+  --nq-foreground: #e9f3fc;
+  --nq-muted-foreground: #a9c2d8;
+  --nq-accent: #9ec5ff;
+  --nq-on-accent: #0a1723;
+  --nq-highlight: #9ec5ff;
+  --nq-on-highlight: #0a1723;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #9ec5ff;
+  --glass-bg: rgba(18, 32, 48, 0.9);
+  --glass-bg-subtle: rgba(18, 32, 48, 0.74);
+  --glass-bg-strong: rgba(18, 32, 48, 0.96);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
+  --glass-fallback: #111f2f;
+  --glass-fallback-subtle: #0e1b29;
+  --glass-fallback-strong: #142334;
+  --cloud-tint: rgba(210, 232, 255, 0.07);
+  --sky-high: #071220;
+  --sky-low: #12243a;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   مَشرَبيّة — a screen of turned wooden spindles set into a window. You sit
+   behind it and look out, and the light that gets through arrives cut into
+   pieces.
+
+   Built to the standard سِيق and مُحيط set: a place with a body, and the
+   portrait inside the structure. The portrait sits in an opening cut through
+   the screen; the lanterns hanging beside it are the reason there is light.
+
+   It is also the first WARM dark page in the set. Every other dark template is
+   a cold one — night sky, deep water, near-black instrument panels. This is a
+   room at night with wood in it, and that alone separates it in a thumbnail.
+
+   The brass is copper-leaning (#E0913F), deliberately away from ثُرَيّا's
+   yellow gold (#F5B942), which is the only other warm accent on a dark page.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='mashrabiya'] {
+  --nq-background: #f6eee0; /* a lit room, for the light theme */
+  --nq-foreground: #2a1c10; /* 15.98:1 on the card */
+  --nq-muted-foreground: #5d4526; /*  8.67:1 on the card · 7.77:1 on the page */
+  --nq-accent: #8a4b20; /*  6.54:1 as text · white on it 6.76:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #e0913f;
+  --nq-on-highlight: #2a1c10;
+  --nq-border: rgba(42, 28, 16, 0.14);
+  --nq-border-strong: rgba(42, 28, 16, 0.28);
+  --nq-ring: #8a4b20;
+
+  --glass-bg: rgba(255, 253, 248, 0.86);
+  --glass-bg-subtle: rgba(255, 253, 248, 0.72);
+  --glass-bg-strong: rgba(255, 253, 248, 0.94);
+  --glass-border-color: rgba(255, 255, 255, 0.8);
+  --glass-edge: 0 0 0 1px rgba(42, 28, 16, 0.05);
+  --glass-shadow: 0 14px 38px rgba(90, 60, 25, 0.14);
+  --glass-fallback: #fefbf5;
+  --glass-fallback-subtle: #fbf6ec;
+  --glass-fallback-strong: #fffdf8;
+  --glass-blur: 10px;
+  --orb-opacity: 0.4;
+
+  /* The screen itself. Two strengths: the panel behind the portrait, which is
+     meant to be read as woodwork, and the wall across the page, which is meant
+     to be felt and not looked at. */
+  --lattice-ink: #8a4b20;
+  --lattice-panel-opacity: 0.5;
+  --lattice-wall-opacity: 0.07;
+  --lattice-weight: 3.2;
+  --rosette-opacity: 0.22; /* accent over a stroke 4.68:1 */
+
+  /* What the light throws. */
+  --lamp-glow: rgba(224, 145, 63, 0.3);
+  --wood-edge: #b07a3c;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='lattice'] .orb[data-orb='1'] {
+  background: #f6dcb4;
+}
+[data-bg='lattice'] .orb[data-orb='2'] {
+  background: #fae9cd;
+}
+[data-bg='lattice'] .orb[data-orb='3'] {
+  background: #eccfa3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='mashrabiya'] {
+    --nq-background: #1a120d;
+    --nq-foreground: #f4e8d6; /* 13.87:1 on the card */
+    --nq-muted-foreground: #c9b092; /*  8.08:1 on the card */
+    --nq-accent: #e0913f; /*  6.62:1 as text · the page on it 7.30:1 */
+    --nq-on-accent: #1a120d;
+    --nq-highlight: #e0913f;
+    --nq-on-highlight: #1a120d;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #e0913f;
+    --glass-bg: rgba(40, 28, 19, 0.9);
+    --glass-bg-subtle: rgba(40, 28, 19, 0.74);
+    --glass-bg-strong: rgba(40, 28, 19, 0.96);
+    --glass-border-color: rgba(255, 255, 255, 0.09);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+    --glass-fallback: #271b12;
+    --glass-fallback-subtle: #221710;
+    --glass-fallback-strong: #2c1f15;
+    --orb-opacity: 0.22;
+    /* At night the screen is lit from behind, so the wood reads brighter than
+       the room rather than darker. */
+    --lattice-ink: #d09a56;
+    --lattice-panel-opacity: 0.45;
+    --lattice-wall-opacity: 0.06;
+    --lattice-weight: 3.2;
+    --rosette-opacity: 0.16; /* accent over a stroke 5.01:1 */
+    --lamp-glow: rgba(224, 145, 63, 0.22);
+    --wood-edge: #8a5a2a;
+  }
+  :root:not([data-theme='light']) [data-bg='lattice'] .orb[data-orb='1'] {
+    background: #4a2f16;
+  }
+  :root:not([data-theme='light']) [data-bg='lattice'] .orb[data-orb='2'] {
+    background: #382110;
+  }
+  :root:not([data-theme='light']) [data-bg='lattice'] .orb[data-orb='3'] {
+    background: #56381b;
+  }
+}
+:root[data-theme='dark'] [data-template='mashrabiya'] {
+  --nq-background: #1a120d;
+  --nq-foreground: #f4e8d6;
+  --nq-muted-foreground: #c9b092;
+  --nq-accent: #e0913f;
+  --nq-on-accent: #1a120d;
+  --nq-highlight: #e0913f;
+  --nq-on-highlight: #1a120d;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #e0913f;
+  --glass-bg: rgba(40, 28, 19, 0.9);
+  --glass-bg-subtle: rgba(40, 28, 19, 0.74);
+  --glass-bg-strong: rgba(40, 28, 19, 0.96);
+  --glass-border-color: rgba(255, 255, 255, 0.09);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+  --glass-fallback: #271b12;
+  --glass-fallback-subtle: #221710;
+  --glass-fallback-strong: #2c1f15;
+  --orb-opacity: 0.22;
+  --lattice-ink: #d09a56;
+  --lattice-panel-opacity: 0.45;
+  --lattice-wall-opacity: 0.06;
+  --lattice-weight: 3.2;
+  --rosette-opacity: 0.16;
+  --lamp-glow: rgba(224, 145, 63, 0.22);
+  --wood-edge: #8a5a2a;
+}
+:root[data-theme='dark'] [data-bg='lattice'] .orb[data-orb='1'] {
+  background: #4a2f16;
+}
+:root[data-theme='dark'] [data-bg='lattice'] .orb[data-orb='2'] {
+  background: #382110;
+}
+:root[data-theme='dark'] [data-bg='lattice'] .orb[data-orb='3'] {
+  background: #56381b;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   نيويورك — أبراج وإضاءات ما بتنام. The owner's pick, and the brief was "all
+   lights, towers".
+
+   The object is a tower at night and the person is ONE LIT WINDOW in it. That
+   is the truest thing about the city, and it is the same relationship سِيق and
+   مُحيط are built on: the portrait is inside the structure, not beside a
+   picture of one.
+
+   The magenta is the one part of the colour wheel seventeen templates had left
+   alone. هِمّة's crimson and ساكورا's rose are both on light grounds; on a
+   dark page nothing else is anywhere near it. The window light is warm amber
+   and is DECORATION ONLY — no text is ever set in it, which is what lets it
+   stay as bright as a real window.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='newyork'] {
+  --nq-background: #eef2f8; /* dusk, for the light theme: the lights are on but
+                               the sky has not gone yet */
+  --nq-foreground: #10182a; /* 17.42:1 on the card */
+  --nq-muted-foreground: #44506a; /*  7.94:1 on the card · 7.19:1 on the page */
+  --nq-accent: #a81f68; /*  6.75:1 as text · white on it 6.86:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #ff5fa2;
+  --nq-on-highlight: #10182a;
+  --nq-border: rgba(16, 24, 42, 0.13);
+  --nq-border-strong: rgba(16, 24, 42, 0.26);
+  --nq-ring: #a81f68;
+
+  --glass-bg: rgba(255, 255, 255, 0.8);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.66);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
+  --glass-border-color: rgba(255, 255, 255, 0.8);
+  --glass-edge: 0 0 0 1px rgba(16, 24, 42, 0.05);
+  --glass-shadow: 0 14px 38px rgba(20, 30, 60, 0.12);
+  --glass-fallback: #fdfdfe;
+  --glass-fallback-subtle: #f9fafd;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 11px;
+  --orb-opacity: 0.4;
+
+  /* A city has corners. */
+  --nq-radius-sm: 2px;
+  --nq-radius-md: 3px;
+  --nq-radius-lg: 4px;
+  --nq-radius-xl: 4px;
+
+  /* The tower. Concrete by day, and the windows are what carries the light. */
+  --tower-face: #cbd5e6;
+  --tower-edge: rgba(16, 24, 42, 0.22);
+  --window-off: rgba(16, 24, 42, 0.16);
+  --window-dim: rgba(190, 140, 60, 0.35);
+  --window-lit: rgba(240, 175, 70, 0.7);
+  --window-bright: #f0a84a;
+  --window-halo: rgba(240, 168, 74, 0.28);
+  --city-mass: #c3cee1;
+  --city-road: #dfe5ef;
+  --city-kerb: rgba(16, 24, 42, 0.18);
+  --marquee-spill: rgba(240, 168, 74, 0.2); /* accent on it 5.91:1 */
+  --cityline-opacity: 0.4;
+  --burst-opacity: 0.8;
+  --car-head: #f0a84a;
+  --car-tail: #d94a6a;
+  --city-crowd-ink: rgba(16, 24, 42, 0.5);
+
+  /* The far skyline, at the foot of the viewport. */
+  --screen-art-opacity: 0.5;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* No orbs: a blurred blob over a city reads as fog, and this page is meant to
+   be clear enough to count windows in. */
+[data-bg='city'] .orb {
+  display: none;
+}
+/* The sky. Darkest overhead, warming toward the street where the lights are —
+   vertical, so it needs no RTL twin. */
+[data-bg='city'] {
+  background-image: linear-gradient(to bottom, var(--sky-top) 0%, var(--sky-street) 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='newyork'] {
+    --nq-background: #070b14;
+    --nq-foreground: #eaf0fb; /* 15.82:1 on the card */
+    --nq-muted-foreground: #a9b6cd; /*  8.84:1 on the card */
+    --nq-accent: #ff5fa2; /*  6.39:1 as text · the page on it 6.95:1 */
+    --nq-on-accent: #070b14;
+    --nq-highlight: #ff5fa2;
+    --nq-on-highlight: #070b14;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #ff5fa2;
+    /* Deliberately thinner than the rest of the set: the city is behind every
+       card and the whole point is that it shows through. Measured with a lit
+       window glowing through — accent 5.69:1. */
+    --glass-bg: rgba(16, 23, 38, 0.74);
+    --glass-bg-subtle: rgba(16, 23, 38, 0.6);
+    --glass-bg-strong: rgba(16, 23, 38, 0.84);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.62);
+    --glass-fallback: #0f1624;
+    --glass-fallback-subtle: #0c111d;
+    --glass-fallback-strong: #121a2a;
+    --nq-radius-sm: 2px;
+    --nq-radius-md: 3px;
+    --nq-radius-lg: 4px;
+    --nq-radius-xl: 4px;
+    --orb-opacity: 0.2;
+    /* The hero tower stands IN FRONT of the far city, so its face is lighter
+       than the city's mass and it carries a lit edge. Without the separation
+       the one building the portrait is in disappeared into the skyline. */
+    --tower-face: #1b2740;
+    --tower-edge: rgba(255, 207, 122, 0.45);
+    --window-off: rgba(255, 255, 255, 0.05);
+    --window-dim: rgba(255, 207, 122, 0.22);
+    --window-lit: rgba(255, 207, 122, 0.6);
+    --window-bright: #ffcf7a;
+    --window-halo: rgba(255, 207, 122, 0.3);
+    --city-mass: #1b2741;
+    --city-road: #0a0e18;
+    --city-kerb: rgba(255, 255, 255, 0.14);
+    --marquee-spill: rgba(255, 207, 122, 0.1); /* accent on it 5.19:1 */
+    --cityline-opacity: 0.32;
+    --burst-opacity: 0.9;
+    --car-head: #ffd79a;
+    --car-tail: #ff5f7a;
+    --city-crowd-ink: rgba(233, 240, 251, 0.45);
+    --screen-art-opacity: 0.4;
+  }
+}
+:root[data-theme='dark'] [data-template='newyork'] {
+  --nq-background: #070b14;
+  --nq-foreground: #eaf0fb;
+  --nq-muted-foreground: #a9b6cd;
+  --nq-accent: #ff5fa2;
+  --nq-on-accent: #070b14;
+  --nq-highlight: #ff5fa2;
+  --nq-on-highlight: #070b14;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #ff5fa2;
+  --glass-bg: rgba(16, 23, 38, 0.74);
+  --glass-bg-subtle: rgba(16, 23, 38, 0.6);
+  --glass-bg-strong: rgba(16, 23, 38, 0.84);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.62);
+  --glass-fallback: #0f1624;
+  --glass-fallback-subtle: #0c111d;
+  --glass-fallback-strong: #121a2a;
+  --nq-radius-sm: 2px;
+  --nq-radius-md: 3px;
+  --nq-radius-lg: 4px;
+  --nq-radius-xl: 4px;
+  --orb-opacity: 0.2;
+  --tower-face: #1b2740;
+  --tower-edge: rgba(255, 207, 122, 0.45);
+  --window-off: rgba(255, 255, 255, 0.05);
+  --window-dim: rgba(255, 207, 122, 0.22);
+  --window-lit: rgba(255, 207, 122, 0.6);
+  --window-bright: #ffcf7a;
+  --window-halo: rgba(255, 207, 122, 0.3);
+  --city-mass: #1b2741;
+  --city-road: #0a0e18;
+  --city-kerb: rgba(255, 255, 255, 0.14);
+  --marquee-spill: rgba(255, 207, 122, 0.1);
+  --cityline-opacity: 0.32;
+  --burst-opacity: 0.5;
+  --car-head: #ffd79a;
+  --car-tail: #ff5f7a;
+  --city-crowd-ink: rgba(233, 240, 251, 0.45);
+  --screen-art-opacity: 0.4;
+}
+
+/* The sky, declared in all three blocks so a JS-off theme switch still lands. */
+[data-template='newyork'] {
+  --sky-top: #e3eaf5;
+  --sky-street: #f3f0f2;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='newyork'] {
+    --sky-top: #05080f;
+    --sky-street: #14101e;
+  }
+}
+:root[data-theme='dark'] [data-template='newyork'] {
+  --sky-top: #05080f;
+  --sky-street: #14101e;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   العالم — the world map and the globe.
+
+   Object and person, the test every template in this set is built to: the
+   object is the world, and the person is A PIN STUCK IN IT. Not a portrait
+   beside a map — a marker planted on it, with the ring still going out from
+   where it landed. For a student putting a page on the internet, that is the
+   whole reason for doing it, said in one image.
+
+   The page under it is an atlas sheet: oat paper ruled with a faint graticule,
+   the lines of latitude and longitude every map is built on. The accent is the
+   green-teal of chart engraving — far enough from مُحيط's blue-teal (#0B707E,
+   on a pale cyan ground) and بادِرة's forest green (#2F6B45) that the three do
+   not collide at thumbnail size, which is the only size that matters when a
+   student is choosing.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='alam'] {
+  --nq-background: #f2ece1; /* the sheet */
+  --nq-foreground: #22201a; /* 15.74:1 on the card */
+  --nq-muted-foreground: #5b544a; /*  7.22:1 on the card · 6.35:1 on the sheet */
+  --nq-accent: #0d6157; /*  7.08:1 as text · white on it 7.33:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #63d6b8;
+  --nq-on-highlight: #22201a;
+  --nq-border: rgba(34, 32, 26, 0.14);
+  --nq-border-strong: rgba(34, 32, 26, 0.28);
+  --nq-ring: #0d6157;
+
+  /* Thinner than most of the set on purpose: the world is behind every card
+     and the point is that it shows through. Measured with a landmass under the
+     glass — accent 6.41:1. */
+  --glass-bg: rgba(255, 253, 248, 0.76);
+  --glass-bg-subtle: rgba(255, 253, 248, 0.62);
+  --glass-bg-strong: rgba(255, 253, 248, 0.92);
+  --glass-border-color: rgba(255, 255, 255, 0.82);
+  --glass-edge: 0 0 0 1px rgba(34, 32, 26, 0.05);
+  --glass-shadow: 0 12px 34px rgba(60, 52, 30, 0.12);
+  --glass-fallback: #fdfbf5;
+  --glass-fallback-subtle: #faf6ed;
+  --glass-fallback-strong: #fffdf8;
+  --glass-blur: 10px;
+  --orb-opacity: 0.4;
+
+  /* The graticule: latitude and longitude, ruled across the whole sheet. Faint
+     enough to be felt rather than read, which is what a chart grid is for. */
+  --grat-line: rgba(34, 32, 26, 0.055);
+  --grat-major: rgba(13, 97, 87, 0.09);
+
+  /* The world, printed across the page. Measured through the card glass with
+     a landmass under it: accent 6.41:1. */
+  --screen-art-opacity: 0.3;
+  --pin-ring: rgba(13, 97, 87, 0.3);
+  --globe-opacity: 0.62;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+[data-bg='atlas'] .orb[data-orb='1'] {
+  background: #e3dcc9;
+}
+[data-bg='atlas'] .orb[data-orb='2'] {
+  background: #eee7d6;
+}
+[data-bg='atlas'] .orb[data-orb='3'] {
+  background: #d9d3bd;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='alam'] {
+    --nq-background: #0f1513;
+    --nq-foreground: #eef2ec; /* 14.84:1 on the card */
+    --nq-muted-foreground: #b2bdb5; /*  8.67:1 on the card */
+    --nq-accent: #63d6b8; /*  9.47:1 as text · the page on it 10.41:1 */
+    --nq-on-accent: #0f1513;
+    --nq-highlight: #63d6b8;
+    --nq-on-highlight: #0f1513;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #63d6b8;
+    --glass-bg: rgba(24, 32, 30, 0.74);
+    --glass-bg-subtle: rgba(24, 32, 30, 0.6);
+    --glass-bg-strong: rgba(24, 32, 30, 0.9);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+    --glass-fallback: #171f1d;
+    --glass-fallback-subtle: #141b19;
+    --glass-fallback-strong: #1a2422;
+    --orb-opacity: 0.22;
+    --grat-line: rgba(255, 255, 255, 0.05);
+    --grat-major: rgba(99, 214, 184, 0.1);
+    /* At night the whole map is flipped light and tinted mint, so the land is
+       now the lighter half and the one that had to be measured. */
+    --screen-art-opacity: 0.3;
+    --pin-ring: rgba(99, 214, 184, 0.3);
+    --globe-opacity: 0.7;
+  }
+  :root:not([data-theme='light']) [data-bg='atlas'] .orb[data-orb='1'] {
+    background: #16332b;
+  }
+  :root:not([data-theme='light']) [data-bg='atlas'] .orb[data-orb='2'] {
+    background: #102721;
+  }
+  :root:not([data-theme='light']) [data-bg='atlas'] .orb[data-orb='3'] {
+    background: #1b3e33;
+  }
+}
+:root[data-theme='dark'] [data-template='alam'] {
+  --nq-background: #0f1513;
+  --nq-foreground: #eef2ec;
+  --nq-muted-foreground: #b2bdb5;
+  --nq-accent: #63d6b8;
+  --nq-on-accent: #0f1513;
+  --nq-highlight: #63d6b8;
+  --nq-on-highlight: #0f1513;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #63d6b8;
+  --glass-bg: rgba(24, 32, 30, 0.74);
+  --glass-bg-subtle: rgba(24, 32, 30, 0.6);
+  --glass-bg-strong: rgba(24, 32, 30, 0.9);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
+  --glass-fallback: #171f1d;
+  --glass-fallback-subtle: #141b19;
+  --glass-fallback-strong: #1a2422;
+  --orb-opacity: 0.22;
+  --grat-line: rgba(255, 255, 255, 0.05);
+  --grat-major: rgba(99, 214, 184, 0.1);
+  --screen-art-opacity: 0.3;
+  --pin-ring: rgba(99, 214, 184, 0.3);
+  --globe-opacity: 0.7;
+}
+:root[data-theme='dark'] [data-bg='atlas'] .orb[data-orb='1'] {
+  background: #16332b;
+}
+:root[data-theme='dark'] [data-bg='atlas'] .orb[data-orb='2'] {
+  background: #102721;
+}
+:root[data-theme='dark'] [data-bg='atlas'] .orb[data-orb='3'] {
+  background: #1b3e33;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   فن — bold watercolour, and all the crafts on one sheet.
+
+   The first build answered "all the arts in one place" with a STAGE: curtains,
+   a spotlight, hairline icons for the crafts. The verdict was that the hero
+   was bad, the background missing, the cards opaque and none of it looked like
+   art — all true, and all from one wrong decision. A theatre is a place where
+   art is PERFORMED. What was asked for was art itself.
+
+   So: a sheet of watercolour paper. Six bold pigment washes bloom across the
+   page, the cards are thinned to 0.72 so the colour comes through them, the
+   portrait sits in a splash of paint, and the crafts are big saturated marks.
+
+   It is the only template in the set built on more than one colour, and the
+   rule that keeps it safe is simple: **the pigments are washes and marks, and
+   are never a surface for text.** Everything a reader reads is ink on paper,
+   measured the same as everywhere else — over the worst wash the accent still
+   holds 7.27:1.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='fann'] {
+  --nq-background: #fdfaf5; /* cold-pressed paper */
+  --nq-foreground: #1c1a22; /* 17.04:1 on the card */
+  --nq-muted-foreground: #56505e; /*  7.69:1 on the card */
+  --nq-accent: #7b1fa2; /*  8.12:1 as text · white on it 8.20:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #ff3d7f;
+  --nq-on-highlight: #1c1a22;
+  --nq-border: rgba(28, 26, 34, 0.13);
+  --nq-border-strong: rgba(28, 26, 34, 0.26);
+  --nq-ring: #7b1fa2;
+
+  /* Transparent, at the owner's request — but 0.58 rather than 0.50, because
+     TWO layers of the painting now stack under every card (her landscape
+     filling the page, and the framed copy over it) and at 0.50 the pair put
+     muted type at 3.72:1. At 0.58 with both layers she still reads clearly
+     through the card and the accent holds 5.15:1. */
+  --glass-bg: rgba(255, 255, 255, 0.58);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.46);
+  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-border-color: rgba(255, 255, 255, 0.8);
+  --glass-edge: 0 0 0 1px rgba(28, 26, 34, 0.04);
+  --glass-shadow: 0 14px 38px rgba(60, 40, 80, 0.1);
+  --glass-fallback: #fefefc;
+  --glass-fallback-subtle: #fbf9f6;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 12px;
+
+  /* The six pigments. Bold on purpose — this is the one template that is not
+     monochrome, and a timid palette would make the brief pointless. */
+  --pig-rose: #ff3d7f;
+  --pig-amber: #ffb020;
+  --pig-teal: #0fb5a6;
+  --pig-violet: #7c4dff;
+  --pig-blue: #2f6bff;
+  --pig-lime: #8ed600;
+
+  /* The room. A gallery is a wall, a light washing down it, and a rail. */
+  --wall-fill-opacity: 0.3;
+  --wall-art-opacity: 0.32;
+  --wall-glow: rgba(255, 250, 240, 0.9);
+  --wall-rail: rgba(22, 21, 26, 0.14);
+  --frame-face: #2b2630;
+  --frame-bevel: rgba(22, 21, 26, 0.3);
+  --mount: #fbfaf7;
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* No orbs: the washes ARE the orbs here, and six of them is already plenty. */
+[data-bg='gallery'] .orb {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='fann'] {
+    --nq-background: #14121a; /* the studio after dark */
+    --nq-foreground: #f2eef7; /* 15.33:1 on the card */
+    --nq-muted-foreground: #bdb5c7; /*  8.86:1 on the card */
+    --nq-accent: #d29bff; /*  8.25:1 as text */
+    --nq-on-accent: #14121a;
+    --nq-highlight: #ff8ab5;
+    --nq-on-highlight: #14121a;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #d29bff;
+    --glass-bg: rgba(28, 26, 36, 0.52);
+    --glass-bg-subtle: rgba(28, 26, 36, 0.42);
+    --glass-bg-strong: rgba(28, 26, 36, 0.8);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+    --glass-fallback: #1a1821;
+    --glass-fallback-subtle: #17151e;
+    --glass-fallback-strong: #1e1c26;
+    /* Pigment on dark paper reads hotter, so the washes are pulled back and
+       the marks brightened to stay legible as colour rather than as mud. */
+    --wall-fill-opacity: 0.35;
+    --wall-art-opacity: 0.34;
+    --wall-glow: rgba(255, 240, 214, 0.1);
+    --wall-rail: rgba(255, 255, 255, 0.12);
+    --frame-face: #2f2a36;
+    --frame-bevel: rgba(255, 255, 255, 0.14);
+    --mount: #221f29;
+    --mark-opacity: 1;
+    --pig-rose: #ff6fa0;
+    --pig-amber: #ffc24d;
+    --pig-teal: #3ad7c6;
+    --pig-violet: #a98bff;
+    --pig-blue: #6f9cff;
+    --pig-lime: #b6e84a;
+  }
+}
+:root[data-theme='dark'] [data-template='fann'] {
+  --nq-background: #14121a;
+  --nq-foreground: #f2eef7;
+  --nq-muted-foreground: #bdb5c7;
+  --nq-accent: #d29bff;
+  --nq-on-accent: #14121a;
+  --nq-highlight: #ff8ab5;
+  --nq-on-highlight: #14121a;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #d29bff;
+  --glass-bg: rgba(28, 26, 36, 0.52);
+  --glass-bg-subtle: rgba(28, 26, 36, 0.42);
+  --glass-bg-strong: rgba(28, 26, 36, 0.8);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
+  --glass-fallback: #1a1821;
+  --glass-fallback-subtle: #17151e;
+  --glass-fallback-strong: #1e1c26;
+  --wall-fill-opacity: 0.35;
+  --wall-art-opacity: 0.34;
+  --wall-glow: rgba(255, 240, 214, 0.1);
+  --wall-rail: rgba(255, 255, 255, 0.12);
+  --frame-face: #2f2a36;
+  --frame-bevel: rgba(255, 255, 255, 0.14);
+  --mount: #221f29;
+  --pig-rose: #ff6fa0;
+  --pig-amber: #ffc24d;
+  --pig-teal: #3ad7c6;
+  --pig-violet: #a98bff;
+  --pig-blue: #6f9cff;
+  --pig-lime: #b6e84a;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   مَجلِس — the table business is done at.
+
+   Built for a freelancer, and the body the owner named was the meeting. The
+   catalogue is full of meeting illustrations and not one is usable, for the
+   reason that keeps recurring in this project: they already contain people.
+   Put a portrait beside a drawing of four strangers around a table and the
+   portrait is a fifth stranger. So the table is drawn, seen from above, with
+   the head seat left empty — that is the person's seat, and the others belong
+   to whoever they are meeting.
+
+   The palette is the one thing here that is not literal: a boardroom is grey
+   and a grey page is a dull page, so the ink stays graphite and the accent is
+   a deep violet — serious enough for a client, and the one strong hue this set
+   had not yet spent on a light ground.
+   ───────────────────────────────────────────────────────────────────────── */
+
+[data-template='majlis'] {
+  --nq-background: #f2f4f7;
+  --nq-foreground: #111827; /* 17.45:1 on the card */
+  --nq-muted-foreground: #4b5563; /*  7.43:1 on the card · 6.86:1 on the page */
+  --nq-accent: #5b21b6; /*  8.84:1 as text · white on it 8.98:1 */
+  --nq-on-accent: #ffffff;
+  --nq-highlight: #a78bfa;
+  --nq-on-highlight: #111827;
+  --nq-border: rgba(17, 24, 39, 0.12);
+  --nq-border-strong: rgba(17, 24, 39, 0.24);
+  --nq-ring: #5b21b6;
+
+  --glass-bg: rgba(255, 255, 255, 0.84);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.7);
+  --glass-bg-strong: rgba(255, 255, 255, 0.94);
+  --glass-border-color: rgba(255, 255, 255, 0.85);
+  --glass-edge: 0 0 0 1px rgba(17, 24, 39, 0.05);
+  --glass-shadow: 0 12px 32px rgba(20, 25, 50, 0.1);
+  --glass-fallback: #fdfdfe;
+  --glass-fallback-subtle: #f9fafc;
+  --glass-fallback-strong: #ffffff;
+  --glass-blur: 10px;
+  --orb-opacity: 0.35;
+
+  /* A boardroom has corners and a plan on the wall. */
+  --nq-radius-sm: 3px;
+  --nq-radius-md: 4px;
+  --nq-radius-lg: 6px;
+  --nq-radius-xl: 6px;
+
+  --plan-line: rgba(17, 24, 39, 0.045);
+  --table-top: #dde2ec;
+  --table-line: rgba(17, 24, 39, 0.34);
+  --table-seat: rgba(17, 24, 39, 0.26);
+  --table-thing: rgba(91, 33, 182, 0.28);
+
+  --font-display: var(--font-cairo), system-ui, sans-serif;
+  --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* No orbs: a blurred blob in a boardroom reads as a stain. */
+[data-bg='boardroom'] .orb {
+  display: none;
+}
+/* The plan on the wall: a drafting grid, ruled in degrees so a grid that is
+   identical mirrored needs no RTL twin. */
+[data-bg='boardroom'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--plan-line) 0 1px, transparent 1px 64px),
+    repeating-linear-gradient(0deg, var(--plan-line) 0 1px, transparent 1px 64px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='majlis'] {
+    --nq-background: #0e1116;
+    --nq-foreground: #eef1f6; /* 15.39:1 on the card */
+    --nq-muted-foreground: #b0b9c6; /*  8.80:1 on the card */
+    --nq-accent: #a78bfa; /*  6.40:1 as text · the page on it 6.95:1 */
+    --nq-on-accent: #0e1116;
+    --nq-highlight: #a78bfa;
+    --nq-on-highlight: #0e1116;
+    --nq-border: rgba(255, 255, 255, 0.12);
+    --nq-border-strong: rgba(255, 255, 255, 0.24);
+    --nq-ring: #a78bfa;
+    --glass-bg: rgba(23, 28, 36, 0.86);
+    --glass-bg-subtle: rgba(23, 28, 36, 0.7);
+    --glass-bg-strong: rgba(23, 28, 36, 0.94);
+    --glass-border-color: rgba(255, 255, 255, 0.1);
+    --glass-edge: 0 0 0 0 transparent;
+    --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+    --glass-fallback: #161a22;
+    --glass-fallback-subtle: #13171e;
+    --glass-fallback-strong: #191e27;
+    --nq-radius-sm: 3px;
+    --nq-radius-md: 4px;
+    --nq-radius-lg: 6px;
+    --nq-radius-xl: 6px;
+    --orb-opacity: 0.2;
+    --plan-line: rgba(255, 255, 255, 0.04);
+    --table-top: #232936;
+    --table-line: rgba(255, 255, 255, 0.3);
+    --table-seat: rgba(255, 255, 255, 0.2);
+    --table-thing: rgba(167, 139, 250, 0.4);
+  }
+}
+:root[data-theme='dark'] [data-template='majlis'] {
+  --nq-background: #0e1116;
+  --nq-foreground: #eef1f6;
+  --nq-muted-foreground: #b0b9c6;
+  --nq-accent: #a78bfa;
+  --nq-on-accent: #0e1116;
+  --nq-highlight: #a78bfa;
+  --nq-on-highlight: #0e1116;
+  --nq-border: rgba(255, 255, 255, 0.12);
+  --nq-border-strong: rgba(255, 255, 255, 0.24);
+  --nq-ring: #a78bfa;
+  --glass-bg: rgba(23, 28, 36, 0.86);
+  --glass-bg-subtle: rgba(23, 28, 36, 0.7);
+  --glass-bg-strong: rgba(23, 28, 36, 0.94);
+  --glass-border-color: rgba(255, 255, 255, 0.1);
+  --glass-edge: 0 0 0 0 transparent;
+  --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --glass-fallback: #161a22;
+  --glass-fallback-subtle: #13171e;
+  --glass-fallback-strong: #191e27;
+  --nq-radius-sm: 3px;
+  --nq-radius-md: 4px;
+  --nq-radius-lg: 6px;
+  --nq-radius-xl: 6px;
+  --orb-opacity: 0.2;
+  --plan-line: rgba(255, 255, 255, 0.04);
+  --table-top: #232936;
+  --table-line: rgba(255, 255, 255, 0.3);
+  --table-seat: rgba(255, 255, 255, 0.2);
+  --table-thing: rgba(167, 139, 250, 0.4);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
    Motion signatures. Public-route motion is CSS only — the measured
    framework floor leaves no room for GSAP here (pages/public.md).
    All of it is transform/opacity, and all of it is inside a

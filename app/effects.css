@@ -1737,3 +1737,2513 @@
   transform: translateY(32vh) scale(1.3);
   opacity: 0.7;
 }
+
+/* ── مَدى: an instrument panel ──────────────────────────────────────────────
+   A scan grid ruled across the page, a radar sweeping in the hero rail, and a
+   stream of points crossing the middle. Everything here is one lime on
+   near-black, because an instrument has one readout colour.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* The scan grid: horizontal rules only, the way an oscilloscope is ruled. */
+[data-bg='signal']::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    var(--scan-line) 0 1px,
+    transparent 1px 3.5rem
+  );
+}
+
+/* The stream is already drawn in the template's own blue, so it needs no
+   colour correction at all — only a touch of saturation so the points read as
+   signal rather than dust. This is the payoff of matching a palette to its
+   art instead of fighting it: an earlier lime version needed a 128deg
+   rotation here and came out a muddy olive. */
+[data-template='mada'] .tpl-screen-art canvas {
+  filter: saturate(1.25);
+}
+[data-template='mada'] .tpl-screen-tile:nth-child(1) {
+  transform: translateY(-20vh) scale(1.15);
+}
+[data-template='mada'] .tpl-screen-tile:nth-child(2) {
+  transform: translateY(6vh) scale(0.8);
+  opacity: 0.8;
+}
+[data-template='mada'] .tpl-screen-tile:nth-child(3) {
+  transform: translateY(28vh) scale(1.05);
+  opacity: 0.6;
+}
+/* The reticle is drawn in orange, which is the one piece of art here that has
+   to be turned. One rotation carries it the whole way to the blue. */
+
+/* ── The rail ──────────────────────────────────────────────────────────────
+   The text fills the card and a narrow column runs down the end side holding
+   the portrait, the radar and the pills as a stack of readings. Every other
+   hero in the set lays its parts out horizontally; this is the only vertical
+   one, and the hairline between the two is a logical border so it swaps sides
+   with the language.
+   ────────────────────────────────────────────────────────────────────────── */
+
+
+/* Ping cards: each entry carries a lit node in its margin, and sends one ring
+   outward when the pointer reaches it. */
+.ping-card {
+  position: relative;
+  background: var(--glass-bg-subtle);
+  border: 1px solid var(--nq-border);
+  border-radius: var(--nq-radius-md);
+  padding: 1.2rem 1.3rem;
+  padding-inline-start: 2.2rem;
+}
+.ping-card::before {
+  content: '';
+  position: absolute;
+  inset-inline-start: 0.95rem;
+  inset-block-start: 1.55rem;
+  inline-size: 0.4rem;
+  block-size: 0.4rem;
+  border-radius: 50%;
+  background: var(--nq-accent);
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .ping-card:hover::before {
+    animation: mada-ping 1.6s ease-out infinite;
+  }
+}
+:root[data-motion='paused'] .ping-card::before {
+  animation-play-state: paused;
+}
+@keyframes mada-ping {
+  from {
+    box-shadow: 0 0 0 0 var(--ping-glow);
+  }
+  to {
+    box-shadow: 0 0 0 0.85rem transparent;
+  }
+}
+
+/* Same call as every other single-accent template: the shared section
+   illustrations are six-colour cartoons and this page has one readout colour.
+   Drained and pulled toward the blue. The reticle is exempt — it is turned to
+   the accent above, and re-filtering it here would undo that. */
+[data-template='mada'] .tpl-content canvas {
+  filter: grayscale(0.8) sepia(0.35) hue-rotate(175deg) saturate(1.6);
+}
+
+/* ── تسلا: a page under voltage ─────────────────────────────────────────────
+   The hero is two plates with a spark gap between them, and the arc jumps it.
+   Nothing else in the set splits its hero into separate cards, and that split
+   IS the idea: a gap only means something when something crosses it.
+   ────────────────────────────────────────────────────────────────────────── */
+
+/* The path the arc would take if it were not busy arcing: a faint trace
+   between the two plates, vertical on a phone and horizontal beside it. */
+/* Live cards: a dead wire until the pointer reaches it, and then the whole
+   border is energised. */
+.live-card {
+  background: var(--glass-bg-subtle);
+  border: 1px solid var(--live-edge);
+  border-radius: var(--nq-radius-md);
+  padding: 1.2rem 1.35rem;
+}
+@media (hover: hover) {
+  .live-card {
+    transition:
+      border-color var(--dur-hover) ease,
+      box-shadow var(--dur-hover) ease;
+  }
+  .live-card:hover {
+    border-color: var(--nq-accent);
+    box-shadow:
+      0 0 0 1px var(--nq-accent),
+      0 0 22px -6px var(--live-glow);
+  }
+}
+
+[data-template='tesla'] .tpl-screen-tile:nth-child(1) {
+  transform: translateY(-22vh) scale(1.2);
+}
+[data-template='tesla'] .tpl-screen-tile:nth-child(2) {
+  transform: translateY(8vh) scale(0.85);
+  opacity: 0.8;
+}
+[data-template='tesla'] .tpl-screen-tile:nth-child(3) {
+  transform: translateY(30vh) scale(0.6);
+  opacity: 0.6;
+}
+
+/* Same call as every other single-accent template: the shared section
+   illustrations are six-colour cartoons and this page has one. */
+[data-template='tesla'] .tpl-content canvas {
+  filter: grayscale(0.8) sepia(0.35) hue-rotate(225deg) saturate(1.7);
+}
+
+/* ── تسلا: the storm ───────────────────────────────────────────────────────
+   Six bolts scattered across the page and one flash layer over all of them.
+
+   What makes a strike read as real is the layering — a wide soft halo, a
+   narrower sheath, a hairline white-hot core — and the TIMING. A real strike
+   is not one flash: it is a stutter of two or three returns inside about a
+   tenth of a second, then nothing for seconds. `storm-strike` is that stutter,
+   and every bolt runs a different cycle — 5, 7, 8, 9, 11 and 13 seconds — so
+   the storm never falls into step with itself and something is striking every
+   second or two.
+
+   Every animated property here is opacity. Nothing moves, nothing reflows.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.storm {
+  /* FIXED, not absolute. As an absolute layer the storm was spread over the
+     whole DOCUMENT, so on a long page five of its six bolts sat below the fold
+     and a visitor almost never saw one strike — which is most of why this
+     template did not read as electric. Pinned to the viewport, every bolt is
+     always somewhere on screen. The mask below still lands on the foot of the
+     screen, so the footer keeps its protection. */
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Lightning belongs in the sky, and the footer is the one piece of text with
+     no card under it. Fading the storm out over the foot of the page keeps a
+     white-hot core from ever passing behind that line. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 72%, transparent 93%);
+  mask-image: linear-gradient(to bottom, #000 0 72%, transparent 93%);
+}
+
+.storm-bolt {
+  position: absolute;
+  inline-size: 7rem;
+  block-size: 42vh;
+  opacity: 0;
+}
+/* Scattered rather than spaced: a real sky does not distribute its strikes.
+   Each one also gets its own length, tilt and side. */
+.storm-bolt[data-bolt='0'] {
+  inset-inline-start: 6%;
+  inset-block-start: -4%;
+  block-size: 50vh;
+  transform: rotate(4deg);
+}
+.storm-bolt[data-bolt='1'] {
+  inset-inline-start: 27%;
+  inset-block-start: 18%;
+  block-size: 32vh;
+  inline-size: 5rem;
+  transform: rotate(-6deg);
+}
+.storm-bolt[data-bolt='2'] {
+  inset-inline-start: 46%;
+  inset-block-start: -8%;
+  block-size: 58vh;
+  inline-size: 9rem;
+  transform: rotate(2deg);
+}
+.storm-bolt[data-bolt='3'] {
+  inset-inline-start: 68%;
+  inset-block-start: 30%;
+  block-size: 38vh;
+  transform: rotate(-3deg);
+}
+.storm-bolt[data-bolt='4'] {
+  inset-inline-start: 86%;
+  inset-block-start: 4%;
+  block-size: 46vh;
+  inline-size: 6rem;
+  transform: rotate(7deg);
+}
+.storm-bolt[data-bolt='5'] {
+  inset-inline-start: 15%;
+  inset-block-start: 52%;
+  block-size: 34vh;
+  inline-size: 5.5rem;
+  transform: rotate(-5deg);
+}
+
+/* The three strokes of one channel. */
+.storm-halo,
+.storm-sheath,
+.storm-core {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+.storm-halo {
+  stroke: var(--bolt-halo);
+  stroke-width: 9;
+  filter: blur(4px);
+}
+.storm-sheath {
+  stroke: var(--bolt-sheath);
+  stroke-width: 3.5;
+}
+.storm-core {
+  stroke: var(--bolt-core);
+  stroke-width: 1.2;
+}
+
+/* The flash: the whole page lifts for the length of a strike. */
+.storm-flash {
+  position: absolute;
+  inset: 0;
+  background: var(--bolt-flash);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .storm-bolt,
+  .storm-flash {
+    animation-name: storm-strike;
+    animation-timing-function: steps(1, end);
+    animation-iteration-count: infinite;
+  }
+  .storm-bolt[data-bolt='0'] {
+    animation-duration: 5s;
+    animation-delay: 0s;
+  }
+  .storm-bolt[data-bolt='1'] {
+    animation-duration: 7s;
+    animation-delay: 1.4s;
+  }
+  .storm-bolt[data-bolt='2'] {
+    animation-duration: 8s;
+    animation-delay: 3.1s;
+  }
+  .storm-bolt[data-bolt='3'] {
+    animation-duration: 9s;
+    animation-delay: 4.6s;
+  }
+  .storm-bolt[data-bolt='4'] {
+    animation-duration: 5s;
+    animation-delay: 2.3s;
+  }
+  .storm-bolt[data-bolt='5'] {
+    animation-duration: 6.5s;
+    animation-delay: 6.2s;
+  }
+  /* The flash rides the shortest cycle, so it lands with the nearest bolt. */
+  .storm-flash {
+    animation-duration: 5s;
+    animation-name: storm-flash;
+  }
+}
+/* Under reduced motion the sky holds one quiet strike instead of flickering. */
+@media (prefers-reduced-motion: reduce) {
+  .storm-bolt[data-bolt='2'] {
+    opacity: 0.5;
+  }
+}
+:root[data-motion='paused'] .storm-bolt,
+:root[data-motion='paused'] .storm-flash {
+  animation-play-state: paused;
+}
+
+/* Two returns and out. 96% of every cycle is dark. */
+/* Wider and more often than a real storm on purpose. Accurate timing left the
+   page dark for 96% of every cycle, and the owner's note was that it did not
+   feel electric — which was true, and not a drawing problem. */
+@keyframes storm-strike {
+  0%,
+  72% {
+    opacity: 0;
+  }
+  74% {
+    opacity: 1;
+  }
+  77% {
+    opacity: 0.2;
+  }
+  79% {
+    opacity: 0.95;
+  }
+  84% {
+    opacity: 0.4;
+  }
+  88%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes storm-flash {
+  0%,
+  89.6% {
+    opacity: 0;
+  }
+  89.8% {
+    opacity: 1;
+  }
+  90.4% {
+    opacity: 0.2;
+  }
+  90.8% {
+    opacity: 0.7;
+  }
+  91.4%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* The arc across the hero's spark gap. A gap arcs constantly, so it runs a
+   short cycle of its own rather than the sky's. */
+
+/* ── ساكورا: asymmetry, and one seal ───────────────────────────────────────
+   Everything here serves one idea: a sakura page is a COMPOSITION, not a
+   colour. Three pieces carry it.
+
+   1. The hero is mostly empty. The content sits in its lower start corner and
+      the blossoms hang in the space above, entering the frame from outside the
+      card rather than being placed inside it. The emptiness is the design; it
+      is the one hero in the set that must not be filled.
+
+   2. The cards cut one corner square. Three round, one sharp — a petal, and a
+      corner that has to swap sides with the language, so it is a logical one.
+
+   3. The portrait becomes a hanko: the vermilion square seal a Japanese
+      signature ends with, initials cut white out of it. One loud centimetre.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.hanging-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  /* Content to the foot of the card. The space above it is the point. */
+  justify-content: flex-end;
+  min-block-size: 22rem;
+  padding: 1.6rem;
+  /* On a phone the card has no room to put the branch beside the text, so the
+     space is RESERVED instead: the content starts below the blossoms. Relying
+     on min-block-size alone fails as soon as the text is long enough to grow
+     the card past it, and the headline then wraps up into the flowers. */
+  padding-block-start: 11rem;
+}
+@media (min-width: 768px) {
+  .hanging-hero {
+    min-block-size: 27rem;
+    /* Wide enough that the branch sits beside the text, not above it. */
+    padding: 2.25rem 2.5rem;
+  }
+}
+
+/* A blush in the corner, so the composition still holds when the blossoms are
+   never fetched — under reduced motion, or with JS off. A circle has no
+   direction, so this needs no RTL twin. */
+.hanging-hero::before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  inset-block-start: -32%;
+  inset-inline-end: -16%;
+  inline-size: min(28rem, 85%);
+  aspect-ratio: 1;
+  background: radial-gradient(circle, var(--nq-highlight) 0%, transparent 68%);
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+/* The branch tip. The same 1.5 KB blossom three times at three sizes — the
+   catalogue has no branch, and three blossoms clipped by the corner read as
+   one anyway. Each is pushed past an edge so the branch comes from off-frame. */
+.hanging-branch {
+  position: absolute;
+  z-index: 1;
+  /* It hangs from the top corner and reaches across the empty half. Pushed
+     past both edges on purpose: a branch comes from somewhere off the page,
+     it does not begin at the frame. */
+  inset-block-start: -8%;
+  inset-inline-end: -10%;
+  inline-size: 106%;
+  aspect-ratio: 16 / 9;
+  opacity: var(--bloom-opacity);
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .hanging-branch {
+    inset-block-start: -16%;
+    inset-inline-end: -8%;
+    inline-size: 64%;
+  }
+}
+
+/* The branch has to reach INTO the text — that overlap is the whole charm of
+   it — but the trunk is dark brown, and dark ink crossing dark wood is a real
+   contrast failure, not a stylistic one. So it fades out as it approaches the
+   text: the twigs and blossoms reach over, the wood never does.
+   Spelled once, in the element's own coordinates. In RTL the element is
+   mirrored below, which turns this fade around with it. */
+.hanging-branch {
+  -webkit-mask-image: linear-gradient(to right, #000 44%, transparent 86%);
+  mask-image: linear-gradient(to right, #000 44%, transparent 86%);
+}
+/* The art is drawn with its trunk entering from one side, so one of the two
+   reading directions always has to mirror it. The owner picked this way round:
+   the wood comes in over the writing's shoulder rather than away from it.
+
+   The mirror sits on the ART and the fade above sits on its WRAPPER. Both on
+   one element costs about 1100ms of extra main thread per 5s of scrolling,
+   because a mask plus a transform on a canvas that repaints every frame drops
+   the whole region onto the CPU raster path. */
+.hanging-branch-art {
+  inline-size: 100%;
+  block-size: 100%;
+  transform: scaleX(-1);
+}
+[dir='rtl'] .hanging-branch-art {
+  transform: none;
+}
+
+.hanging-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  /* Narrow on purpose: the text is a column at the foot of an open page. */
+  max-inline-size: 54ch;
+}
+
+/* The hanko. A seal is square, hand-cut, and pressed slightly crooked — the
+   tilt is what stops it looking like a rounded-off app icon. */
+[data-template='sakura'] [data-avatar] {
+  border-radius: 4px;
+  background: var(--hanko);
+  box-shadow:
+    inset 0 0 0 2px var(--hanko-edge),
+    0 8px 20px rgba(122, 47, 76, 0.22);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transform: rotate(-3deg);
+}
+[dir='rtl'] [data-template='sakura'] [data-avatar] {
+  transform: rotate(3deg);
+}
+/* The initials are set to the accent inline by the shared Avatar, which is
+   right everywhere else and wrong on a baby-pink seal; this is the one
+   override, and it is what keeps the mark legible after the colour change. */
+[data-template='sakura'] [data-avatar] > span {
+  color: var(--hanko-ink) !important;
+}
+
+/* The petal: three corners round, one cut square. Logical, so the cut corner
+   moves to the other side in English. */
+.petal-card {
+  position: relative;
+  padding: 1.15rem 1.3rem;
+  border: 1px solid var(--nq-border);
+  border-radius: 1.35rem;
+  border-start-start-radius: 3px;
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  box-shadow: var(--glass-shadow);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .petal-card {
+    background: var(--glass-fallback-subtle);
+  }
+}
+/* The sharp corner gets the accent, so the cut reads as intended and not as a
+   rendering fault. */
+.petal-card::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 2.4rem;
+  block-size: 2px;
+  background: var(--nq-accent);
+  opacity: 0.55;
+  border-start-start-radius: 3px;
+}
+
+/* The shared section illustrations are drawn in a full rainbow, which is fine
+   on the templates built around several hues and wrong here: this page spends
+   exactly two colours. `hue-rotate` cannot pull a spread of hues together — it
+   turns them all and keeps the spread — so the art is flattened first and then
+   re-tinted, the same route هِمّة's embers take. */
+[data-template='sakura'] [data-art] {
+  filter: grayscale(1) sepia(1) saturate(2.4) hue-rotate(295deg) opacity(0.85);
+}
+
+/* ── ساكورا: the petal fall ────────────────────────────────────────────────
+   Drawn rather than fetched, and for a reason worth writing down: the free
+   catalogue's petal animation LOOKED right. It was 169 KB of JSON with every
+   position baked frame by frame, and its petals are sized as a fraction of the
+   composition, so it only reads correctly at about 430px wide — three copies to
+   cross a desktop. Three players cost 3.6s of main thread per 5s of scrolling.
+
+   Everything here animates `transform` and `opacity` only, which the compositor
+   runs off the main thread. Twenty petals cost the page nothing.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.petal-fall {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* Same token the Lottie backdrop used, and the same two petal colours, so
+     the footer contrast measured in scripts/contrast.py still holds. */
+  opacity: var(--screen-art-opacity);
+}
+
+.petal {
+  position: absolute;
+  inset-block-start: 0;
+  fill: var(--petal-tone);
+  /* Parked above the fold until its animation starts, so nothing sits in the
+     first frame waiting for a negative delay to catch up. */
+  transform: translate3d(0, -16vh, 0);
+}
+.petal[data-tone='0'] {
+  --petal-tone: #ffb7b7;
+}
+.petal[data-tone='1'] {
+  --petal-tone: #f9a0a0;
+}
+.petal[data-tone='2'] {
+  --petal-tone: #f57e7e;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .petal {
+    animation-name: petal-drop;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    will-change: transform;
+  }
+}
+/* Under reduced motion a few petals rest on the page instead of falling. */
+@media (prefers-reduced-motion: reduce) {
+  .petal {
+    transform: translate3d(0, 30vh, 0) rotate(0.1turn);
+  }
+  .petal:nth-child(odd) {
+    transform: translate3d(0, 62vh, 0) rotate(-0.15turn);
+  }
+}
+:root[data-motion='paused'] .petal {
+  animation-play-state: paused;
+}
+
+/* One fall, one drift and one tumble. The tumble is `rotate3d` on two axes so
+   the petal turns edge-on partway down the way a real one does. */
+@keyframes petal-drop {
+  from {
+    transform: translate3d(0, -16vh, 0) rotate3d(1, 1, 0, 0turn);
+  }
+  to {
+    transform: translate3d(var(--drift), 116vh, 0) rotate3d(1, 1, 0, var(--spin));
+  }
+}
+
+/* ── نسيم: three clouds, a gutter, and nothing else ────────────────────────
+   The only template in the set that brings no art of its own — no Lottie, no
+   player, no wasm. You cannot draw air, so the decoration is what air MOVES:
+   three soft clouds crossing a coloured sky.
+
+   Each cloud is one span whose shape is a radial gradient, so only `transform`
+   ever animates and the whole backdrop is compositor work. After ساكورا's
+   stutter this was built that way from the first line rather than fixed later.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.cloud {
+  position: fixed;
+  z-index: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, var(--cloud-tint), transparent 64%);
+  /* Parked off the start edge; the animation carries them across. */
+  transform: translate3d(0, 0, 0);
+}
+.cloud[data-cloud='1'] {
+  inline-size: 46vw;
+  block-size: 26vw;
+  inset-block-start: 6vh;
+  inset-inline-start: -50vw;
+}
+.cloud[data-cloud='2'] {
+  inline-size: 62vw;
+  block-size: 30vw;
+  inset-block-start: 44vh;
+  inset-inline-start: -66vw;
+}
+.cloud[data-cloud='3'] {
+  inline-size: 34vw;
+  block-size: 20vw;
+  inset-block-start: 74vh;
+  inset-inline-start: -38vw;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cloud {
+    animation-name: cloud-cross;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+  /* Three unrelated periods, so the sky never repeats a formation. A breeze
+     that loops on a common multiple stops reading as weather. */
+  .cloud[data-cloud='1'] {
+    animation-duration: 97s;
+    animation-delay: -20s;
+  }
+  .cloud[data-cloud='2'] {
+    animation-duration: 131s;
+    animation-delay: -70s;
+  }
+  .cloud[data-cloud='3'] {
+    animation-duration: 79s;
+    animation-delay: -45s;
+  }
+}
+/* Under reduced motion the clouds simply sit in the sky. */
+@media (prefers-reduced-motion: reduce) {
+  .cloud[data-cloud='1'] {
+    transform: translate3d(70vw, 0, 0);
+  }
+  .cloud[data-cloud='2'] {
+    transform: translate3d(100vw, 0, 0);
+  }
+  .cloud[data-cloud='3'] {
+    transform: translate3d(48vw, 0, 0);
+  }
+}
+:root[data-motion='paused'] .cloud {
+  animation-play-state: paused;
+}
+
+/* Left to right, always — wind has a direction of its own and does not take it
+   from the language. `translate` is physical, so this is spelled once and the
+   RTL twin below turns it around to keep the same real-world direction. */
+@keyframes cloud-cross {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(170vw, 0, 0);
+  }
+}
+[dir='rtl'] .cloud {
+  /* In RTL `inset-inline-start` parks them off the RIGHT edge, so they have to
+     travel the other way to cross the screen at all. */
+  animation-name: cloud-cross-rtl;
+}
+@media (prefers-reduced-motion: reduce) {
+  [dir='rtl'] .cloud[data-cloud='1'] {
+    transform: translate3d(-70vw, 0, 0);
+  }
+  [dir='rtl'] .cloud[data-cloud='2'] {
+    transform: translate3d(-100vw, 0, 0);
+  }
+  [dir='rtl'] .cloud[data-cloud='3'] {
+    transform: translate3d(-48vw, 0, 0);
+  }
+}
+@keyframes cloud-cross-rtl {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-170vw, 0, 0);
+  }
+}
+
+/* ── The kite ─────────────────────────────────────────────────────────────
+   The first نسيم hero was a gutter: a wide empty column with a hairline in it.
+   It was an absence, and an absence is not an identity — the template read as
+   a blank. This one is a body.
+
+   Kites fly in the far corner, a string runs down across the card, and the
+   portrait sits at the bottom of it. The art is not placed NEXT to the person,
+   it is attached to them — which is the thing سِيق (a portrait standing in a
+   carved doorway) and مُحيط (a portrait inside a porthole) both do.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.kite-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 1.75rem;
+  /* Sky above the writing: the kites need somewhere to be. */
+  padding-block-start: 12rem;
+}
+@media (min-width: 768px) {
+  .kite-hero {
+    min-block-size: 27rem;
+    padding: 2.5rem 3rem;
+    /* Wide enough that the kites fly beside the text rather than over it. */
+    padding-block-start: 2.5rem;
+  }
+}
+
+.kite-flight {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: -2%;
+  inset-inline-end: -4%;
+  inline-size: min(17rem, 56%);
+  aspect-ratio: 1;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .kite-flight {
+    inline-size: min(29rem, 48%);
+    inset-block-start: -4%;
+    inset-inline-end: 0;
+  }
+}
+
+/* The string runs corner to corner of the card. `preserveAspectRatio: none`
+   stretches the curve with the box, so the top end stays under the kites and
+   the bottom end stays at the portrait however wide the card gets. */
+.kite-string {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+.kite-string path {
+  fill: none;
+  stroke: var(--nq-foreground);
+  stroke-width: 0.28;
+  stroke-linecap: round;
+  opacity: 0.38;
+  vector-effect: non-scaling-stroke;
+}
+/* The art hangs off the inline-end corner, so the string has to swing the
+   other way in the other reading direction. The SVG is static — nothing here
+   repaints — so mirroring it costs nothing. */
+[dir='rtl'] .kite-string {
+  transform: scaleX(-1);
+}
+
+.kite-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-inline-size: 60ch;
+}
+@media (min-width: 768px) {
+  .kite-body {
+    /* Down and to the start: the far corner belongs to the kites. */
+    margin-block-start: 4rem;
+    max-inline-size: 52ch;
+  }
+}
+/* The hand on the string: the portrait sits where the curve lands, so the two
+   read as one object rather than as art next to a headshot. The negative
+   margin pulls it down into the card's foot, which is where the string ends
+   and where a person standing under a kite belongs. */
+.kite-holder {
+  display: flex;
+  margin-block-start: 0.5rem;
+}
+@media (min-width: 768px) {
+  .kite-holder {
+    margin-block-start: 1.75rem;
+  }
+}
+.kite-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+/* ── The slat ─────────────────────────────────────────────────────────────
+   Wide and short, white paper lying on the sky rather than a panel cut into
+   it. The shadow does the floating, so it is deliberately longer and softer
+   than anywhere else in the set.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.slat {
+  position: relative;
+  padding: 1.15rem 1.4rem;
+  border-radius: 0.6rem;
+  background: var(--glass-bg-strong);
+  box-shadow: var(--glass-shadow);
+  /* A sheet has no border; it has an edge you infer from its shadow. */
+  border: 0;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .slat {
+    background: var(--glass-fallback-strong);
+  }
+}
+/* One accent rule down the start edge, the only mark on the sheet. */
+.slat::before {
+  content: '';
+  position: absolute;
+  inset-block: 0.9rem;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  border-start-end-radius: 2px;
+  border-end-end-radius: 2px;
+  background: var(--nq-accent);
+  opacity: 0.5;
+}
+
+/* ── مَدى: the mast ────────────────────────────────────────────────────────
+   The first version of this hero was a dotted reticle in a narrow rail — an
+   instrument reading, which is a diagram and not a place. سِيق lets you stand
+   in a doorway and مُحيط puts you behind a porthole; this had nothing to stand
+   in, and it read as a wireframe.
+
+   So مَدى got a structure: a transmitter mast with its lamp lit, the portrait
+   at the foot of it, and the RANGE opening out across the card. The word means
+   how far the signal gets, and now that is a thing you can see.
+
+   The rings are `scale` and `opacity` only, which the compositor runs on its
+   own — three of them cost the main thread nothing.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.mast-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem;
+}
+@media (min-width: 768px) {
+  .mast-hero {
+    grid-template-columns: minmax(10rem, 19rem) 1fr;
+    gap: 2.75rem;
+    padding: 2.5rem 3rem;
+    align-items: end;
+  }
+}
+
+.mast-tower {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  /* Tall enough that the mast reads as a mast and not as an icon. */
+  min-block-size: 14rem;
+  justify-content: flex-end;
+}
+@media (min-width: 768px) {
+  .mast-tower {
+    min-block-size: 22rem;
+  }
+}
+
+.mast-art {
+  inline-size: min(13rem, 78%);
+  aspect-ratio: 1;
+}
+
+/* The lamp sits near the top of the art, so the rings are centred there and
+   allowed to grow far wider than the tower itself — that overspill IS the
+   range. The hero clips them at its own edge. */
+.mast-range {
+  position: absolute;
+  inset-block-start: 8%;
+  inset-inline-start: 50%;
+  inline-size: 0;
+  block-size: 0;
+  pointer-events: none;
+}
+.mast-range span {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 34rem;
+  block-size: 34rem;
+  margin-block-start: -17rem;
+  margin-inline-start: -17rem;
+  border: 1px solid var(--nq-accent);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.08);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mast-range span {
+    animation: mast-reach 6s linear infinite;
+  }
+  .mast-range span[data-ring='2'] {
+    animation-delay: -2s;
+  }
+  .mast-range span[data-ring='3'] {
+    animation-delay: -4s;
+  }
+}
+/* Still, the range is shown as one held ring rather than none. */
+@media (prefers-reduced-motion: reduce) {
+  .mast-range span[data-ring='2'] {
+    opacity: 0.35;
+    transform: scale(0.55);
+  }
+}
+:root[data-motion='paused'] .mast-range span {
+  animation-play-state: paused;
+}
+@keyframes mast-reach {
+  0% {
+    opacity: 0;
+    transform: scale(0.08);
+  }
+  12% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.mast-foot {
+  position: relative;
+  z-index: 2;
+  display: flex;
+}
+.mast-main {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+
+/* ── تسلا: the coil ───────────────────────────────────────────────────────
+   The first hero here was a spark gap — two separate plates with an arc
+   jumping between them. It was an accurate diagram of Tesla's idea and it read
+   as a layout that had come apart: two cards that had lost each other.
+
+   A coil is ONE object. The portrait stands at its foot, the corona on the
+   toroid never goes out, and the discharges run on four short unrelated cycles
+   so at least one is always lit. That last part matters more than any of the
+   drawing: electricity that fires on a realistic schedule leaves the page
+   still for most of every cycle, and a still page does not feel electric.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.coil-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .coil-hero {
+    grid-template-columns: minmax(11rem, 20rem) 1fr;
+    gap: 3rem;
+    padding: 2.5rem 3rem;
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+
+.coil-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Tight: the portrait stands AT the foot of the machine. A gap here made the
+     two read as a coil and, separately, a headshot. */
+  gap: 0;
+  margin-block-start: -0.5rem;
+}
+.coil {
+  position: relative;
+  inline-size: min(12rem, 60vw);
+}
+.coil-body {
+  display: block;
+  inline-size: 100%;
+  overflow: visible;
+}
+
+/* The windings and the frame: steel, not accent — the light is what glows, not
+   the metal. */
+.coil-winding line,
+.coil-frame,
+.coil-primary {
+  fill: none;
+  stroke: var(--nq-muted-foreground);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0.75;
+}
+.coil-winding line {
+  stroke-width: 2.2;
+  opacity: 0.5;
+}
+.coil-primary {
+  stroke: var(--nq-accent);
+  stroke-width: 2.4;
+  opacity: 0.85;
+}
+
+/* The toroid, and the corona around it. The corona breathes but never goes
+   out: discharge is this page's resting state. */
+.coil-toroid {
+  fill: var(--nq-muted-foreground);
+  opacity: 0.55;
+}
+.coil-toroid-lip {
+  fill: var(--nq-accent);
+  opacity: 0.9;
+}
+.coil-glow {
+  fill: var(--bolt-halo);
+  filter: blur(7px);
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .coil-glow {
+    animation: coil-breathe 1.7s ease-in-out infinite;
+  }
+}
+:root[data-motion='paused'] .coil-glow,
+:root[data-motion='paused'] .coil-arc {
+  animation-play-state: paused;
+}
+@keyframes coil-breathe {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(0.94);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+
+/* The discharges sit on the toroid and fan upward out of the frame. */
+.coil-arcs {
+  position: absolute;
+  inset-block-start: 4%;
+  inset-inline: -18%;
+  block-size: 34%;
+  overflow: visible;
+  pointer-events: none;
+}
+.coil-arc {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .coil-arc {
+    animation: coil-fire 1.1s steps(1, end) infinite;
+  }
+  /* Four short cycles that do not share a factor, so the gaps never line up
+     and something is lit at essentially every instant. */
+  .coil-arc[data-arc='1'] {
+    animation-duration: 0.83s;
+    animation-delay: -0.2s;
+  }
+  .coil-arc[data-arc='2'] {
+    animation-duration: 1.37s;
+    animation-delay: -0.7s;
+  }
+  .coil-arc[data-arc='3'] {
+    animation-duration: 0.61s;
+    animation-delay: -0.45s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .coil-arc[data-arc='0'],
+  .coil-arc[data-arc='2'] {
+    opacity: 0.75;
+  }
+}
+/* Unlike the sky, a coil is lit far more than it is dark. */
+@keyframes coil-fire {
+  0%,
+  44% {
+    opacity: 0.95;
+  }
+  52% {
+    opacity: 0.3;
+  }
+  58% {
+    opacity: 0.9;
+  }
+  70%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.coil-base {
+  position: relative;
+  z-index: 2;
+  display: flex;
+}
+.coil-body-text,
+.coil-hero > .coil-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+
+/* ── مَشرَبيّة: the screen ─────────────────────────────────────────────────
+   A mashrabiya is turned wooden spindles assembled into a lattice and set into
+   a window. The portrait sits in an opening cut through it, the lanterns hang
+   beside it, and every piece of this is static: an SVG `<pattern>` the browser
+   tiles once, plus one Lottie. Nothing here runs per frame except the lamp
+   glow, which is a single opacity keyframe.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.lattice-panel,
+.lattice-wall {
+  pointer-events: none;
+}
+.lattice-line circle {
+  fill: none;
+  stroke: var(--lattice-ink);
+  stroke-width: var(--lattice-weight);
+}
+.lattice-line rect {
+  fill: var(--lattice-ink);
+  stroke: none;
+}
+
+/* The wall: the room the page is in, meant to be felt rather than looked at.
+   Fixed to the viewport so it does not stretch over a long document. */
+.lattice-wall {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: var(--lattice-wall-opacity);
+}
+
+/* The panel behind the portrait: this one IS meant to be read as woodwork. */
+.lattice-panel {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  opacity: var(--lattice-panel-opacity);
+}
+
+.screen-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.75rem;
+  padding: 1.75rem;
+}
+@media (min-width: 768px) {
+  .screen-hero {
+    grid-template-columns: minmax(12rem, 21rem) 1fr;
+    gap: 3rem;
+    padding: 2.5rem 3rem;
+    align-items: center;
+  }
+}
+
+/* The window: the lattice fills it, the lanterns hang across its top, and the
+   opening is cut in the middle. */
+.screen-window {
+  position: relative;
+  aspect-ratio: 1;
+  inline-size: min(17rem, 100%);
+  justify-self: center;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  /* The frame of the window, in the same wood as the spindles. */
+  box-shadow: inset 0 0 0 2px var(--wood-edge);
+  /* Light arriving from the lantern side and falling across the screen. A
+     corner-to-corner gradient has a physical direction, so it is spelled twice
+     below rather than left to flip on its own. */
+  background-image: radial-gradient(circle at 78% 18%, var(--lamp-glow) 0%, transparent 62%);
+}
+[dir='rtl'] .screen-window {
+  background-image: radial-gradient(circle at 22% 18%, var(--lamp-glow) 0%, transparent 62%);
+}
+
+/* The شمسة. A rosette is the motif a mashrabiya is built around — it is what
+   sits at the centre of a carved Mamluk panel — so it belongs on the wall of
+   the room, in the corner the writing does not use, rather than inside the
+   screen. Big, faint, brass, and turning slowly enough that you have to look
+   twice to be sure it is turning at all.
+
+   It replaced a row of hanging lanterns: lanterns are Ramadan decoration and
+   this template is architecture. */
+.rosette {
+  position: absolute;
+  z-index: 0;
+  inset-block-start: -16%;
+  inset-inline-end: -10%;
+  inline-size: min(24rem, 54%);
+  aspect-ratio: 1;
+  pointer-events: none;
+  /* The ceiling is set by text crossing a stroke: at 0.3 the accent measured
+     3.74:1 on a brass line. The lines are drawn THICKER instead, which gives
+     the carving the same presence without changing the colour a letter can
+     land on. */
+  opacity: var(--rosette-opacity);
+}
+@media (min-width: 768px) {
+  .rosette {
+    inline-size: min(30rem, 44%);
+    inset-block-start: -24%;
+    inset-inline-end: -6%;
+  }
+}
+.rosette-line {
+  fill: none;
+  stroke: var(--lattice-ink);
+  stroke-width: 1.3;
+  stroke-linejoin: round;
+}
+/* Slow enough that you have to look twice to be sure it is turning. */
+@media (prefers-reduced-motion: no-preference) {
+  .rosette {
+    animation: rosette-turn 220s linear infinite;
+  }
+}
+:root[data-motion='paused'] .rosette {
+  animation-play-state: paused;
+}
+@keyframes rosette-turn {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+/* The opening. The ring is the cut edge of the woodwork, which is what stops
+   the portrait reading as a photo pasted onto a pattern. */
+.screen-opening {
+  position: absolute;
+  z-index: 2;
+  inset-block-end: 12%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 6px var(--glass-fallback),
+    0 0 0 8px var(--wood-edge),
+    0 10px 26px rgba(0, 0, 0, 0.35);
+}
+[dir='rtl'] .screen-opening {
+  transform: translateX(50%);
+}
+
+.screen-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+
+/* The lamp glow breathes very slightly. One property, one element. */
+@media (prefers-reduced-motion: no-preference) {
+  .screen-window {
+    animation: lamp-breathe 5.5s ease-in-out infinite;
+  }
+}
+:root[data-motion='paused'] .screen-window {
+  animation-play-state: paused;
+}
+@keyframes lamp-breathe {
+  0%,
+  100% {
+    background-size: 100% 100%;
+  }
+  50% {
+    background-size: 118% 118%;
+  }
+}
+
+/* ── The inlay ────────────────────────────────────────────────────────────
+   A panel of wood with one brass line let into its start edge, the way a real
+   screen is finished. No border anywhere else.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.inlay {
+  position: relative;
+  padding: 1.2rem 1.4rem;
+  padding-inline-start: 1.9rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow: var(--glass-shadow);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .inlay {
+    background: var(--glass-fallback-subtle);
+  }
+}
+.inlay::before {
+  content: '';
+  position: absolute;
+  inset-block: 1.1rem;
+  inset-inline-start: 0.85rem;
+  inline-size: 2px;
+  border-radius: 2px;
+  background: linear-gradient(to bottom, var(--nq-highlight), var(--nq-accent));
+  opacity: 0.85;
+}
+
+/* ── نيويورك: the tower ───────────────────────────────────────────────────
+   A tower at night, and the portrait is one lit window in it. The facade is
+   drawn (components/templates/tower.tsx) because no city animation in the free
+   catalogue has a lit window in it — they are all daytime flat illustration —
+   and because a fetched picture of a building cannot have the person INSIDE.
+
+   Eighty-four windows, each a `<rect>` with a fixed opacity, and eleven of them
+   on a switch. Only opacity animates, and only on those eleven.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.window-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.75rem;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .window-hero {
+    /* Portrait and writing side by side. The card is only as tall as what is
+       in it — the city is the page's now, so nothing here has to leave room
+       for a skyline. */
+    grid-template-columns: minmax(7rem, 11rem) 1fr;
+    gap: 2.5rem;
+    padding: 2.25rem 2.75rem;
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+
+.window-tower {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+}
+
+/* The cityscape along the foot of the card. Absolute, so it costs the hero no
+   height at all — and stroke-only, so one filter carries it from the white it
+   is drawn in to the amber every other window on this page is lit with. */
+.window-cityline {
+  position: absolute;
+  z-index: 0;
+  /* Anchored to the start edge and carrying the art's OWN 2002:670 ratio.
+     Stretched across the card it was cropped to its middle, which is the
+     empty part — the buildings live on one side of a very wide frame. */
+  inset-inline-start: 0;
+  /* On a phone the card stacks — portrait on top, writing under it — so the
+     cityscape goes BEHIND THE PORTRAIT rather than along the foot, where it
+     would lie under the paragraph. Text crossing one of its strokes measured
+     3.10:1 for the accent. */
+  inset-block-start: 0;
+  block-size: 7rem;
+  aspect-ratio: 2002 / 670;
+  pointer-events: none;
+  opacity: var(--cityline-opacity);
+}
+@media (min-width: 768px) {
+  .window-cityline {
+    /* Side by side: the city runs along the foot under the tower, and fades
+       out before it reaches the writing. The gradient is physical, so it is
+       spelled twice. */
+    inset-block-start: auto;
+    inset-block-end: 0;
+    block-size: 9.5rem;
+    -webkit-mask-image: linear-gradient(to right, #000 52%, transparent 88%);
+    mask-image: linear-gradient(to right, #000 52%, transparent 88%);
+  }
+  [dir='rtl'] .window-cityline {
+    -webkit-mask-image: linear-gradient(to left, #000 52%, transparent 88%);
+    mask-image: linear-gradient(to left, #000 52%, transparent 88%);
+  }
+}
+.window-cityline canvas {
+  filter: sepia(1) saturate(4) hue-rotate(335deg) brightness(1.1);
+}
+
+.tower {
+  inline-size: min(7rem, 34vw);
+  /* Room above the crown for the mast, which is drawn at a negative y. */
+  overflow: visible;
+  block-size: auto;
+  aspect-ratio: 120 / 196;
+}
+@media (min-width: 768px) {
+  .tower {
+    inline-size: min(9rem, 14vw);
+  }
+}
+.tower-body {
+  fill: var(--tower-face);
+  stroke: var(--tower-edge);
+  stroke-width: 1;
+}
+.tower-mast {
+  stroke: var(--tower-edge);
+  stroke-width: 1.4;
+}
+.tower-beacon {
+  fill: var(--nq-accent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tower-beacon {
+    animation: beacon-pulse 2.6s ease-in-out infinite;
+  }
+}
+@keyframes beacon-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Four states, so the building has depth instead of a checkerboard. */
+.tower-window {
+  fill: var(--window-off);
+}
+.tower-window[data-lit='1'] {
+  fill: var(--window-dim);
+}
+.tower-window[data-lit='2'] {
+  fill: var(--window-lit);
+}
+.tower-window[data-lit='3'] {
+  fill: var(--window-bright);
+}
+
+/* The eleven on a switch. Long, unrelated periods: a tower at night changes
+   slowly, and anything faster reads as an alarm rather than as a city. */
+@media (prefers-reduced-motion: no-preference) {
+  .tower-window[data-blink] {
+    animation: window-switch 17s steps(1, end) infinite;
+  }
+  .tower-window[data-blink='2'] {
+    animation-duration: 23s;
+    animation-delay: -7s;
+  }
+  .tower-window[data-blink='3'] {
+    animation-duration: 31s;
+    animation-delay: -13s;
+  }
+}
+:root[data-motion='paused'] .tower-window,
+:root[data-motion='paused'] .tower-beacon {
+  animation-play-state: paused;
+}
+@keyframes window-switch {
+  0%,
+  46% {
+    opacity: 1;
+  }
+  50%,
+  92% {
+    opacity: 0.12;
+  }
+  96%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* The window that is yours. A warm frame and a halo, so it reads as one more
+   lit window on the facade rather than a portrait pasted over a pattern. */
+.window-mine {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 34%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  border-radius: 2px;
+  box-shadow:
+    0 0 0 5px var(--glass-fallback),
+    0 0 0 7px var(--window-bright),
+    0 0 34px 10px var(--window-halo);
+}
+[dir='rtl'] .window-mine {
+  transform: translateX(50%);
+}
+/* Square, like every other window on the building. */
+.window-mine [data-avatar] {
+  border-radius: 2px;
+}
+
+/* The corner the layout leaves empty: a city bent into a ring with a cab
+   going round it. Far from the writing, so it can be as bright as it likes. */
+.window-burst {
+  position: absolute;
+  z-index: 0;
+  /* Kept wholly inside the card rather than hung over its edge and trusted to
+     the clip: a burst whose box leaves the card is a burst you have to reason
+     about, and the corner looks better with the whole shape in it anyway. */
+  inset-block-start: 0.5rem;
+  inset-inline-end: 0.5rem;
+  inline-size: 11rem;
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: var(--burst-opacity);
+}
+@media (min-width: 768px) {
+  .window-burst {
+    inset-block-start: 0.5rem;
+    inset-inline-end: 1rem;
+    inline-size: 18rem;
+  }
+}
+/* Left in the colours it was drawn in — white and slate buildings with a
+   violet cab — at the owner's request. They sit close enough to the page's own
+   blue-black that no correction is wanted. */
+
+.window-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+
+/* The far city: eleven drawn towers standing on the floor of the viewport,
+   behind everything. Fixed, so it stays on the horizon while the page scrolls
+   past it rather than sliding away with the document. */
+.city-skyline {
+  /* Fixed to the foot of the VIEWPORT: the city stays on the horizon while the
+     page scrolls past it, and it runs the full width because no layout has to
+     make room for it. */
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: min(52vh, 26rem);
+  pointer-events: none;
+  opacity: var(--screen-art-opacity);
+}
+
+.city-tower {
+  fill: var(--city-mass);
+}
+.city-spire {
+  stroke: var(--city-mass);
+  stroke-width: 1.4;
+}
+.city-beacon {
+  fill: var(--nq-accent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .city-beacon {
+    animation: beacon-pulse 3.1s ease-in-out infinite;
+  }
+  .city-beacon[data-beacon='1'] {
+    animation-duration: 4.3s;
+    animation-delay: -1.5s;
+  }
+}
+.city-window {
+  fill: var(--window-dim);
+}
+.city-window[data-lit='2'] {
+  fill: var(--window-lit);
+}
+
+/* The street. */
+.city-road {
+  fill: var(--city-road);
+}
+.city-kerb {
+  stroke: var(--city-kerb);
+  stroke-width: 1.2;
+}
+.city-person {
+  fill: var(--city-crowd-ink);
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* People shift their weight rather than walk: at this size a stride reads as
+     a twitch, and a crowd that all steps together reads as a machine. */
+  .city-person {
+    animation: person-sway 4.7s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+  }
+  .city-person[data-walk='1'] {
+    animation-duration: 6.1s;
+    animation-delay: -1.9s;
+  }
+  .city-person[data-walk='2'] {
+    animation-duration: 5.3s;
+    animation-delay: -3.4s;
+  }
+  .city-person[data-walk='3'] {
+    animation-duration: 7.3s;
+    animation-delay: -0.8s;
+  }
+}
+@keyframes person-sway {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Traffic: headlights one way, tail lights the other. Pure translation, which
+   is the cheapest thing on the page and the thing that makes a still drawing
+   read as a city that is awake. */
+.car-head {
+  fill: var(--car-head);
+}
+.car-tail {
+  fill: var(--car-tail);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .car-head {
+    animation: drive-start 9s linear infinite;
+  }
+  .car-tail {
+    animation: drive-end 11s linear infinite;
+  }
+  .car-head[data-lane='1'] {
+    animation-duration: 6.5s;
+    animation-delay: -2s;
+  }
+  .car-head[data-lane='2'] {
+    animation-duration: 12s;
+    animation-delay: -5s;
+  }
+  .car-head[data-lane='3'] {
+    animation-duration: 7.8s;
+    animation-delay: -6.5s;
+  }
+  .car-head[data-lane='4'] {
+    animation-duration: 10.5s;
+    animation-delay: -8s;
+  }
+  .car-tail[data-lane='1'] {
+    animation-duration: 8.2s;
+    animation-delay: -3s;
+  }
+  .car-tail[data-lane='2'] {
+    animation-duration: 13s;
+    animation-delay: -6s;
+  }
+  .car-tail[data-lane='3'] {
+    animation-duration: 9.6s;
+    animation-delay: -9s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .car-head,
+  .car-tail {
+    opacity: 0.8;
+    transform: translateX(240px);
+  }
+}
+:root[data-motion='paused'] .car-head,
+:root[data-motion='paused'] .car-tail,
+:root[data-motion='paused'] .city-person,
+:root[data-motion='paused'] .city-beacon {
+  animation-play-state: paused;
+}
+/* Traffic has a direction of its own and does not take it from the language,
+   so these are spelled in physical terms and never flipped. */
+@keyframes drive-start {
+  from {
+    transform: translateX(-40px);
+  }
+  to {
+    transform: translateX(1260px);
+  }
+}
+@keyframes drive-end {
+  from {
+    transform: translateX(1260px);
+  }
+  to {
+    transform: translateX(-40px);
+  }
+}
+
+/* ── The marquee ──────────────────────────────────────────────────────────
+   A lit sign: the panel is dark and the light runs along its top edge, the way
+   a marquee throws light down over what it is announcing.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.marquee {
+  position: relative;
+  padding: 1.25rem 1.4rem;
+  padding-block-start: 1.45rem;
+  border: 1px solid var(--nq-border);
+  border-radius: var(--nq-radius-md);
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(140%);
+  box-shadow: var(--glass-shadow);
+  overflow: hidden;
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .marquee {
+    background: var(--glass-fallback-subtle);
+  }
+}
+/* The tube along the top, and the light it throws down into the panel. */
+.marquee::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 2px;
+  background: var(--nq-highlight);
+}
+.marquee::after {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 4.5rem;
+  pointer-events: none;
+  /* Its own token, not the portrait's halo: that one is built to make one
+     window glow and it put muted type at 4.00:1 when a card wore it. */
+  background: linear-gradient(to bottom, var(--marquee-spill), transparent);
+}
+
+/* ── العالم: the pin ──────────────────────────────────────────────────────
+   The object is the world and the person is a pin stuck in it. The map fills
+   the card, the marker is planted on it with the portrait in its head, and the
+   ring is still going out from where it landed.
+
+   The graticule across the page is two repeating gradients at 0 and 90 degrees
+   — no physical direction in either, so a grid that is identical mirrored
+   needs no RTL twin. It is painted once and never animates.
+   ────────────────────────────────────────────────────────────────────────── */
+
+[data-bg='atlas'] {
+  background-image:
+    repeating-linear-gradient(90deg, var(--grat-line) 0 1px, transparent 1px 84px),
+    repeating-linear-gradient(0deg, var(--grat-line) 0 1px, transparent 1px 84px),
+    repeating-linear-gradient(90deg, var(--grat-major) 0 1px, transparent 1px 420px),
+    repeating-linear-gradient(0deg, var(--grat-major) 0 1px, transparent 1px 420px);
+}
+
+.pin-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .pin-hero {
+    grid-template-columns: minmax(8rem, 13rem) 1fr;
+    gap: 2.5rem;
+    padding: 2.5rem 3rem;
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+
+/* The earth turning in the corner of the card. */
+.pin-globe {
+  position: absolute;
+  z-index: 0;
+  inset-block-start: 0.75rem;
+  inset-inline-end: 0.75rem;
+  /* Big enough to read as a planet. At 5rem and a fifth of an opacity it was a
+     smudge — the corner it sits in has no text anywhere near it, so there was
+     never a reason for it to be either small or faint. */
+  inline-size: 8.5rem;
+  aspect-ratio: 1;
+  pointer-events: none;
+  opacity: var(--globe-opacity);
+}
+@media (min-width: 768px) {
+  .pin-globe {
+    inline-size: 15rem;
+    inset-block-start: 50%;
+    inset-inline-end: 1.5rem;
+    transform: translateY(-50%);
+  }
+}
+
+/* ── The marker ───────────────────────────────────────────────────────── */
+
+.pin-mark {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+}
+
+/* The head holds the portrait; the ring around it is the pin's own rim. */
+.pin-head {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 5px var(--glass-fallback),
+    0 0 0 7px var(--nq-accent),
+    0 12px 26px rgba(0, 0, 0, 0.22);
+}
+.pin-head [data-avatar] {
+  border-radius: 50%;
+}
+
+/* The point. A clipped triangle rather than the border trick, which would need
+   physical left and right to build. */
+.pin-point {
+  z-index: 1;
+  inline-size: 1.4rem;
+  block-size: 1.1rem;
+  margin-block-start: -0.35rem;
+  background: var(--nq-accent);
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+/* The ring still going out from where it landed. Scale and opacity only, so
+   the compositor runs it and the main thread never sees a frame. */
+.pin-ping {
+  position: absolute;
+  z-index: 0;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  inline-size: 16rem;
+  block-size: 16rem;
+  margin-block-start: -8rem;
+  margin-inline-start: -8rem;
+  border: 1px solid var(--nq-accent);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.12);
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .pin-ping {
+    animation: pin-reach 4.5s ease-out infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pin-ping {
+    opacity: 0.4;
+    transform: scale(0.5);
+  }
+}
+:root[data-motion='paused'] .pin-ping {
+  animation-play-state: paused;
+}
+@keyframes pin-reach {
+  0% {
+    opacity: 0;
+    transform: scale(0.12);
+  }
+  15% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+.pin-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+
+/* ── The legend ───────────────────────────────────────────────────────────
+   An entry in a map legend: a key mark in the margin and the reading beside
+   it, on a plain sheet with one ruled edge.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.legend {
+  position: relative;
+  padding: 1.2rem 1.35rem;
+  padding-inline-start: 2.3rem;
+  border: 1px solid var(--nq-border);
+  border-radius: var(--nq-radius-md);
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow: var(--glass-shadow);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .legend {
+    background: var(--glass-fallback-subtle);
+  }
+}
+/* The key mark: a small ringed node, the way a legend marks a place. */
+.legend::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 1.45rem;
+  inset-inline-start: 0.95rem;
+  inline-size: 0.55rem;
+  block-size: 0.55rem;
+  border-radius: 50%;
+  background: var(--nq-accent);
+  box-shadow: 0 0 0 3px var(--pin-ring);
+}
+
+/* The world across the page. On the sheet it is printed as drawn — navy land,
+   gold routes. At night that navy is DARKER than the page and simply vanishes,
+   which is what the owner saw: a hero with no map in it. So the night flips
+   the whole thing light and puts it in the template's own mint, which is also
+   what a chart looks like when it is lit from behind. */
+[data-template='alam'] .tpl-screen-cover canvas {
+  filter: none;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='alam'] .tpl-screen-cover canvas {
+    filter: grayscale(1) invert(1) sepia(1) saturate(2.6) hue-rotate(118deg);
+  }
+}
+:root[data-theme='dark'] [data-template='alam'] .tpl-screen-cover canvas {
+  filter: grayscale(1) invert(1) sepia(1) saturate(2.6) hue-rotate(118deg);
+}
+/* The earth is drawn in a bright cyan. That reads on the night sheet and
+   washes out completely on the oat one, which is what the owner saw: the globe
+   was the one piece of art on this template carrying a single filter for both
+   themes while the map beside it switched. On paper it is deepened to the
+   template's own teal; at night it stays lit. */
+[data-template='alam'] .pin-globe canvas {
+  filter: sepia(1) saturate(4) hue-rotate(115deg) brightness(0.45) contrast(1.15);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-template='alam'] .pin-globe canvas {
+    filter: sepia(1) saturate(3) hue-rotate(118deg);
+  }
+}
+:root[data-theme='dark'] [data-template='alam'] .pin-globe canvas {
+  filter: sepia(1) saturate(3) hue-rotate(118deg);
+}
+
+/* ── فن: the gallery ──────────────────────────────────────────────────────
+   Third build. The first was a stage, and a theatre is where art is performed
+   rather than art. The second was bold watercolour washes, and it came out as
+   soft pastel blobs — the page every gradient generator makes, which is the
+   exact opposite of bold.
+
+   This is a room with a wall in it. The person is the first work hung on that
+   wall: mounted, framed, and captioned with a museum label giving the name,
+   the medium and the year, which is what the top of a CV already is. The other
+   works are where the colour lives, so the palette can be loud without the
+   page turning to mush.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.gallery-wall {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+/* Her own landscape, blown up to fill the page. The same file as the framed
+   copy below — one download, two uses — scaled to cover and blurred hard, so
+   what surrounds her is the sfumato she was painted in front of rather than a
+   colour somebody picked. Blur is the whole point here: it is what turns a
+   cropped photograph into a wall. */
+.wall-fill {
+  position: absolute;
+  /* Inset past every edge so the blur has material to smear and never shows a
+     soft fringe where the image runs out. */
+  inset: -8%;
+  background-image: url('/art/monalisa.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  filter: blur(46px) saturate(1.15);
+  opacity: var(--wall-fill-opacity);
+}
+
+/* The painting on the wall. La Gioconda is five centuries out of copyright and
+   the reproduction is a public-domain scan from Wikimedia Commons, resized and
+   re-encoded to 77 KB and served from this project — nothing is fetched from
+   anywhere else at runtime, which is the rule for every asset here.
+   Fixed to the viewport, so she stays on the wall while the page scrolls. */
+.wall-art {
+  position: absolute;
+  inset-block: 0;
+  /* Centred with `inset-inline: 0` and an auto margin, NOT with a 50% inset
+     and a translate: `inset-inline-start` is measured from the RIGHT in Arabic
+     while `translateX` is always physical, so the two fought and put her 608px
+     off the side of the screen. An auto margin has no direction in it. */
+  inset-inline: 0;
+  margin-inline: auto;
+  /* `100%` in the list matters: an auto margin cannot centre a box WIDER than
+     its container, so on a phone she was pinned to the start edge and hung
+     442px off the other side. */
+  inline-size: min(52rem, 118vh, 100%);
+  background-image: url('/art/monalisa.webp');
+  background-repeat: no-repeat;
+  background-position: center 18%;
+  background-size: contain;
+  opacity: var(--wall-art-opacity);
+}
+
+/* The pool a ceiling wash throws down a gallery wall. Wide, soft, and top-lit,
+   which is the one lighting cue that says "room" rather than "gradient". */
+.wall-light {
+  position: absolute;
+  inset-block-start: -28vh;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: 150vw;
+  block-size: 92vh;
+  background: radial-gradient(ellipse at 50% 0%, var(--wall-glow) 0%, transparent 66%);
+}
+/* The picture rail: the line a gallery hangs everything from. */
+.wall-rail {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 16vh;
+  block-size: 1px;
+  background: var(--wall-rail);
+}
+
+.frame-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.75rem;
+  padding: 2rem 1.75rem 1.75rem;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .frame-hero {
+    grid-template-columns: minmax(13rem, 22rem) 1fr;
+    gap: 3rem;
+    padding: 3rem 3rem 2.5rem;
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+
+/* ── The hang ─────────────────────────────────────────────────────────── */
+
+.hang {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-self: center;
+}
+/* The wire. A framed thing hangs from something, and drawing that is most of
+   what makes a frame read as hung rather than as a border. */
+.hang-wire {
+  inline-size: 1px;
+  block-size: 2.25rem;
+  background: var(--wall-rail);
+}
+
+.framed {
+  margin: 0;
+  padding: 0.7rem;
+  border-radius: 2px;
+  background: var(--frame-face);
+  box-shadow:
+    inset 0 0 0 1px var(--frame-bevel),
+    0 14px 30px rgba(20, 16, 26, 0.22);
+}
+.framed-mount {
+  padding: 1.15rem;
+  background: var(--mount);
+  display: flex;
+  box-shadow: inset 0 0 0 1px var(--frame-bevel);
+}
+.framed-mount [data-avatar] {
+  border-radius: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  /* The work itself is a print: paper, with the initials pulled in the
+     template's ink. A pigment ground here put the accent letters on hot pink,
+     which is a colour pairing no gallery would hang. */
+  background: var(--mount);
+  inline-size: 8.5rem;
+  block-size: 8.5rem;
+}
+@media (min-width: 768px) {
+  .framed-mount [data-avatar] {
+    inline-size: 11rem;
+    block-size: 11rem;
+  }
+}
+
+/* The museum label. Small, left-ruled, set tight — the way wall text is. */
+/* Wall text is small, quiet and set tight. Without these the hero's display
+   type comes through and the label shouts louder than the work it names. */
+.plaque {
+  position: relative;
+  margin-block-start: 1.1rem;
+  padding-inline-start: 0.85rem;
+  text-align: start;
+  max-inline-size: 34ch;
+  align-self: stretch;
+}
+.plaque h1,
+.plaque h2 {
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+@media (min-width: 768px) {
+  .plaque h1,
+  .plaque h2 {
+    font-size: 1.5rem;
+  }
+}
+.plaque p,
+.plaque div,
+.plaque span:not(.plaque-rule) {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.plaque-rule {
+  position: absolute;
+  inset-block: 0.15rem;
+  inset-inline-start: 0;
+  inline-size: 2px;
+  background: var(--nq-accent);
+}
+
+.frame-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 58ch;
+}
+
+/* The other works on the wall, hung off the eye line so the room has more in
+   it than one picture. Each in its own pigment. */
+.framed-work {
+  position: absolute;
+  z-index: 0;
+  padding: 0.4rem;
+  background: var(--frame-face);
+  box-shadow:
+    inset 0 0 0 1px var(--frame-bevel),
+    0 10px 22px rgba(20, 16, 26, 0.18);
+  pointer-events: none;
+}
+/* Both hung in the far margin, clear of the writing, at the two ends of the
+   wall — a room with one picture in it is not a room. On a phone there is no
+   far margin to hang anything in, and they collided with the portrait, so the
+   small wall clears itself. */
+@media (max-width: 767px) {
+  .framed-work {
+    display: none;
+  }
+}
+.framed-work[data-work='1'] {
+  inset-block-start: 9%;
+  inset-inline-end: 3%;
+  inline-size: 4.5rem;
+  aspect-ratio: 4 / 5;
+  filter: hue-rotate(40deg) saturate(1.3);
+}
+.framed-work[data-work='2'] {
+  inset-block-end: 8%;
+  inset-inline-end: 6%;
+  inline-size: 3.5rem;
+  aspect-ratio: 1;
+  filter: hue-rotate(200deg) saturate(1.4);
+}
+@media (min-width: 768px) {
+  .framed-work[data-work='1'] {
+    inline-size: 6.5rem;
+    inset-inline-end: 2.5%;
+    inset-block-start: 12%;
+  }
+  .framed-work[data-work='2'] {
+    inline-size: 4.75rem;
+    inset-inline-end: 4%;
+    inset-block-end: 10%;
+  }
+}
+
+/* ── The crafts ───────────────────────────────────────────────────────────
+   Four disciplines, four pigments. They are decoration and never a surface for
+   text, which is the rule that lets this be the one template in the set built
+   on more than one colour.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.art-marks {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-block-start: 0.35rem;
+}
+.art-mark {
+  inline-size: 2.4rem;
+  block-size: 2.4rem;
+  padding: 0.5rem;
+  border-radius: 2px;
+  fill: none;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.art-mark[data-art-mark='music'] {
+  stroke: var(--pig-violet);
+  background: color-mix(in srgb, var(--pig-violet) 15%, transparent);
+}
+.art-mark[data-art-mark='paint'] {
+  stroke: var(--pig-teal);
+  background: color-mix(in srgb, var(--pig-teal) 15%, transparent);
+}
+.art-mark[data-art-mark='film'] {
+  stroke: var(--pig-amber);
+  background: color-mix(in srgb, var(--pig-amber) 18%, transparent);
+}
+.art-mark[data-art-mark='word'] {
+  stroke: var(--pig-blue);
+  background: color-mix(in srgb, var(--pig-blue) 15%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .art-marks .art-mark {
+    animation: mark-bow 5.5s ease-in-out infinite;
+  }
+  .art-marks .art-mark:nth-child(2) {
+    animation-delay: -1.4s;
+  }
+  .art-marks .art-mark:nth-child(3) {
+    animation-delay: -2.8s;
+  }
+  .art-marks .art-mark:nth-child(4) {
+    animation-delay: -4.1s;
+  }
+}
+:root[data-motion='paused'] .art-mark {
+  animation-play-state: paused;
+}
+@keyframes mark-bow {
+  0%,
+  70%,
+  100% {
+    transform: translateY(0);
+  }
+  35% {
+    transform: translateY(-0.3rem);
+  }
+}
+
+/* ── The hung work ────────────────────────────────────────────────────────
+   Every project on the page is another piece on the wall: a frame, a mount,
+   and a label with the discipline's mark on it.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.poster {
+  position: relative;
+  padding: 1.25rem 1.4rem;
+  padding-block-start: 3.2rem;
+  border: 0;
+  border-radius: 2px;
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow:
+    inset 0 0 0 1px var(--frame-bevel),
+    0 10px 26px rgba(20, 16, 26, 0.12);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .poster {
+    background: var(--glass-fallback-subtle);
+  }
+}
+.poster-mark {
+  position: absolute;
+  inset-block-start: 0.95rem;
+  inset-inline-start: 1.4rem;
+  display: flex;
+}
+.poster-mark .art-mark {
+  inline-size: 1.9rem;
+  block-size: 1.9rem;
+  padding: 0.4rem;
+}
+
+/* ── مَجلِس: the table ─────────────────────────────────────────────────────
+   The meeting seen from above, with the head seat left empty for the portrait.
+   Drawn, because every meeting illustration in the free catalogue already
+   contains people and a portrait set beside them is a fifth stranger.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.table-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .table-hero {
+    grid-template-columns: minmax(12rem, 20rem) 1fr;
+    gap: 2.75rem;
+    padding: 2.25rem 2.75rem;
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+
+.table-stage {
+  position: relative;
+  justify-self: center;
+  inline-size: min(22rem, 92vw);
+  aspect-ratio: 200 / 148;
+}
+.table-plan {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.table-top {
+  fill: var(--table-top);
+}
+.table-edge {
+  fill: none;
+  stroke: var(--table-line);
+  stroke-width: 1.1;
+}
+.table-seat {
+  fill: var(--table-seat);
+}
+.table-thing {
+  fill: var(--table-thing);
+}
+
+/* The handshake, on the table. It is the only moving thing in this hero
+   because it is the only thing in a meeting that is an event. */
+.table-deal {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 40%;
+  inset-inline-start: 50%;
+  inline-size: 46%;
+  aspect-ratio: 1;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+/* The art is drawn in a mint green that has nothing to do with this page.
+   Flattened and re-tinted it joins the template instead of arguing with it —
+   a hue rotation alone would keep the spread it came with. */
+.table-deal canvas {
+  filter: grayscale(1) sepia(1) saturate(4) hue-rotate(205deg) brightness(0.95);
+}
+[dir='rtl'] .table-deal {
+  transform: translateX(50%);
+}
+
+/* The head seat. The portrait sits ON the table's edge, overlapping it, the
+   way سِيق's portrait stands in its doorway — inside the structure, not beside
+   a picture of one. */
+.table-head {
+  position: absolute;
+  z-index: 2;
+  /* Overlapping the table's edge, not floating above it. */
+  inset-block-start: 2%;
+  inset-inline-start: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 5px var(--glass-fallback),
+    0 0 0 7px var(--nq-accent),
+    0 10px 26px rgba(20, 25, 50, 0.22);
+}
+[dir='rtl'] .table-head {
+  transform: translateX(50%);
+}
+.table-head [data-avatar] {
+  border-radius: 50%;
+}
+
+.table-body {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+
+/* ── The brief ────────────────────────────────────────────────────────────
+   A briefing note, numbered in the margin the way an agenda is — because a
+   list of work shown to a client IS an agenda.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.brief {
+  position: relative;
+  padding: 1.2rem 1.35rem;
+  padding-inline-start: 3rem;
+  border: 1px solid var(--nq-border);
+  border-radius: var(--nq-radius-md);
+  background: var(--glass-bg-subtle);
+  backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(130%);
+  box-shadow: var(--glass-shadow);
+}
+@supports not (backdrop-filter: blur(1px)) {
+  .brief {
+    background: var(--glass-fallback-subtle);
+  }
+}
+.brief::before {
+  content: attr(data-n);
+  position: absolute;
+  inset-block-start: 1.15rem;
+  inset-inline-start: 1.15rem;
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  display: grid;
+  place-items: center;
+  border-radius: 3px;
+  background: var(--nq-accent);
+  color: var(--nq-on-accent);
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* The footer is the one piece of text on this page with no card under it, and
+   under it is a painting. Straight on her darkest passage muted type measures
+   2.73:1 — a total failure — so it is given the template's own glass, the same
+   answer every covering backdrop in this set needed. */
+[data-template='fann'] .tpl-content > footer {
+  margin-block-start: 2.5rem;
+  border-radius: 2px;
+  background-color: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 0.9rem 1.25rem;
+}

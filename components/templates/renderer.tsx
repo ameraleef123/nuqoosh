@@ -22,6 +22,14 @@ import { RetroGrid } from './retro-grid'
 import { DawnSun } from './dawn-sun'
 import { InkBlot } from './ink-blot'
 import { DeepWater } from './deep-water'
+import { Storm } from './storm'
+import { TeslaCoil } from './tesla-coil'
+import { PetalFall } from './petal-fall'
+import { LatticePanel, LatticeWall, Rosette } from './mashrabiya'
+import { TowerFacade } from './tower'
+import { CitySkyline } from './skyline'
+import { ArtMarks, ArtMarkAt } from './arts'
+import { MeetingTable } from './boardroom'
 import { PaperOrnament } from './paper-ornament'
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -201,6 +209,33 @@ function Background({ template }: { template: Template }) {
       ) : null}
       {template.background === 'ink' ? <InkBlot /> : null}
       {template.background === 'deep' ? <DeepWater /> : null}
+      {template.background === 'volt' ? <Storm /> : null}
+      {template.background === 'bloom' ? <PetalFall /> : null}
+      {template.background === 'lattice' ? <LatticeWall /> : null}
+      {/* فن: the gallery wall. A pool of light from the ceiling and the rail
+          the works hang from — both painted once, neither animated. */}
+      {template.background === 'gallery' ? (
+        <div className="gallery-wall" aria-hidden="true">
+          {/* The same painting twice: once blown up and blurred so her own
+              landscape fills the page, and once at its true proportions in the
+              middle. The wall of this gallery is the picture's own background. */}
+          <span className="wall-fill" />
+          <span className="wall-art" />
+          <span className="wall-light" />
+          <span className="wall-rail" />
+        </div>
+      ) : null}
+      {template.background === 'city' ? <CitySkyline /> : null}
+      {/* نسيم: three clouds and nothing else. Plain spans — the shape is a
+          radial gradient and only `transform` animates, so the whole backdrop
+          is compositor work and costs the main thread nothing. */}
+      {template.background === 'breeze' ? (
+        <>
+          <span className="cloud" data-cloud="1" />
+          <span className="cloud" data-cloud="2" />
+          <span className="cloud" data-cloud="3" />
+        </>
+      ) : null}
 
       {orb(1, {
         inlineSize: '52vmax',
@@ -691,6 +726,319 @@ function Hero({ profile, template, lang }: RenderProps) {
     )
   }
 
+  if (template.hero === 'table') {
+    // The meeting, seen from above. The portrait takes the head seat; the
+    // others belong to whoever is being met. The table is drawn because every
+    // meeting illustration in the catalogue already has people in it, and a
+    // portrait placed beside those people is a fifth stranger.
+    const deal = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt table-hero')} data-tilt>
+        <div className="table-stage">
+          <MeetingTable />
+          {deal ? <LottieMark src={deal} className="table-deal" speed={0.6} /> : null}
+          <div className="table-head">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+
+        <div className="table-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'frame') {
+    // A gallery, and the person is the first work hung in it. The portrait is
+    // mounted and framed with a museum label under it; the other works on the
+    // wall are where the colour lives.
+    const work = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt frame-hero')} data-tilt>
+        <div className="hang">
+          <div className="hang-wire" aria-hidden="true" />
+          <figure className="framed" data-piece="portrait">
+            <div className="framed-mount">
+              <Avatar profile={profile} lang={lang} />
+            </div>
+          </figure>
+          {/* The museum label. A caption gives a work its name, its medium and
+              its year — which is what the top of a CV is. */}
+          <figcaption className="plaque">
+            <span className="plaque-rule" aria-hidden="true" />
+            {headline}
+            {tagline}
+          </figcaption>
+        </div>
+
+        <div className="frame-body">
+          {pills}
+          <div data-hero-item>{about}</div>
+          <ArtMarks />
+        </div>
+
+        {/* Two more works on the same wall, hung off the eye line. */}
+        {work ? (
+          <>
+            <LottieMark src={work} className="framed-work" data-work="1" speed={0.4} />
+            <LottieMark src={work} className="framed-work" data-work="2" speed={0.28} />
+          </>
+        ) : null}
+      </header>
+    )
+  }
+
+  if (template.hero === 'pin') {
+    // The world, and the person as a pin stuck in it. The map fills the card,
+    // the marker is planted on it with the portrait in its head, and the ring
+    // is still going out from where it landed.
+    const globe = template.media?.heroCorner
+    return (
+      <header className={cn(glass, 'tilt pin-hero')} data-tilt>
+        {/* No map in here: the world is the page behind this card, and the
+            cards are thin enough to show it. */}
+        {globe ? <LottieMark src={globe} className="pin-globe" speed={0.25} /> : null}
+
+        <div className="pin-mark">
+          <div className="pin-ping" aria-hidden="true" />
+          <div className="pin-head">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+          <span className="pin-point" aria-hidden="true" />
+        </div>
+
+        <div className="pin-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'window') {
+    // A tower at night, and the portrait is one lit window in it.
+    //
+    // The writing sits BESIDE the portrait, not above it, and the card is
+    // short: an earlier version reserved a tall band of city across the foot
+    // of the hero with the text stacked above it, which made the card enormous
+    // and pushed everything else off the screen. The city belongs to the page
+    // now, behind everything, where it can run the full width without any
+    // layout having to make room for it.
+    const art = template.media?.hero
+    const burst = template.media?.heroCorner
+    return (
+      <header className={cn(glass, 'tilt window-hero')} data-tilt>
+        {/* The cityscape the tower stands in. Absolutely positioned along the
+            foot of the card, so it adds a city without adding height — the
+            last version put a tall band of it in the flow and the hero came
+            out nearly twice as tall as it needed to be. */}
+        {art ? <LottieMark src={art} className="window-cityline" /> : null}
+
+        {/* The far corner is the one the layout never uses, and an empty corner
+            in a night scene reads as an unfinished card rather than as air. */}
+        {burst ? (
+          <LottieMark
+            src={burst}
+            className="window-burst"
+            speed={0.5}
+            segment={template.media?.heroCornerSegment}
+          />
+        ) : null}
+
+        <div className="window-tower">
+          <TowerFacade />
+          <div className="window-mine">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+
+        <div className="window-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'screen') {
+    // The portrait sits in an opening cut THROUGH the screen — the lattice
+    // runs behind and around it, and a turned ring closes the edge so it reads
+    // as a hole in the woodwork rather than a photo pasted on a pattern.
+    return (
+      <header className={cn(glass, 'tilt screen-hero')} data-tilt>
+        {/* The شمسة hangs in the empty corner, away from the window — carved
+            into the wall of the room rather than hung inside the screen. */}
+        <Rosette />
+
+        <div className="screen-window">
+          <LatticePanel />
+          <div className="screen-opening">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+
+        <div className="screen-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'kite') {
+    // A kite is the one thing that makes a breeze visible, and it comes with a
+    // string — so the page gets the relationship سِيق and مُحيط are built on:
+    // the art is not beside the person, it is ATTACHED to them. The kites fly
+    // in the far corner, the string runs down across the card, and the
+    // portrait sits at the bottom of it holding on.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt kite-hero')} data-tilt>
+        {art ? <LottieMark src={art} className="kite-flight" /> : null}
+
+        {/* The string. Stretched to the card with preserveAspectRatio="none",
+            so its two ends stay pinned to the corners at every width instead
+            of drifting away from the kite as the card grows. */}
+        <svg
+          className="kite-string"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          focusable="false"
+        >
+          <path d="M14 86 C 38 78, 52 56, 66 34 C 72 24, 78 16, 86 10" />
+        </svg>
+
+        <div className="kite-body">
+          <div className="kite-text">
+            <div data-hero-item>{headline}</div>
+            <div data-hero-item>{tagline}</div>
+            {pills}
+            <div data-hero-item>{about}</div>
+          </div>
+
+          {/* The portrait comes LAST, at the foot of the card, because that is
+              where the string ends. A kite is high and the person holding it
+              is low; putting the portrait at the top broke the one
+              relationship this hero exists to show. */}
+          <div className="kite-holder">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'hanging') {
+    // Mostly empty on purpose. Sakura is a composition before it is a colour:
+    // asymmetry, a lot of air, and one branch off to a corner. The content is
+    // pushed to the lower start of the card and the blossoms hang above it.
+    //
+    // The same 1.5 KB blossom is drawn three times at three sizes rather than
+    // fetching a branch, which the free catalogue does not have.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt hanging-hero')} data-tilt>
+        {art ? (
+          // One branch, entering from the top corner and reaching across the
+          // empty half of the card. It is a real cherry branch — brown wood,
+          // five-petal blossoms, a few leaves — so nothing here recolours it.
+          //
+          // Two elements, not one, and that is a performance fix rather than a
+          // structural preference: the fade lives on the wrapper and the mirror
+          // on the art. Putting a mask and a transform on the SAME element that
+          // holds a canvas repainting every frame forces the whole region to be
+          // re-rastered on the CPU each frame — measured at 2300ms of main
+          // thread per 5s of scrolling, against 1190ms with them split.
+          <div className="hanging-branch" aria-hidden="true">
+            <LottieMark src={art} className="hanging-branch-art" speed={0.7} />
+          </div>
+        ) : null}
+
+        <div className="hanging-body">
+          <div className="flex flex-wrap items-center gap-4">
+            <Avatar profile={profile} lang={lang} />
+            <div data-hero-item className="min-w-0 flex-1">
+              {headline}
+            </div>
+          </div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'mast') {
+    // مَدى means range — how far a signal actually gets. The first version of
+    // this hero said that with a dotted reticle, which is a diagram and not a
+    // place. This is the structure: a mast with its lamp lit, the portrait
+    // standing at the foot of it, and the range opening out across the card.
+    const art = template.media?.hero
+    return (
+      <header className={cn(glass, 'tilt mast-hero')} data-tilt>
+        <div className="mast-tower">
+          {art ? <LottieMark src={art} className="mast-art" /> : null}
+
+          {/* The range. Three rings opening from the lamp and dying out at the
+              far edge — scale and opacity only, so the compositor runs them
+              and the main thread never sees a frame. */}
+          <div className="mast-range" aria-hidden="true">
+            <span data-ring="1" />
+            <span data-ring="2" />
+            <span data-ring="3" />
+          </div>
+
+          <div className="mast-foot">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+
+        <div className="mast-main">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'coil') {
+    // The machine this template is named after, on the page. The first version
+    // was a "spark gap" — two separate plates with an arc between them — which
+    // was a neat diagram of Tesla's idea and read as a layout that had come
+    // apart. A coil is one object, and the portrait stands at the foot of it.
+    return (
+      <header className={cn(glass, 'tilt coil-hero')} data-tilt>
+        <div className="coil-stage">
+          <TeslaCoil />
+          <div className="coil-base">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+
+        <div className="coil-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
+        </div>
+      </header>
+    )
+  }
+
   if (template.hero === 'breakout') {
     // The art hangs ABOVE the card, over its top edge, which is the one thing
     // no other hero here does — every other template keeps its art inside the
@@ -1016,6 +1364,63 @@ function ProjectItem({
       <li>{body}</li>
     )
   }
+  if (shape === 'brief') {
+    // A briefing note: numbered in the margin the way an agenda is, because a
+    // list of work shown to a client is an agenda.
+    return (
+      <li className="brief" data-n={index + 1}>
+        {body}
+      </li>
+    )
+  }
+  if (shape === 'poster') {
+    // A playbill. Each one carries a different craft's mark, so a list of
+    // projects reads as a programme rather than as a stack of boxes.
+    return (
+      <li className="poster">
+        <span className="poster-mark" aria-hidden="true">
+          <ArtMarkAt index={index} />
+        </span>
+        {body}
+      </li>
+    )
+  }
+  if (shape === 'legend') {
+    // An entry in a map legend: a key mark in the margin and the reading
+    // beside it, on a plain sheet with a ruled edge.
+    return <li className="legend">{body}</li>
+  }
+  if (shape === 'marquee') {
+    // A lit sign: the panel is dark and the light is along its top edge, the
+    // way a marquee throws light down over what it is announcing.
+    return <li className="marquee">{body}</li>
+  }
+  if (shape === 'inlay') {
+    // A panel of wood with one brass line let into its start edge — inlay, the
+    // way a real screen is finished. No border anywhere else.
+    return <li className="inlay">{body}</li>
+  }
+  if (shape === 'slat') {
+    // Wide and short, like a slat of a shutter — white paper lying on the sky
+    // rather than a panel cut into it. The shadow is what sells the float, so
+    // it is the one thing here that is not subtle.
+    return <li className="slat">{body}</li>
+  }
+  if (shape === 'petal') {
+    // Three corners rounded and one cut square — a petal, and a shape that has
+    // to flip with the language, so the sharp corner is a logical one.
+    return <li className="petal-card">{body}</li>
+  }
+  if (shape === 'live') {
+    // A dead wire until the pointer reaches it, and then the whole border
+    // goes live.
+    return <li className="live-card">{body}</li>
+  }
+  if (shape === 'ping') {
+    // Each entry carries a signal indicator in its margin — a lit node that
+    // sends one ring outward when the pointer reaches it.
+    return <li className="ping-card">{body}</li>
+  }
   if (shape === 'ember') {
     // Lit from below rather than above: a coal, not a stone. The inverse of
     // مُحيط's pebble, and the glow rises when the pointer is on it.
@@ -1126,6 +1531,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
             // Vector, 17.6 KB, lazy, reduced-motion aware like every LottieMark.
             <LottieMark
               src={PROJECTS_ART}
+              data-art="1"
               className="mt-4 aspect-[4/3] w-full max-w-56 lg:max-w-none"
             />
           }
@@ -1222,6 +1628,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
             // the projects illustration and kept square.
             <LottieMark
               src={EDUCATION_ART}
+              data-art="1"
               className="aspect-square w-full max-w-36 lg:max-w-44"
             />
           }
@@ -1262,6 +1669,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
           art={
             <LottieMark
               src={SKILLS_ART}
+              data-art="1"
               className="aspect-square w-full max-w-36 lg:max-w-44"
             />
           }
@@ -1281,6 +1689,7 @@ function Section({ which, profile, template, lang }: RenderProps & { which: Sect
           art={
             <LottieMark
               src={CONTACT_ART}
+              data-art="1"
               // Landscape source (950x760): a square box letterboxed it into a
               // thin phone. Sized to its own ratio and a touch wider.
               className="aspect-[5/4] w-full max-w-44 lg:max-w-56"

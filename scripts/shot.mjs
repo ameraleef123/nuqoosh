@@ -20,7 +20,10 @@ for (const s of shots) {
   await page.setViewport({ width: s.width ?? 1440, height: s.height ?? 900, deviceScaleFactor: 1 })
   await page.goto(s.url, { waitUntil: 'networkidle0', timeout: 90000 })
   await new Promise((r) => setTimeout(r, 1200))
-  await page.evaluate(() => document.documentElement.classList.add('motion-failsafe'))
+  // `live` skips the failsafe: needed for anything whose END state is offscreen
+  // — ساكورا's petals finish below the fold, so a pinned frame shows an empty
+  // sky. Everything else is steadier pinned.
+  if (!s.live) await page.evaluate(() => document.documentElement.classList.add('motion-failsafe'))
   await new Promise((r) => setTimeout(r, 300))
   if (s.selector) {
     const el = await page.$(s.selector)

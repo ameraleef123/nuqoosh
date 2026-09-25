@@ -378,3 +378,366 @@ for theme, v in HIMMA.items():
         acc = f"accent {c:5.2f}" if on_card else 'accent    - '
         print(f"  {theme} {label:<26} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
     print(f"  {theme} ink on the amber stamp    #F5A524  {contrast(hex2rgb('#2b1016'), hex2rgb('#f5a524')):5.2f}  PASS")
+
+# -- Phase 5 . mada: an instrument panel --------------------------------------
+# One thing sits under text here: the data stream, whose points are a solid
+# blue. The footer is the only text on the page rather than on a card, so it
+# sets the ceiling.
+print()
+print("== mada: text over the scan grid and the stream ==")
+POINT = '#2F80ED'
+MADA = {
+  'light': dict(page='#eaeff4', glass=((255,255,255),0.62), fg='#0f1720',
+                muted='#3a4753', accent='#0e6b9c', art=0.30),
+  'dark ': dict(page='#06090f', glass=((12,18,28),0.74), fg='#e6f1fa',
+                muted='#a6bccd', accent='#56ccf2', art=0.32),
+}
+for theme, v in MADA.items():
+    tint, ga = v['glass']
+    stream = composite(hex2rgb(POINT), v['art'], hex2rgb(v['page']))
+    rows = [('card', composite(tint, ga, hex2rgb(v['page'])), True),
+            ('card over a point', composite(tint, ga, stream), True),
+            ('footer over a point', stream, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<22} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# -- Phase 5 . tesla: a page under voltage ------------------------------------
+# The storm is DRAWN, so its worst case is known exactly rather than sampled:
+# the white-hot core of a bolt, at full strike, directly behind a card. The
+# footer is not in the list because the storm is masked away from the foot of
+# the page entirely.
+print()
+print("== tesla: text with a bolt behind it ==")
+TESLA = {
+  'light': dict(page='#f4f0fb', glass=((255,255,255),0.86), fg='#19102a',
+                muted='#473b5e', accent='#7c22ce',
+                core='#5b1a99', sheath='#7c22ce', flash=((124,34,206),0.05)),
+  'dark ': dict(page='#0b0714', glass=((20,13,32),0.90), fg='#f3ecfd',
+                muted='#bcaed4', accent='#c084fc',
+                core='#ffffff', sheath='#d8b4fe', flash=((192,132,252),0.07)),
+}
+for theme, v in TESLA.items():
+    tint, ga = v['glass']
+    rows = [('card', composite(tint, ga, hex2rgb(v['page']))),
+            ('card over a sheath', composite(tint, ga, hex2rgb(v['sheath']))),
+            ('card over the CORE', composite(tint, ga, hex2rgb(v['core']))),
+            ('card in the flash', composite(tint, ga, composite(v['flash'][0], v['flash'][1], hex2rgb(v['page'])))) ]
+    for label, surf in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        f = 'PASS' if min(a, b, c) >= 4.5 else '*** FAIL ***'
+        print(f"  {theme} {label:<22} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  accent {c:5.2f}  {f}")
+
+# -- Phase 5 . sakura: text with a petal behind it -----------------------------
+# The petals fall over the WHOLE page, footer included, and the footer is the
+# one piece of text with no card under it. The art's own palette runs from
+# #ffb7b7 (the lightest petal) to #f57e7e (the deepest), so both ends are
+# measured: the lightest is the worst case on the dark page, the deepest is the
+# worst case on the light one.
+print()
+print("== sakura: text with a petal behind it ==")
+SAKURA = {
+  'light': dict(page='#fdf2f4', glass=((255,255,255),0.5), fg='#2b1a21',
+                muted='#63454e', accent='#8e3c5d', art=0.55),
+  'dark ': dict(page='#1a1015', glass=((38,24,31),0.6), fg='#fbeef2',
+                muted='#d3b5bf', accent='#f0a5c0', art=0.28),
+}
+PETALS = ('#ffb7b7', '#f57e7e')
+for theme, v in SAKURA.items():
+    tint, ga = v['glass']
+    rows = [('card', composite(tint, ga, hex2rgb(v['page'])), True)]
+    for petal in PETALS:
+        surf = composite(hex2rgb(petal), v['art'], hex2rgb(v['page']))
+        rows.append((f'card over {petal}', composite(tint, ga, surf), True))
+        rows.append((f'footer over {petal}', surf, False))
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<22} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# The hanko: plum initials cut out of a baby-pink seal. White was the obvious
+# ink and measured 1.48:1 once the square went pink, so the ink moved instead.
+print()
+print("== sakura: the hanko seal ==")
+for label, ink, seal, floor in (
+    ('initials on the seal   ', '#7a2f4c', '#f8c8d4', 4.5),
+    ('seal on the light card ', '#f8c8d4', '#fefbfb', 1.0),
+    ('seal on the night card ', '#f8c8d4', '#23161d', 3.0),
+):
+    r = contrast(hex2rgb(ink), hex2rgb(seal))
+    f = 'PASS' if r >= floor else '*** FAIL ***'
+    print(f"  {label}  {ink} on {seal}  {r:5.2f}  {f}")
+
+# -- Phase 5 . naseem: text on a coloured ground ------------------------------
+# The only template whose PAGE is a saturated colour, which moves the binding
+# case: the footer sits on the bare sky rather than on a near-white. Clouds are
+# white over that sky, so they only ever lighten it — the bare sky is the worst
+# case and the cloud is measured to prove it.
+print()
+print("== naseem: paper on a coloured sky ==")
+NASEEM = {
+  # The sky is a gradient now (#a6cdee overhead to #d8e9f8 at the horizon), so
+  # the worst case for text on the bare page is the DEEPEST end, not the flat
+  # fill this was first measured against.
+  'light': dict(page='#a6cdee', glass=((255,255,255),0.93), fg='#0f2436',
+                muted='#334f68', accent='#0b4f8a', cloud=((255,255,255),0.78)),
+  'dark ': dict(page='#071220', glass=((18,32,48),0.90), fg='#e9f3fc',
+                muted='#a9c2d8', accent='#9ec5ff', cloud=((210,232,255),0.07)),
+}
+for theme, v in NASEEM.items():
+    tint, ga = v['glass']
+    sky = hex2rgb(v['page'])
+    hazy = composite(v['cloud'][0], v['cloud'][1], sky)
+    rows = [('card on the sky', composite(tint, ga, sky), True),
+            ('card on a cloud', composite(tint, ga, hazy), True),
+            ('footer on the sky', sky, False),
+            ('footer on a cloud', hazy, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<20} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+# White on the solid accent, for pills and buttons.
+print()
+for theme, acc, on in (('light', '#0b4f8a', '#ffffff'), ('dark ', '#9ec5ff', '#0a1723')):
+    r = contrast(hex2rgb(on), hex2rgb(acc))
+    print(f"  {theme} {on} on the accent {acc}  {r:5.2f}  {'PASS' if r >= 4.5 else '*** FAIL ***'}")
+
+# -- Phase 5 . mashrabiya: text with the screen behind it ---------------------
+# The lattice wall is fixed behind the whole page, so the binding case is the
+# footer — the one piece of text with no card under it — sitting on a spindle
+# rather than on the bare ground. The panel in the hero is inside a card and
+# carries no text, so it is not measured.
+print()
+print("== mashrabiya: text with the screen behind it ==")
+MASH = {
+  'light': dict(page='#f6eee0', glass=((255,253,248),0.86), fg='#2a1c10',
+                muted='#5d4526', accent='#8a4b20', wall=('#8a4b20', 0.07)),
+  'dark ': dict(page='#1a120d', glass=((40,28,19),0.90), fg='#f4e8d6',
+                muted='#c9b092', accent='#e0913f', wall=('#d09a56', 0.06)),
+}
+for theme, v in MASH.items():
+    tint, ga = v['glass']
+    ground = hex2rgb(v['page'])
+    spindle = composite(hex2rgb(v['wall'][0]), v['wall'][1], ground)
+    rows = [('card', composite(tint, ga, ground), True),
+            ('card over a spindle', composite(tint, ga, spindle), True),
+            ('footer on the ground', ground, False),
+            ('footer on a spindle', spindle, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<21} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+print()
+for theme, on, acc in (('light', '#ffffff', '#8a4b20'), ('dark ', '#1a120d', '#e0913f')):
+    r = contrast(hex2rgb(on), hex2rgb(acc))
+    print(f"  {theme} {on} on the accent {acc}  {r:5.2f}  {'PASS' if r >= 4.5 else '*** FAIL ***'}")
+
+# -- Phase 5 . newyork: text over the lit city -------------------------------
+# The city is a page layer again — fixed to the foot of the viewport, behind
+# everything — so there are two binding cases rather than one:
+#
+#   * the FOOTER, which has no card under it and sits straight on the city;
+#   * card text, because the cards here are deliberately thin (0.74 dark) so
+#     the city shows through them instead of being hidden.
+#
+# The hero's fetched cityscape is measured too. It is MASKED away from the
+# writing on wide screens and moved behind the portrait on phones, so the row
+# below is the case that is designed never to occur — the accent over one of
+# its strokes at full strength is 3.10:1, which is why the mask exists.
+print()
+print("== newyork: text and the lit city ==")
+NY = {
+  'light': dict(page='#eef2f8', glass=((255,255,255),0.80), fg='#10182a',
+                muted='#44506a', accent='#a81f68', halo=((240,168,74),0.20),
+                win=((240,175,70),0.7), mass=(195,206,225), art=0.50,
+                line=((240,168,74),0.40)),
+  'dark ': dict(page='#070b14', glass=((16,23,38),0.74), fg='#eaf0fb',
+                muted='#a9b6cd', accent='#ff5fa2', halo=((255,207,122),0.1),
+                win=((255,207,122),0.6), mass=(27,39,65), art=0.40,
+                line=((255,180,90),0.32)),
+}
+for theme, v in NY.items():
+    tint, ga = v['glass']
+    ground = hex2rgb(v['page'])
+    lit = composite(v['win'][0], v['win'][1] * v['art'], ground)
+    mass = composite(v['mass'], v['art'], ground)
+    card = composite(tint, ga, ground)
+    rows = [('card on the sky', card, True),
+            ('card over a lit window', composite(tint, ga, lit), True),
+            ('card over a tower', composite(tint, ga, mass), True),
+            ('marquee under its tube', composite(v['halo'][0], v['halo'][1], card), True),
+            ('footer over a window', lit, False),
+            ('footer over a tower', mass, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<24} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+    # The hero's fetched cityscape, at the one place it is designed never to
+    # be: under the writing. It is masked away from the text column on wide
+    # screens and sits behind the portrait on phones, and this number is why.
+    line = composite(v['line'][0], v['line'][1], card)
+    print(f"  {theme} {'(text on the cityline)':<24} {rgb2hex(line)}  ink {contrast(hex2rgb(v['fg']), line):5.2f}  "
+          f"muted {contrast(hex2rgb(v['muted']), line):5.2f}  accent {contrast(hex2rgb(v['accent']), line):5.2f}"
+          f"  <- never happens: masked off the text")
+
+print()
+for theme, on, acc in (('light', '#ffffff', '#a81f68'), ('dark ', '#070b14', '#ff5fa2')):
+    r = contrast(hex2rgb(on), hex2rgb(acc))
+    print(f"  {theme} {on} on the accent {acc}  {r:5.2f}  {'PASS' if r >= 4.5 else '*** FAIL ***'}")
+
+# -- Phase 5 . alam: text over the world -------------------------------------
+# The world is the PAGE here, printed across the viewport behind everything,
+# and the cards are deliberately thin so it shows through them. So the case to
+# measure is card text with a landmass under the glass.
+#
+# The two colours in the art swap roles between the themes, which is the thing
+# worth remembering: on the sheet the navy landmasses are the danger because
+# they are darker than the paper, and at night the whole map is flipped light
+# and tinted mint, so the LAND becomes the lighter half and the danger instead.
+print()
+print("== alam: text over the world ==")
+ALAM = {
+  'light': dict(page='#f2ece1', glass=((255,253,248),0.76), strong=((255,253,248),0.92),
+                fg='#22201a', muted='#5b544a', accent='#0d6157', art=0.30,
+                land='#002945', route='#c98c30'),
+  'dark ': dict(page='#0f1513', glass=((24,32,30),0.74), strong=((24,32,30),0.90),
+                fg='#eef2ec', muted='#b2bdb5', accent='#63d6b8', art=0.30,
+                # flipped light and tinted by the filter in effects.css
+                land='#9fe8d4', route='#4a5f52'),
+}
+for theme, v in ALAM.items():
+    tint, ga = v['glass']
+    st, sa = v['strong']
+    ground = hex2rgb(v['page'])
+    land = composite(hex2rgb(v['land']), v['art'], ground)
+    route = composite(hex2rgb(v['route']), v['art'], ground)
+    rows = [('card on bare sheet', composite(tint, ga, ground), True),
+            ('card over a landmass', composite(tint, ga, land), True),
+            ('card over a route', composite(tint, ga, route), True),
+            # a covering backdrop gives the footer this template's own glass
+            ('footer glass over land', composite(st, sa, land), False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<24} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+print()
+for theme, on, acc in (('light', '#ffffff', '#0d6157'), ('dark ', '#0f1513', '#63d6b8')):
+    r = contrast(hex2rgb(on), hex2rgb(acc))
+    print(f"  {theme} {on} on the accent {acc}  {r:5.2f}  {'PASS' if r >= 4.5 else '*** FAIL ***'}")
+
+# -- Phase 5 . fann: a painting behind everything -----------------------------
+# The wall of this gallery is La Gioconda herself, and the cards are
+# deliberately transparent so she shows through them. So the surfaces are card
+# text with her worst passage underneath, and the footer, which has no card.
+#
+# "Worst passage" is not the darkest PIXEL — a single pixel is not what a line
+# of text sits on. The image is downsampled to 8x12 and the extreme CELLS taken:
+# #090619 in the shadows and #D2AE56 on her lit sleeve. On the light sheet the
+# shadow is the danger; at night the lit sleeve is.
+print()
+print("== fann: a painting behind everything ==")
+FANN = {
+  'light': dict(page='#fdfaf5', glass=((255,255,255),0.58), strong=((255,255,255),0.82),
+                fg='#1c1a22', muted='#56505e', accent='#7b1fa2',
+                art=0.32, fill=0.30, worst='#090619', mount='#fbfaf7'),
+  'dark ': dict(page='#14121a', glass=((28,26,36),0.52), strong=((28,26,36),0.80),
+                fg='#f2eef7', muted='#bdb5c7', accent='#d29bff',
+                art=0.34, fill=0.35, worst='#d2ae56', mount='#221f29'),
+}
+# The page carries TWO layers of her: the landscape blown up and blurred to
+# fill it, and the framed copy over that. They compound, so both go into the
+# ground before any card is laid on top. A 46px blur averages a wide area, so
+# the fill's realistic surface is the image's MEDIAN cell rather than its
+# extreme one.
+MEDIAN_CELL = '#62402e'
+for theme, v in FANN.items():
+    tint, ga = v['glass']
+    st, sa = v['strong']
+    ground = composite(hex2rgb(MEDIAN_CELL), v['fill'], hex2rgb(v['page']))
+    hung = composite(hex2rgb(v['worst']), v['art'], ground)
+    rows = [('card on her landscape', composite(tint, ga, ground), True),
+            ('card over her worst', composite(tint, ga, hung), True),
+            ('footer glass over her', composite(st, sa, hung), False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<23} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+    bare = contrast(hex2rgb(v['muted']), hung)
+    print(f"  {theme} {'(footer with NO glass)':<23} {rgb2hex(hung)}  muted {bare:5.2f}"
+          f"   <- why the footer is given glass")
+    r = contrast(hex2rgb(v['accent']), hex2rgb(v['mount']))
+    print(f"  {theme} {'initials on the mount':<23} {v['mount']}  accent {r:5.2f}"
+          f"  {'PASS' if r >= 4.5 else '*** FAIL ***'}")
+
+print()
+for theme, on, acc in (('light', '#ffffff', '#7b1fa2'), ('dark ', '#14121a', '#d29bff')):
+    r = contrast(hex2rgb(on), hex2rgb(acc))
+    print(f"  {theme} {on} on the accent {acc}  {r:5.2f}  {'PASS' if r >= 4.5 else '*** FAIL ***'}")
+
+# -- Phase 5 . majlis: text in a boardroom ------------------------------------
+# The table sits in its own column and the writing beside it, so nothing is
+# laid over the art. What IS behind the text is the drafting grid on the page,
+# and under the footer, the same grid with no card over it.
+print()
+print("== majlis: text in a boardroom ==")
+MAJLIS = {
+  'light': dict(page='#f2f4f7', glass=((255,255,255),0.84), fg='#111827',
+                muted='#4b5563', accent='#5b21b6', grid=((17,24,39),0.045)),
+  'dark ': dict(page='#0e1116', glass=((23,28,36),0.86), fg='#eef1f6',
+                muted='#b0b9c6', accent='#a78bfa', grid=((255,255,255),0.04)),
+}
+for theme, v in MAJLIS.items():
+    tint, ga = v['glass']
+    ground = hex2rgb(v['page'])
+    ruled = composite(v['grid'][0], v['grid'][1], ground)
+    rows = [('card', composite(tint, ga, ground), True),
+            ('card on a rule', composite(tint, ga, ruled), True),
+            ('footer on a rule', ruled, False)]
+    for label, surf, on_card in rows:
+        a = contrast(hex2rgb(v['fg']), surf)
+        b = contrast(hex2rgb(v['muted']), surf)
+        c = contrast(hex2rgb(v['accent']), surf)
+        worst = min(a, b, c) if on_card else min(a, b)
+        f = 'PASS' if worst >= 4.5 else '*** FAIL ***'
+        acc = f"accent {c:5.2f}" if on_card else 'accent    - '
+        print(f"  {theme} {label:<20} {rgb2hex(surf)}  ink {a:5.2f}  muted {b:5.2f}  {acc}  {f}")
+
+print()
+for theme, on, acc in (('light', '#ffffff', '#5b21b6'), ('dark ', '#0e1116', '#a78bfa')):
+    r = contrast(hex2rgb(on), hex2rgb(acc))
+    print(f"  {theme} {on} on the accent {acc}  {r:5.2f}  {'PASS' if r >= 4.5 else '*** FAIL ***'}")

@@ -13,10 +13,10 @@ import type { SectionOrderVariant } from './profile'
  * block in scripts/contrast.py.
  */
 
-export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper' | 'sprout' | 'night' | 'air' | 'stone' | 'grid' | 'deep' | 'shade' | 'spark'
+export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper' | 'sprout' | 'night' | 'air' | 'stone' | 'grid' | 'deep' | 'shade' | 'spark' | 'signal' | 'volt' | 'bloom' | 'breeze' | 'lattice' | 'city' | 'atlas' | 'gallery' | 'boardroom'
 export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial' | 'glow' | 'soft'
-export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit' | 'ribbon' | 'gate' | 'blocks' | 'porthole' | 'sunlit' | 'breakout'
-export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger' | 'branch' | 'lume' | 'float' | 'carved' | 'block' | 'pebble' | 'cast' | 'ember'
+export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit' | 'ribbon' | 'gate' | 'blocks' | 'porthole' | 'sunlit' | 'breakout' | 'coil' | 'mast' | 'hanging' | 'kite' | 'screen' | 'window' | 'pin' | 'frame' | 'table'
+export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger' | 'branch' | 'lume' | 'float' | 'carved' | 'block' | 'pebble' | 'cast' | 'ember' | 'ping' | 'live' | 'petal' | 'slat' | 'inlay' | 'marquee' | 'legend' | 'poster' | 'brief'
 export type GlassIntensity = 'subtle' | 'default' | 'strong'
 
 /** How the sections below the hero are arranged. */
@@ -32,11 +32,19 @@ export type TemplateMedia = {
   /** 'tile' repeats a small loop across the width (snow); 'cover' fills the
    *  viewport with one wide scene; 'band' anchors one wide strip to the foot
    *  of the viewport, so the page grows out of it. Defaults to tile. */
-  backgroundFit?: 'tile' | 'cover' | 'band' 
+  backgroundFit?: 'tile' | 'cover' | 'band'
   /** Art inside the hero card itself. */
   hero?: string
   /** A quiet mark in the page corner. */
   corner?: string
+  /** A mark in the corner of the HERO CARD, which is a different place from
+   *  the page corner above — setting `corner` for نيويورك drew the firework
+   *  twice, once on the card and once floating above it. */
+  heroCorner?: string
+  /** Play only this frame range of `heroCorner`. Catalogue art is often a
+   *  LOADER — it assembles and tears down — so it is whole for only part of
+   *  its cycle and looks broken the rest of the time. */
+  heroCornerSegment?: readonly [number, number]
 }
 
 export type Template = {
@@ -443,6 +451,348 @@ export const TEMPLATES: Template[] = [
       // over and over. It is the one thing on the page that breaks the card's
       // edge, and it is already the template's own crimson. 3 KB.
       hero: '/lottie/burst-star.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'mada',
+    name: 'مَدى',
+    mood: 'إرسال هادي، وبعيد يوصل',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // مَدى is range: the distance a signal actually reaches. It is what a
+    // radar measures, and it is the thing a student is trying to extend when
+    // they put a page on the internet at all.
+    //
+    // The first build of this was an instrument PANEL — a scan grid, a dotted
+    // reticle and a stream of abstract data — and it failed for the same
+    // reason the first نسيم did: a diagram is not a place. سِيق works because
+    // you can stand in its doorway; مُحيط works because you are looking out of
+    // its porthole.
+    //
+    // So مَدى got a structure you could actually climb: a transmitter mast.
+    // The portrait stands at its foot and the range rings open from the lamp
+    // at the top and run out across the card. That is what the word means —
+    // how far the signal gets — and it is now something you can see rather
+    // than something the palette merely implies.
+    background: 'signal',
+    glass: 'default',
+    motion: 'crisp',
+    hero: 'mast',
+    card: 'ping',
+    order: 'C',
+    layout: 'stack',
+    media: {
+      // The mast: a steel tower with its lamp lit and signal arcs either side.
+      // 3 KB, vector, 12 layers. No backdrop any more — the old data stream
+      // was abstract and it was the most expensive thing on the page.
+      hero: '/lottie/mast.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'tesla',
+    name: 'تسلا',
+    mood: 'كهربا صافية، وقوس بيقفز الفراغ',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // Named for Nikola Tesla — and for the unit, which is what the word means
+    // outside the car company. The whole template is one idea taken all the
+    // way: a page under voltage. Violet on a near-black that has a purple cast
+    // to it, sparks in the air, card borders that go live under the pointer,
+    // and a hero split into two plates with an arc jumping the gap between
+    // them.
+    background: 'volt',
+    glass: 'default',
+    motion: 'glow',
+    hero: 'coil',
+    card: 'live',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // No backdrop. This carried a tiled Lottie of static sparks and it cost
+      // 2700ms of main thread per 5s of scrolling — more than everything else
+      // on the page put together. With the coil arcing continuously and the
+      // sky striking every few seconds, it was paying a fortune to add
+      // glitter to a page that was already busy.
+      // No hero Lottie: the arc that jumps the gap is drawn (components/
+      // templates/storm.tsx). Every "lightning" in the free catalogue is a
+      // cartoon bolt or a weather icon, and none of them looks like the
+      // thing — the same call as مُحيط's wreck.
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'sakura',
+    name: 'ساكورا',
+    mood: 'زهر كرز، وهدوء فيه فراغ',
+    lean: 'light',
+    free: true,
+    built: true,
+    // The owner's pick. Sakura is not only the colour — it is the composition:
+    // asymmetry, a great deal of empty space, and one branch placed off to a
+    // corner. So this is the only hero in the set that is DELIBERATELY mostly
+    // empty, with the content pushed to its lower start corner and the blossom
+    // hanging in the space above it.
+    //
+    // The portrait becomes a hanko — the square seal a Japanese signature ends
+    // with — in baby pink with the initials cut in plum. It is the one mark
+    // that makes the page unmistakable at a glance.
+    background: 'bloom',
+    glass: 'default',
+    motion: 'soft',
+    hero: 'hanging',
+    card: 'petal',
+    order: 'C',
+    layout: 'stack',
+    media: {
+      // No `background` here on purpose: the petals are DRAWN (petal-fall.tsx),
+      // not fetched. The catalogue's petal animation looked right and cost 2.5
+      // seconds of main thread per 5 seconds of scrolling; transforms cost
+      // nothing. See the comment at the top of that file.
+
+      // The owner's own pick: a full cherry branch, wood and leaves and
+      // five-petal blossoms, hanging across the top of the hero. 72 KB, and
+      // the only hero art in the set that carries raster images — which is
+      // why it is lazy, paused offscreen and never fetched under reduced
+      // motion, like every other LottieMark.
+      hero: '/lottie/sakura-hero.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'naseem',
+    name: 'نسيم',
+    mood: 'هواء وفراغ',
+    lean: 'light',
+    free: true,
+    built: true,
+    // The last of the free tier, and the identity sheet had a problem: it
+    // asked for a sky-blue wash with a #0369A1 accent, and by the time it came
+    // to be built صقيع, رَفيف, مُحيط and مَدى had all taken pale-blue grounds.
+    // A fifth would have been the weakest page in the set.
+    //
+    // So نسيم keeps the sky and gives up the wash. It is the ONLY template
+    // whose page is a saturated colour rather than a near-white: an actual
+    // blue sky, with the cards floating on it as white paper. That reads apart
+    // from the other four in a gallery thumbnail, which is the real test.
+    //
+    // The first build of this failed, and the reason is worth keeping: it was
+    // an ABSENCE — empty space, a gutter and three clouds — and an absence
+    // does not make an identity. سِيق works because it is an arch you can walk
+    // through with the portrait standing in it; مُحيط works because it is a
+    // porthole with a wreck below it. Both are PLACES WITH A BODY.
+    //
+    // So نسيم got one. You cannot draw air, but you can draw the thing air
+    // holds up: kites, with their strings running back down to the person
+    // flying them. The portrait is at the bottom of that string. That is the
+    // same physical relationship سِيق and مُحيط are built on.
+    background: 'breeze',
+    glass: 'strong',
+    motion: 'drift',
+    hero: 'kite',
+    card: 'slat',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // Three kites climbing, strings trailing. 7.8 KB, vector, 6 layers.
+      hero: '/lottie/kites.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'mashrabiya',
+    name: 'مَشرَبيّة',
+    mood: 'خشب محفور، وضوء بيتسرّب منه',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // Built to the standard the owner set with سِيق and مُحيط: a place with a
+    // body, and the portrait inside the structure rather than beside it.
+    //
+    // A mashrabiya is a screen of turned wooden spindles set into a window —
+    // you sit behind it and look out, and the light that gets through arrives
+    // cut into pieces. The portrait sits in an opening cut through the screen.
+    // Lanterns hang beside it and they are the reason there is any light at
+    // all, which is why they are the one piece of fetched art here.
+    //
+    // It is also the first warm-dark page in the set: every other dark
+    // template is a cold one (night sky, deep water, near-black instruments).
+    // This is a room at night with wood in it.
+    background: 'lattice',
+    glass: 'default',
+    motion: 'glow',
+    hero: 'screen',
+    card: 'inlay',
+    order: 'A',
+    layout: 'stack',
+    // No fetched art. The hanging lanterns the owner rejected were the only
+    // thing here that was ever fetched — lanterns are Ramadan decoration and
+    // this template is architecture. What replaced them is a شمسة, the
+    // eight-fold rosette at the centre of a carved Mamluk panel, and the
+    // catalogue's rosettes are all LOADERS: they draw and erase themselves on
+    // a loop. A rosette in a room is carved and permanent, so it is
+    // constructed from geometry in mashrabiya.tsx instead.
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'newyork',
+    name: 'نيويورك',
+    mood: 'أبراج وإضاءات ما بتنام',
+    lean: 'dark',
+    free: true,
+    built: true,
+    // The owner's pick, and the brief was "all lights, towers".
+    //
+    // The object is a tower at night and the person is ONE LIT WINDOW in it —
+    // which is the truest thing about that city and, usefully, exactly the
+    // relationship سِيق and مُحيط are built on: the portrait is inside the
+    // structure, not next to a picture of it.
+    //
+    // The facade is drawn (components/templates/tower.tsx) because every city
+    // animation in the free catalogue is daytime flat illustration and none of
+    // them has a lit window in it. The fetched art is the far skyline only,
+    // which is stroke-only line work and takes the neon cleanly.
+    background: 'city',
+    glass: 'default',
+    motion: 'crisp',
+    hero: 'window',
+    card: 'marquee',
+    order: 'C',
+    layout: 'stack',
+    media: {
+      // The owner's own pick. It is the line-art cityscape that failed as a
+      // page-wide band — a small cluster of buildings in a very wide empty
+      // frame, which showed as two stray lines across a viewport. At the size
+      // of a hero card it is exactly right, and being stroke-only (330 strokes
+      // and one fill) it takes the window-amber cleanly.
+      //
+      // Everything else here stays drawn: the catalogue has no lit window in
+      // it anywhere, and a fetched picture of a building cannot have the
+      // person inside it.
+      hero: '/lottie/cityline.lottie',
+      // The owner's pick for the corner the layout never uses. It is a city
+      // bent into a ring — buildings standing around a circle with a cab going
+      // round them — which is a better answer than the firework that was there
+      // first: a firework is a party, and this is the city at work.
+      //
+      // It is also by some way the heaviest thing in the set: 90 KB, 1174
+      // fills, 652 strokes. Its cost is measured in scripts/perf.mjs.
+      heroCorner: '/lottie/taxi-ring.lottie',
+      // It is a LOADING animation: across its 271 frames the ring builds from
+      // nothing, stands complete, then vanishes again. Rendered whole it is
+      // empty or half-drawn for about 60% of every cycle. These are the frames
+      // where the city is actually standing.
+      heroCornerSegment: [118, 212],
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'alam',
+    name: 'العالم',
+    mood: 'خريطة العالم، وإنت نقطة عليها',
+    lean: 'light',
+    free: true,
+    built: true,
+    // The owner's pick: the world map and the globe.
+    //
+    // Object and person, the test every template here is built to: the object
+    // is the world, and the person is A PIN STUCK IN IT. Not a portrait beside
+    // a map — a marker planted on it, with the ring still going out from where
+    // it landed. For a student putting a page on the internet that is the
+    // whole point of doing it, said in one image.
+    //
+    // The page under it is an atlas sheet: oat paper ruled with a faint
+    // graticule, the lines of latitude and longitude a map is built on.
+    background: 'atlas',
+    glass: 'default',
+    motion: 'soft',
+    hero: 'pin',
+    card: 'legend',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // The world is the PAGE, not a picture inside the hero. It started in
+      // the card and that was the wrong place: the rest of the page was left
+      // with a bare grid on it, and the pin read as standing on a decoration
+      // rather than on the world. Behind everything, with the cards thinned so
+      // it shows through them, the pin is planted on the page itself.
+      background: '/lottie/worldmap.lottie',
+      backgroundFit: 'cover',
+      // The earth turning, in the corner of the hero. It replaced a globe of
+      // bare meridians that read as a wireframe rather than as a planet.
+      // 22 KB, complete at every frame, and already drawn in almost exactly
+      // this template's mint.
+      heroCorner: '/lottie/earth.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'fann',
+    name: 'فن',
+    mood: 'صالة عرض، وإنت أول لوحة فيها',
+    lean: 'light',
+    free: true,
+    built: true,
+    // Third build. The first was a STAGE — curtains and a spotlight — and a
+    // theatre is where art is performed, not art. The second was bold
+    // watercolour washes, and it came out as soft pastel blobs: the page every
+    // gradient generator makes, which is the opposite of bold.
+    //
+    // The object here is a GALLERY, and the person is the first work hung in
+    // it: the portrait in a mount and a frame with a museum label under it
+    // giving the name, the medium and the year — which is exactly what a CV
+    // is. The other works on the wall are where the colour lives, so the
+    // palette can be as loud as it likes without the page turning to mush.
+    background: 'gallery',
+    glass: 'default',
+    motion: 'soft',
+    hero: 'frame',
+    card: 'poster',
+    order: 'A',
+    layout: 'stack',
+    media: {
+      // An abstract canvas whose shapes keep rearranging. 3 KB, whole at every
+      // frame, and hung three times at three sizes in three pigments — the
+      // other works in the room.
+      hero: '/lottie/canvas.lottie',
+    },
+    fonts: { display: 'cairo', body: 'plex-arabic' },
+  },
+  {
+    id: 'majlis',
+    name: 'مَجلِس',
+    mood: 'طاولة اجتماع، وإنت على رأسها',
+    lean: 'light',
+    free: true,
+    built: true,
+    // For a freelancer, at the owner's direction — and the body they named was
+    // the meeting.
+    //
+    // The catalogue is full of meeting illustrations and not one is usable,
+    // for the reason that keeps recurring: they already contain people. Put a
+    // portrait beside a drawing of four strangers around a table and the
+    // portrait is a fifth stranger. The only way the person can be AT the
+    // table is to draw the table — so it is drawn, seen from above, with the
+    // head seat left empty for them and the other seats belonging to whoever
+    // they are meeting. On a freelancer's page that is the client.
+    //
+    // The one fetched thing is the handshake on the table, because that is
+    // what the meeting is for.
+    background: 'boardroom',
+    glass: 'default',
+    motion: 'crisp',
+    hero: 'table',
+    card: 'brief',
+    order: 'B',
+    layout: 'stack',
+    media: {
+      // A handshake, closing. 7 KB, and whole at every frame — checked, after
+      // three catalogue "animations" in this project turned out to be loaders
+      // or screen wipes.
+      hero: '/lottie/handshake.lottie',
     },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },

@@ -48,21 +48,33 @@ export function LottieMark({
   /** Playback rate. Below 1 for art whose own loop is faster than the page
    *  wants — a 0.9s cycle reads as busy on a template built to feel calm. */
   speed = 1,
+  /** Play only this frame range. Needed for catalogue art that is really a
+   *  LOADER: it assembles itself and tears itself down, so it is only whole
+   *  for part of its cycle and looks broken the rest of the time. */
+  segment,
   /** Rendered until the animation loads, and forever under reduced motion. */
   poster,
   label,
   fit = 'contain',
+  ...rest
 }: {
   src: string
   className?: string
   style?: React.CSSProperties
   loop?: boolean
   speed?: number
+  segment?: readonly [number, number]
   /** 'cover' for a backdrop that must fill its band; 'contain' for a mark. */
   fit?: 'contain' | 'cover'
   poster?: React.ReactNode
   /** Give a label only if the animation carries meaning; decoration stays hidden. */
   label?: string
+  /** Marks the shared section illustration, so a template can retune it
+   *  without the renderer knowing which one is asking. */
+  'data-art'?: string
+  /** Which side of a pair this copy is — فن renders one curtain panel twice,
+   *  the second mirrored. */
+  'data-side'?: string
 }) {
   const box = useRef<HTMLDivElement>(null)
   const [shouldLoad, setShouldLoad] = useState(false)
@@ -104,6 +116,7 @@ export function LottieMark({
       ref={box}
       className={className}
       style={style}
+      {...rest}
       aria-hidden={label ? undefined : true}
       role={label ? 'img' : undefined}
       aria-label={label}
@@ -112,9 +125,10 @@ export function LottieMark({
         <DotLottieReact
           src={src}
           loop={loop}
-          speed={speed}
+          speed={speed ?? 1}
           autoplay
           dotLottieRefCallback={setPlayer}
+          segment={segment ? [segment[0], segment[1]] : undefined}
           layout={{ fit, align: [0.5, 0.5] }}
           style={{ inlineSize: '100%', blockSize: '100%' }}
         />
