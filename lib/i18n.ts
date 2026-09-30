@@ -131,7 +131,7 @@ export const ui = {
   toggleLang: { ar: 'English', en: 'العربية' },
   toggleTheme: { ar: 'تبديل الوضع', en: 'Toggle theme' },
   report: { ar: 'الإبلاغ عن هذه الصفحة', en: 'Report this page' },
-  builtWith: { ar: 'مبني بنُقوش', en: 'Built with Nuqush' },
+  builtWith: { ar: 'مبني بنُقوش', en: 'Built with Nuqoosh' },
   start: { ar: 'ابدأ بلا حساب', en: 'Start, no account' },
 } as const satisfies Record<string, LocalizedText>
 

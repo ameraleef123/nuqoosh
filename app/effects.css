@@ -231,66 +231,125 @@
   mix-blend-mode: screen;
 }
 
-.ink-blot {
-  position: absolute;
-  inset-block-start: -4%;
-  inset-inline-end: -3%;
-  inline-size: clamp(12rem, 26vw, 24rem);
-  color: var(--nq-accent);
-  opacity: 0.14;
+/* ── حبر: the sheet and the ink on it ─────────────────────────────────────
+   The page is RULED like writing paper, with a margin line down the start
+   edge, and the ink on it is drawn in components/templates/ink-blot.tsx: a
+   reed-pen stroke across the top, pools bled into the fibres, splatter.
+   Static except the pools, which swell on `transform` very slowly.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.ink-rules,
+.ink-stroke,
+.ink-pool {
+  position: fixed;
+  z-index: 0;
   pointer-events: none;
-  transform-origin: 60% 40%;
+}
+
+/* The sheet. Rules every 2.25rem; the margin sits where a hand would leave
+   it. Both are hairlines and identical mirrored, so no RTL twin. */
+.ink-rules {
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 calc(2.25rem - 1px),
+    var(--rule) calc(2.25rem - 1px) 2.25rem
+  );
+}
+.ink-rules::before {
+  content: '';
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: clamp(2.5rem, 7vw, 6rem);
+  inline-size: 2px;
+  background: var(--margin-rule);
+}
+
+.ink-fill {
+  fill: var(--ink);
+}
+.ink-bleed {
+  fill: var(--ink);
+  opacity: var(--ink-bleed);
+}
+
+/* The stroke: high on the page, sweeping in from the start. A stroke on this
+   paper runs the way the writing does, so it mirrors with the language. */
+.ink-stroke {
+  inset-block-start: -2vw;
+  inset-inline-start: -4vw;
+  inline-size: clamp(30rem, 64vw, 70rem);
+  opacity: var(--ink-opacity);
+  transform: rotate(-4deg);
+  transform-origin: 20% 60%;
+}
+[dir='rtl'] .ink-stroke {
+  transform: scaleX(-1) rotate(-4deg);
+}
+
+/* Pools: one large in the far top corner, one at the foot, one small. */
+.ink-pool {
+  opacity: var(--ink-opacity);
+  transform-origin: 50% 50%;
+}
+.ink-pool[data-pool='1'] {
+  inset-block-start: -8vw;
+  inset-inline-end: -6vw;
+  inline-size: clamp(16rem, 40vw, 40rem);
+}
+.ink-pool[data-pool='2'] {
+  inset-block-end: -10vw;
+  inset-inline-start: -8vw;
+  inline-size: clamp(12rem, 30vw, 30rem);
+  transform: rotate(140deg);
+}
+.ink-pool[data-pool='3'] {
+  inset-block-start: 56vh;
+  inset-inline-end: 14vw;
+  inline-size: clamp(4rem, 9vw, 9rem);
+  transform: rotate(-70deg);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .ink-blot {
-    animation: ink-breathe 14s ease-in-out infinite alternate;
+  .ink-pool {
+    animation: ink-bleed 22s ease-in-out infinite alternate;
+  }
+  .ink-pool[data-pool='2'] {
+    animation-name: ink-bleed-b;
+    animation-duration: 29s;
+    animation-delay: -9s;
+  }
+  .ink-pool[data-pool='3'] {
+    animation-name: ink-bleed-c;
+    animation-duration: 17s;
+    animation-delay: -5s;
   }
 }
-:root[data-motion='paused'] .ink-blot {
+:root[data-motion='paused'] .ink-pool {
   animation-play-state: paused;
 }
-@keyframes ink-breathe {
+@keyframes ink-bleed {
   from {
-    transform: scale(1) rotate(0deg);
+    transform: scale(1);
   }
   to {
-    transform: scale(1.06) rotate(2deg);
+    transform: scale(1.04);
   }
 }
-
-/* ── فجر hero cover ────────────────────────────────────────────────────────
-   The strip is the dawn itself: a horizon gradient, a sun that rises once
-   (transform + opacity, same keyframes as the page sun), and the line-art
-   mountains on the end side. Under reduced motion the sun is already up. */
-
-.cover-band {
-  position: relative;
-  block-size: clamp(9rem, 22vw, 15rem);
-  overflow: hidden;
-  /* Only a whisper of horizon: the glass beneath already shows the scene. */
-  background: linear-gradient(to top, rgba(255, 217, 184, 0.35) 0%, rgba(255, 233, 214, 0) 70%);
-}
-/* Black silhouettes vanish on ink glass; a static invert makes them white.
-   The filter is fixed, never animated — the canvas moves underneath it. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) .cover-band {
-    background: linear-gradient(to top, rgba(58, 42, 94, 0.35) 0%, rgba(42, 32, 80, 0) 70%);
+@keyframes ink-bleed-b {
+  from {
+    transform: rotate(140deg) scale(1);
   }
-  :root:not([data-theme='light']) .cover-art {
-    filter: invert(1) brightness(0.92);
+  to {
+    transform: rotate(140deg) scale(1.05);
   }
 }
-:root[data-theme='dark'] .cover-band {
-  background: linear-gradient(to top, rgba(58, 42, 94, 0.35) 0%, rgba(42, 32, 80, 0) 70%);
-}
-:root[data-theme='dark'] .cover-art {
-  filter: invert(1) brightness(0.92);
-}
-/* The scene fills the strip edge to edge; the gradient beneath it is only the
-   poster shown before it loads and under reduced motion. */
-.cover-art {
-  position: absolute;
-  inset: 0;
+@keyframes ink-bleed-c {
+  from {
+    transform: rotate(-70deg) scale(1);
+  }
+  to {
+    transform: rotate(-70deg) scale(1.06);
+  }
 }
 
 /* ── حبر hero: a sheet of paper for the quill ──────────────────────────────
@@ -772,10 +831,206 @@
   background: var(--nq-accent);
 }
 
-/* The wheat keeps its own gold and teal — a wheat field beside green leaves is
-   a real pairing, and tinting it would have made it a smudge. What is tuned
-   instead is opacity, and it is measured rather than chosen: see the badira
-   block in scripts/contrast.py. */
+/* ── بادِرة: the seedling hero ─────────────────────────────────────────────
+   A bed of soil sits on the card's floor and a seedling grows out of it; the
+   portrait is the bud at the top of the stem. On load the plant GROWS — the
+   roots and stem draw themselves (a dash offset over `pathLength="1"`), the
+   leaves unfold from their base, the sepals open, the bud appears — and then
+   the whole plant sways gently. Under reduced motion, and in the screenshot
+   failsafe, it is simply there, fully grown.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.seed-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.75rem;
+  padding-block-end: 0;
+}
+@media (min-width: 768px) {
+  .seed-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(13rem, 18rem);
+    gap: 2.75rem;
+    padding: 2.5rem 2.75rem 0;
+    align-items: end;
+  }
+}
+
+/* The seedling column. First in the DOM so the plant is above the name on a
+   phone; sent to the end column on wide screens. The soil meets the card's
+   bottom edge — a bed is IN the ground, not floating over it. */
+.seed-stage {
+  position: relative;
+  justify-self: center;
+  inline-size: min(16rem, 70vw);
+  aspect-ratio: 200 / 260;
+}
+@media (min-width: 768px) {
+  .seed-stage {
+    order: 1;
+    inline-size: 100%;
+  }
+}
+.seed-plant {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  transform-box: view-box;
+  transform-origin: 100px 214px;
+}
+
+.seed-soil {
+  fill: var(--hero-soil);
+}
+.seed-soil-top {
+  fill: var(--hero-soil-top);
+}
+.seed-root {
+  fill: none;
+  stroke: var(--root);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.seed-stem {
+  fill: none;
+  stroke: var(--stem);
+  stroke-width: 4.5;
+  stroke-linecap: round;
+}
+.seed-leaf-body {
+  fill: var(--leaf-a);
+  stroke: var(--leaf-b);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+.seed-vein {
+  fill: none;
+  stroke: var(--vein);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+.seed-sepals .seed-leaf-body {
+  fill: var(--leaf-b);
+  stroke: none;
+}
+/* Leaves scale from where they join the stem. `view-box` makes the origin
+   read in the drawing's own units. */
+.seed-leaf,
+.seed-sepals {
+  transform-box: view-box;
+}
+.seed-leaf[data-leaf='1'] {
+  transform-origin: 99px 152px;
+}
+.seed-leaf[data-leaf='2'] {
+  transform-origin: 101px 152px;
+}
+.seed-sepals {
+  transform-origin: 100px 68px;
+}
+
+/* The bud: the portrait at the top of the stem (y = 60 of 260), a size
+   smaller than the other heroes so the sepals show under it. */
+.seed-bud {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: calc(23% - 3.25rem);
+  display: flex;
+  justify-content: center;
+}
+.seed-bud [data-avatar] {
+  inline-size: 6.5rem;
+  block-size: 6.5rem;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 4px var(--glass-fallback),
+    0 0 0 6px var(--leaf-b),
+    0 10px 26px rgba(22, 50, 30, 0.22);
+}
+
+.seed-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+  padding-block-end: 1.75rem;
+}
+@media (min-width: 768px) {
+  .seed-body {
+    padding-block-end: 2.5rem;
+  }
+}
+
+/* Growth. Everything starts unborn and arrives in order: roots, stem, first
+   leaves, third leaf, sepals, bud. Then the plant sways. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-failsafe) .seed-root,
+  html:not(.motion-failsafe) .seed-stem {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    animation: seed-grow 1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+  html:not(.motion-failsafe) .seed-root {
+    animation-delay: 0.1s;
+  }
+  html:not(.motion-failsafe) .seed-stem {
+    animation-duration: 1.3s;
+    animation-delay: 0.3s;
+  }
+  html:not(.motion-failsafe) .seed-leaf,
+  html:not(.motion-failsafe) .seed-sepals {
+    transform: scale(0);
+    animation: seed-unfold 0.7s cubic-bezier(0.34, 1.4, 0.64, 1) forwards;
+  }
+  html:not(.motion-failsafe) .seed-leaf[data-leaf='1'] {
+    animation-delay: 1s;
+  }
+  html:not(.motion-failsafe) .seed-leaf[data-leaf='2'] {
+    animation-delay: 1.1s;
+  }
+  html:not(.motion-failsafe) .seed-sepals {
+    animation-delay: 1.35s;
+  }
+  html:not(.motion-failsafe) .seed-bud {
+    opacity: 0;
+    transform: scale(0.6);
+    animation: seed-bloom 0.6s cubic-bezier(0.34, 1.3, 0.64, 1) 1.6s forwards;
+  }
+  html:not(.motion-failsafe) .seed-plant {
+    animation: seed-sway 6s ease-in-out 2.4s infinite alternate;
+  }
+}
+@keyframes seed-grow {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes seed-unfold {
+  to {
+    transform: scale(1);
+  }
+}
+@keyframes seed-bloom {
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes seed-sway {
+  from {
+    transform: rotate(-1.4deg);
+  }
+  to {
+    transform: rotate(1.4deg);
+  }
+}
+:root[data-motion='paused'] .seed-plant {
+  animation-play-state: paused;
+}
 
 /* ── ثُرَيّا: the chart and the cluster ─────────────────────────────────────
    The student sits at the centre of their own orbit diagram, and everything
@@ -1011,6 +1266,2616 @@
 }
 [data-template='rafif'] .tpl-screen-tile:nth-child(3) {
   transform: translateY(28vh) scale(1.05);
+}
+
+/* ── ثُرَيّا: the sky, drawn ───────────────────────────────────────────────
+   Stars, the Seven Sisters with their haze, chart lines and a graticule, a
+   band of the Milky Way (components/templates/night-sky.tsx). Only opacity
+   animates. The sky fades toward the foot of the viewport by the same mask
+   the old field used, and the footer keeps its glass.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.chart-way,
+.chart-sky,
+.chart-pleiades {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+}
+.chart-way {
+  inset: -20vh -20vw;
+  background: linear-gradient(115deg, transparent 32%, var(--way) 47%, var(--way) 53%, transparent 68%);
+  filter: blur(28px);
+}
+.chart-sky {
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100vh;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0 55%, transparent 88%);
+  mask-image: linear-gradient(to bottom, #000 0 55%, transparent 88%);
+}
+.chart-grid path {
+  fill: none;
+  stroke: var(--chart-line);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+.chart-lines polyline {
+  fill: none;
+  stroke: var(--chart-line);
+  stroke-width: 0.8;
+}
+.chart-star {
+  fill: var(--star);
+}
+/* The cluster: high in the far corner, where nothing is written. */
+.chart-pleiades {
+  inset-block-start: 4vh;
+  inset-inline-end: 5vw;
+  inline-size: clamp(11rem, 24vw, 22rem);
+  overflow: visible;
+}
+.chart-haze-a {
+  stop-color: var(--haze);
+}
+.chart-haze-b {
+  stop-color: var(--haze);
+  stop-opacity: 0;
+}
+.chart-sister-lines polyline {
+  fill: none;
+  stroke: var(--chart-line);
+  stroke-width: 0.45;
+}
+.chart-glow-a {
+  stop-color: var(--star-glow);
+}
+.chart-glow-b {
+  stop-color: var(--star-glow);
+  stop-opacity: 0.35;
+}
+.chart-glow-c {
+  stop-color: var(--star-glow);
+  stop-opacity: 0;
+}
+.chart-sister-core {
+  fill: var(--sister);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .chart-star[data-twinkle],
+  .chart-sister[data-twinkle] {
+    animation: chart-twinkle 4.5s ease-in-out infinite alternate;
+  }
+  .chart-star[data-twinkle='2'],
+  .chart-sister[data-twinkle='2'] {
+    animation-duration: 6s;
+    animation-delay: -2.5s;
+  }
+  .chart-star[data-twinkle='3'],
+  .chart-sister[data-twinkle='3'] {
+    animation-duration: 7.5s;
+    animation-delay: -4s;
+  }
+}
+:root[data-motion='paused'] .chart-star,
+:root[data-motion='paused'] .chart-sister {
+  animation-play-state: paused;
+}
+@keyframes chart-twinkle {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── رَفيف: feathers, and the currents they ride ──────────────────────────
+   Three currents of parallel lines slide slowly across the page; five
+   feathers drift down through them, turning as they fall
+   (components/templates/air-drift.tsx). Transform and opacity only.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.air-current,
+.air-feather {
+  position: fixed;
+  z-index: 0;
+  pointer-events: none;
+}
+.air-current {
+  inset-inline: -2vw;
+  inline-size: 104vw;
+  block-size: 7rem;
+  overflow: visible;
+}
+.air-current[data-current='1'] {
+  inset-block-start: 12vh;
+}
+.air-current[data-current='2'] {
+  inset-block-start: 46vh;
+  block-size: 9rem;
+  opacity: 0.7;
+}
+.air-current[data-current='3'] {
+  inset-block-start: 78vh;
+  block-size: 6rem;
+  opacity: 0.55;
+}
+.air-current-lines {
+  transform-box: view-box;
+}
+.air-current-lines path {
+  fill: none;
+  stroke: var(--current);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .air-current-lines {
+    animation: air-slide 42s linear infinite;
+  }
+  .air-current[data-current='2'] .air-current-lines {
+    animation-duration: 58s;
+    animation-direction: reverse;
+  }
+  .air-current[data-current='3'] .air-current-lines {
+    animation-duration: 49s;
+  }
+}
+/* One period of the path is 1000 units; the lines are drawn over two. */
+@keyframes air-slide {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-1000px);
+  }
+}
+
+.air-feather {
+  inset-block-start: -18vh;
+  inline-size: clamp(2.8rem, 4.2vw, 4.4rem);
+  opacity: 0;
+}
+.air-vane {
+  fill: var(--feather);
+}
+.air-vane-inner {
+  fill: var(--feather-2);
+}
+.air-shaft {
+  fill: none;
+  stroke: var(--feather-shaft);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.air-down {
+  fill: none;
+  stroke: var(--feather-shaft);
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  opacity: 0.6;
+}
+.air-feather[data-feather='1'] {
+  inset-inline-start: 10vw;
+}
+.air-feather[data-feather='2'] {
+  inset-inline-start: 30vw;
+  inline-size: clamp(2.2rem, 3.2vw, 3.4rem);
+}
+.air-feather[data-feather='3'] {
+  inset-inline-start: 52vw;
+}
+.air-feather[data-feather='4'] {
+  inset-inline-start: 71vw;
+  inline-size: clamp(2.5rem, 3.7vw, 3.9rem);
+}
+.air-feather[data-feather='5'] {
+  inset-inline-start: 88vw;
+  inline-size: clamp(2.1rem, 3vw, 3.1rem);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .air-feather {
+    animation: feather-fall 36s linear infinite;
+  }
+  .air-feather[data-feather='1'] {
+    animation-delay: -6s;
+  }
+  .air-feather[data-feather='2'] {
+    animation-duration: 43s;
+    animation-delay: -19s;
+  }
+  .air-feather[data-feather='3'] {
+    animation-duration: 39s;
+    animation-delay: -28s;
+  }
+  .air-feather[data-feather='4'] {
+    animation-duration: 47s;
+    animation-delay: -12s;
+  }
+  .air-feather[data-feather='5'] {
+    animation-duration: 41s;
+    animation-delay: -33s;
+  }
+}
+/* Under reduced motion the feathers hang in the air at different heights. */
+@media (prefers-reduced-motion: reduce) {
+  .air-feather {
+    opacity: 0.75;
+    transform: translate3d(0, 40vh, 0) rotate(14deg);
+  }
+  .air-feather[data-feather='2'] {
+    transform: translate3d(0, 78vh, 0) rotate(-20deg);
+  }
+  .air-feather[data-feather='3'] {
+    transform: translate3d(0, 26vh, 0) rotate(-8deg);
+  }
+  .air-feather[data-feather='4'] {
+    transform: translate3d(0, 92vh, 0) rotate(22deg);
+  }
+  .air-feather[data-feather='5'] {
+    transform: translate3d(0, 58vh, 0) rotate(-14deg);
+  }
+}
+:root[data-motion='paused'] .air-feather,
+:root[data-motion='paused'] .air-current-lines {
+  animation-play-state: paused;
+}
+/* Falls, rocks side to side as a feather does, turns over, fades at both ends. */
+@keyframes feather-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-12deg);
+  }
+  6% {
+    opacity: 0.9;
+  }
+  25% {
+    transform: translate3d(3vw, 30vh, 0) rotate(20deg);
+  }
+  50% {
+    transform: translate3d(-2.5vw, 60vh, 0) rotate(-16deg);
+  }
+  75% {
+    transform: translate3d(3vw, 90vh, 0) rotate(22deg);
+  }
+  94% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 124vh, 0) rotate(-6deg);
+  }
+}
+
+/* ── مَدى: the drawn mast and the country it reaches ──────────────────────
+   The mast is drawn at full height in the hero (components/templates/mast.tsx)
+   with its lamp beating; the page carries range rings opening from the lamp's
+   corner across the whole viewport, and a far horizon at the foot of the
+   screen with the lights of distant towns on it. Opacity and scale only.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.mast-draw {
+  display: block;
+  block-size: clamp(16rem, 36vh, 24rem);
+  inline-size: auto;
+  max-inline-size: 100%;
+  overflow: visible;
+}
+.mast-steel path,
+.mast-steel {
+  fill: none;
+  stroke: var(--mast-steel);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+.mast-steel .mast-brace {
+  stroke-width: 0.8;
+  opacity: 0.7;
+}
+.mast-wire path {
+  fill: none;
+  stroke: var(--mast-wire);
+  stroke-width: 0.7;
+}
+.mast-panel {
+  fill: var(--mast-panel);
+  opacity: 0.85;
+}
+.mast-dish {
+  fill: var(--mast-panel);
+  opacity: 0.7;
+}
+.mast-ground {
+  fill: none;
+  stroke: var(--mast-steel);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.mast-lamp {
+  fill: var(--lamp);
+}
+.mast-lamp-glow {
+  fill: var(--lamp-glow);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .mast-lamp,
+  .mast-lamp-glow {
+    animation: mast-beat 2s ease-in-out infinite;
+  }
+}
+:root[data-motion='paused'] .mast-lamp,
+:root[data-motion='paused'] .mast-lamp-glow {
+  animation-play-state: paused;
+}
+@keyframes mast-beat {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* The range across the page: four rings from the lamp's corner, each a
+   viewport wide before it dies, on one slow cycle staggered four ways. */
+.signal-rings {
+  position: fixed;
+  z-index: 0;
+  inset-block-start: 12vh;
+  inset-inline-start: 14vw;
+  inline-size: 0;
+  block-size: 0;
+  pointer-events: none;
+}
+.signal-rings span {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 160vmax;
+  block-size: 160vmax;
+  margin-block-start: -80vmax;
+  margin-inline-start: -80vmax;
+  border: 1px solid var(--range-ring);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.02);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-rings span {
+    animation: signal-reach 16s linear infinite;
+  }
+  .signal-rings span[data-ring='2'] {
+    animation-delay: -4s;
+  }
+  .signal-rings span[data-ring='3'] {
+    animation-delay: -8s;
+  }
+  .signal-rings span[data-ring='4'] {
+    animation-delay: -12s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-rings span[data-ring='1'] {
+    opacity: 0.5;
+    transform: scale(0.2);
+  }
+  .signal-rings span[data-ring='2'] {
+    opacity: 0.3;
+    transform: scale(0.45);
+  }
+  .signal-rings span[data-ring='3'] {
+    opacity: 0.15;
+    transform: scale(0.7);
+  }
+}
+:root[data-motion='paused'] .signal-rings span {
+  animation-play-state: paused;
+}
+@keyframes signal-reach {
+  0% {
+    opacity: 0;
+    transform: scale(0.02);
+  }
+  8% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+
+/* The horizon at the foot of the viewport. */
+.signal-horizon {
+  position: fixed;
+  z-index: 0;
+  inset-inline: 0;
+  inset-block-end: 0;
+  inline-size: 100%;
+  block-size: min(14vh, 7.5rem);
+  pointer-events: none;
+}
+.signal-land {
+  fill: var(--land);
+}
+.signal-edge,
+.signal-far-mast {
+  fill: none;
+  stroke: var(--land-edge);
+  stroke-width: 1;
+}
+.signal-light {
+  fill: var(--town-light);
+  opacity: 0.85;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-light[data-blink] {
+    animation: town-blink 3s ease-in-out infinite alternate;
+  }
+  .signal-light[data-blink='2'] {
+    animation-duration: 4.4s;
+    animation-delay: -2s;
+  }
+  .signal-light[data-blink='3'] {
+    animation-duration: 5.2s;
+    animation-delay: -1s;
+  }
+}
+:root[data-motion='paused'] .signal-light {
+  animation-play-state: paused;
+}
+@keyframes town-blink {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── تسلا: the yard of the laboratory ─────────────────────────────────────
+   Apparatus in silhouette along the foot of the viewport — coils, a capacitor
+   bank, a spark gap, the Wardenclyffe tower — with coronas that never go out,
+   and ionised dust rising through the air (components/templates/lab.tsx).
+   ────────────────────────────────────────────────────────────────────────── */
+
+.lab-yard {
+  position: fixed;
+  z-index: 0;
+  inset-inline: 0;
+  inset-block-end: 0;
+  inline-size: 100%;
+  block-size: min(30vh, 16rem);
+  pointer-events: none;
+}
+.lab-silhouette {
+  fill: var(--lab-silhouette);
+}
+.lab-ground {
+  fill: var(--lab-ground);
+}
+.lab-winding,
+.lab-lattice {
+  fill: none;
+  stroke: var(--lab-line);
+  stroke-width: 1.2;
+}
+.lab-corona {
+  fill: var(--lab-corona);
+  filter: blur(10px);
+}
+.lab-corona-small {
+  fill: var(--lab-corona);
+  filter: blur(4px);
+}
+.lab-toroid-lit {
+  fill: var(--lab-lit);
+  opacity: 0.9;
+}
+.lab-arc {
+  fill: none;
+  stroke: var(--lab-lit);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lab-corona,
+  .lab-corona-small {
+    animation: corona-breathe 2.3s ease-in-out infinite alternate;
+  }
+  .lab-tower .lab-corona {
+    animation-duration: 3.1s;
+    animation-delay: -1.2s;
+  }
+  .lab-arc {
+    animation: arc-flicker 0.7s steps(2, jump-none) infinite;
+  }
+}
+:root[data-motion='paused'] .lab-corona,
+:root[data-motion='paused'] .lab-corona-small,
+:root[data-motion='paused'] .lab-arc,
+:root[data-motion='paused'] .lab-dust {
+  animation-play-state: paused;
+}
+@keyframes corona-breathe {
+  from {
+    opacity: 0.45;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes arc-flicker {
+  from {
+    opacity: 0.3;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Ionised dust: motes rising slowly through the air, fading in and out. */
+.lab-dust {
+  position: fixed;
+  z-index: 0;
+  inline-size: 3px;
+  block-size: 3px;
+  border-radius: 50%;
+  background: var(--lab-dust);
+  box-shadow: 0 0 6px 1px var(--lab-dust);
+  pointer-events: none;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .lab-dust {
+    animation: dust-rise 22s linear infinite;
+  }
+  .lab-dust[data-cycle='2'] {
+    animation-duration: 29s;
+    animation-delay: -10s;
+  }
+  .lab-dust[data-cycle='3'] {
+    animation-duration: 25s;
+    animation-delay: -18s;
+  }
+  .lab-dust[data-cycle='4'] {
+    animation-duration: 33s;
+    animation-delay: -5s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .lab-dust {
+    opacity: 0.5;
+  }
+}
+@keyframes dust-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  12% {
+    opacity: 0.8;
+  }
+  88% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(1.5vw, -38vh, 0);
+  }
+}
+
+/* The footer is the one text with no card under it, and the yard's lit
+   toroids sit exactly where it lands at the end of the page. Same answer as
+   ثُرَيّا: the template's own glass. */
+[data-template='tesla'] .tpl-content > footer {
+  margin-block-start: 2.5rem;
+  border: 1px solid var(--glass-border-color);
+  border-radius: var(--nq-radius-lg);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 0.9rem 1.25rem;
+}
+
+/* ── نيويورك, third pass: the city IS the page ────────────────────────────
+   Designed from three photographs the owner sent: Radio City in the rain,
+   the skyline behind Lady Liberty, Times Square at blue hour. One SVG fixed
+   over the whole viewport (components/templates/skyline.tsx): a cobalt sky,
+   flank towers with LED screens rising the full height at the edges, the
+   skyline and the statue across the middle, and a rain-wet street at the
+   foot with every light smeared down into it. Transform and opacity only.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.city-skyline {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+  opacity: var(--screen-art-opacity);
+}
+
+/* Rain: two layers of thin diagonal streaks falling on transform. Dark only —
+   the dusk page is dry. */
+.ny-rain {
+  position: fixed;
+  inset: -20% 0 0 0;
+  z-index: 0;
+  pointer-events: none;
+  display: var(--rain-display);
+  opacity: 0.18;
+  background-image:
+    repeating-linear-gradient(112deg, transparent 0 22px, rgba(255, 255, 255, 0.35) 22px 23px, transparent 23px 38px),
+    repeating-linear-gradient(112deg, transparent 0 41px, rgba(255, 255, 255, 0.2) 41px 42px, transparent 42px 67px);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 80%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 80%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-rain {
+    animation: ny-rain-fall 0.9s linear infinite;
+  }
+}
+@keyframes ny-rain-fall {
+  from {
+    transform: translate3d(0, -60px, 0);
+  }
+  to {
+    transform: translate3d(-24px, 60px, 0);
+  }
+}
+/* Fog hanging over the street, lit from below. */
+.ny-fog {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 34vh;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(to top, var(--ny-fog) 0%, transparent 100%);
+}
+
+/* Sky. */
+.ny-star {
+  fill: var(--ny-star);
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-star[data-twinkle] {
+    animation: chart-twinkle 4s ease-in-out infinite alternate;
+  }
+  .ny-star[data-twinkle='2'] {
+    animation-duration: 5.5s;
+    animation-delay: -2s;
+  }
+  .ny-star[data-twinkle='3'] {
+    animation-duration: 6.5s;
+    animation-delay: -3.5s;
+  }
+}
+.ny-haze-a {
+  stop-color: var(--ny-haze);
+  stop-opacity: 0;
+}
+.ny-haze-b {
+  stop-color: var(--ny-haze);
+  stop-opacity: 1;
+}
+.ny-plane {
+  transform: translate(-30px, 60px);
+}
+.ny-plane-body {
+  stroke: var(--ny-plane);
+  stroke-width: 1.4;
+}
+.ny-plane-strobe {
+  fill: #ffffff;
+}
+.ny-plane-tail {
+  fill: var(--ny-red);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-plane {
+    animation: plane-cross 95s linear infinite;
+  }
+  .ny-plane-strobe {
+    animation: strobe 1.4s steps(2, jump-none) infinite;
+  }
+}
+@keyframes plane-cross {
+  from {
+    transform: translate(-30px, 70px);
+  }
+  to {
+    transform: translate(1480px, 30px);
+  }
+}
+@keyframes strobe {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Towers. */
+.ny-mass {
+  fill: var(--ny-mass);
+}
+.ny-spire,
+.ny-needle {
+  stroke: var(--ny-mass);
+  stroke-width: 2;
+}
+.ny-needle {
+  stroke: var(--ny-needle);
+}
+.ny-beacon {
+  fill: var(--ny-red);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-beacon {
+    animation: beacon-pulse 3.1s ease-in-out infinite;
+  }
+  .ny-beacon[data-beacon='1'] {
+    animation-duration: 4.3s;
+    animation-delay: -1.5s;
+  }
+}
+.ny-window {
+  fill: var(--ny-window-dim);
+}
+.ny-window[data-lit='2'] {
+  fill: var(--ny-window-lit);
+}
+.ny-wtc-glass {
+  fill: var(--ny-wtc);
+}
+.ny-crown-light {
+  fill: var(--ny-crown);
+}
+.ny-crown-arc {
+  fill: none;
+  stroke: var(--ny-crown);
+  stroke-width: 1.4;
+}
+.ny-flank-face {
+  fill: var(--ny-flank);
+}
+.ny-awning {
+  fill: var(--ny-red);
+  opacity: 0.8;
+}
+
+/* LED screens. Four hues; the glow is blurred once, the face is crisp, and a
+   thin bezel keeps it a screen rather than a patch of colour. */
+.ny-board-glow {
+  filter: blur(8px);
+  opacity: 0.6;
+}
+.ny-board-face {
+  opacity: var(--board-alpha);
+}
+.ny-board-bezel {
+  fill: none;
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1.5;
+}
+.ny-board-block {
+  fill: rgba(255, 255, 255, 0.55);
+}
+.ny-board-lines {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+.ny-board[data-hue='0'] .ny-board-glow,
+.ny-board[data-hue='0'] .ny-board-face {
+  fill: var(--ny-magenta);
+}
+.ny-board[data-hue='1'] .ny-board-glow,
+.ny-board[data-hue='1'] .ny-board-face {
+  fill: var(--ny-cyan);
+}
+.ny-board[data-hue='2'] .ny-board-glow,
+.ny-board[data-hue='2'] .ny-board-face {
+  fill: var(--ny-amber);
+}
+.ny-board[data-hue='3'] .ny-board-glow,
+.ny-board[data-hue='3'] .ny-board-face {
+  fill: var(--ny-violet);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-board[data-flicker] {
+    animation: neon-flicker 7s steps(1, end) infinite;
+  }
+  .ny-board[data-hue='0'][data-flicker] {
+    animation-duration: 11s;
+    animation-delay: -4s;
+  }
+}
+@keyframes neon-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  41% {
+    opacity: 1;
+  }
+  42% {
+    opacity: 0.25;
+  }
+  43% {
+    opacity: 1;
+  }
+  44.5% {
+    opacity: 0.4;
+  }
+  45% {
+    opacity: 1;
+  }
+  78% {
+    opacity: 1;
+  }
+  78.5% {
+    opacity: 0.3;
+  }
+  79% {
+    opacity: 1;
+  }
+}
+
+/* The vertical neon sign. */
+.ny-vsign-glow {
+  fill: var(--ny-red);
+  filter: blur(9px);
+  opacity: 0.55;
+}
+.ny-vsign-bar {
+  fill: var(--ny-red);
+  opacity: 0.85;
+}
+.ny-vsign-letter {
+  fill: #ffffff;
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-vsign-letter {
+    animation: bulb-chase 1.2s steps(1, end) infinite;
+  }
+  .ny-vsign-letter[data-phase='1'] {
+    animation-delay: -0.4s;
+  }
+  .ny-vsign-letter[data-phase='2'] {
+    animation-delay: -0.8s;
+  }
+}
+/* The box sign. */
+.ny-boxsign-glow {
+  fill: #ffffff;
+  filter: blur(8px);
+  opacity: 0.35;
+}
+.ny-boxsign-face {
+  fill: #f4f6ff;
+  opacity: 0.92;
+}
+.ny-boxsign-bar {
+  fill: #10182a;
+  opacity: 0.85;
+}
+.ny-bracket,
+.ny-pole {
+  stroke: var(--ny-iron);
+  stroke-width: 2;
+}
+
+/* Lady Liberty. */
+.ny-liberty-stone {
+  fill: var(--ny-stone);
+}
+.ny-liberty-figure {
+  fill: var(--ny-patina);
+  stroke: var(--ny-patina);
+  stroke-linecap: round;
+}
+.ny-torch {
+  fill: var(--ny-torch);
+}
+.ny-torch-glow {
+  fill: var(--ny-torch);
+  filter: blur(6px);
+  opacity: 0.6;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-torch-glow {
+    animation: torch-breathe 2.6s ease-in-out infinite alternate;
+  }
+}
+@keyframes torch-breathe {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.8;
+  }
+}
+
+/* The street. */
+.ny-sidewalk {
+  fill: var(--ny-sidewalk);
+}
+.ny-road {
+  fill: var(--ny-road);
+}
+.ny-wet-a {
+  stop-color: #ffffff;
+  stop-opacity: 0.06;
+}
+.ny-wet-b {
+  stop-color: #ffffff;
+  stop-opacity: 0;
+}
+.ny-kerb {
+  stroke: var(--ny-kerb);
+  stroke-width: 1.4;
+}
+.ny-lane-marks {
+  fill: none;
+  stroke: rgba(255, 220, 120, 0.35);
+  stroke-width: 1.2;
+  stroke-dasharray: 18 14;
+}
+/* Reflections: a rect per light source, filled with the light's hue through
+   a top-to-bottom fade, blurred sideways by the wet. */
+.ny-reflections {
+  /* Wet asphalt smears a light sideways far more than it keeps its edge. */
+  filter: blur(14px);
+}
+.ny-reflection {
+  opacity: var(--reflect-alpha);
+  -webkit-mask: url(#ny-reflect);
+  mask: url(#ny-reflect);
+}
+.ny-reflection[data-hue='0'] {
+  fill: var(--ny-magenta);
+}
+.ny-reflection[data-hue='1'] {
+  fill: var(--ny-cyan);
+}
+.ny-reflection[data-hue='2'] {
+  fill: var(--ny-amber);
+}
+.ny-reflection[data-hue='3'] {
+  fill: var(--ny-red);
+}
+.ny-reflection[data-hue='4'] {
+  fill: #ffffff;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-reflection[data-shimmer] {
+    animation: shimmer 3.4s ease-in-out infinite alternate;
+  }
+  .ny-reflection[data-shimmer='2'] {
+    animation-duration: 4.7s;
+    animation-delay: -1.5s;
+  }
+  .ny-reflection[data-shimmer='3'] {
+    animation-duration: 5.9s;
+    animation-delay: -3s;
+  }
+}
+@keyframes shimmer {
+  from {
+    opacity: calc(var(--reflect-alpha) * 0.6);
+  }
+  to {
+    opacity: var(--reflect-alpha);
+  }
+}
+
+/* Steam from the manhole. */
+.ny-steam {
+  fill: var(--ny-steam);
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-steam {
+    animation: steam-rise 6s ease-out infinite;
+  }
+  .ny-steam[data-puff='1'] {
+    animation-delay: -2s;
+  }
+  .ny-steam[data-puff='2'] {
+    animation-delay: -4s;
+  }
+}
+@keyframes steam-rise {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  15% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-70px) scale(2.6);
+  }
+}
+
+/* Lamps and signals. */
+.ny-lamp-head {
+  fill: var(--ny-lamp);
+}
+.ny-lamp-glow {
+  fill: var(--ny-lamp);
+  filter: blur(7px);
+  opacity: 0.5;
+}
+.ny-signal-box {
+  fill: #0b0f1a;
+}
+.ny-signal-red {
+  fill: var(--ny-red);
+  opacity: 0.25;
+}
+.ny-signal-green {
+  fill: #37e07a;
+  opacity: 0.25;
+}
+.ny-signal:not([data-green]) .ny-signal-red,
+.ny-signal[data-green] .ny-signal-green {
+  opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-signal .ny-signal-red {
+    animation: signal-red 14s steps(1, end) infinite;
+  }
+  .ny-signal .ny-signal-green {
+    animation: signal-green 14s steps(1, end) infinite;
+  }
+  .ny-signal[data-green] .ny-signal-red,
+  .ny-signal[data-green] .ny-signal-green {
+    animation-delay: -7s;
+  }
+}
+@keyframes signal-red {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0.25;
+  }
+}
+@keyframes signal-green {
+  0%,
+  49% {
+    opacity: 0.25;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+/* People. */
+.ny-person {
+  fill: var(--ny-crowd);
+}
+.ny-umbrella {
+  fill: var(--ny-umbrella);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ny-person {
+    animation: person-sway 4.7s ease-in-out infinite;
+    transform-box: fill-box;
+    transform-origin: bottom center;
+  }
+  .ny-person[data-walk='1'] {
+    animation-duration: 6.1s;
+    animation-delay: -1.9s;
+  }
+  .ny-person[data-walk='2'] {
+    animation-duration: 5.3s;
+    animation-delay: -3.4s;
+  }
+  .ny-person[data-walk='3'] {
+    animation-duration: 7.3s;
+    animation-delay: -0.8s;
+  }
+}
+@keyframes person-sway {
+  0%,
+  100% {
+    opacity: 0.85;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Cabs. Headlights one way, tail lights the other, on the old lanes. */
+.ny-cab {
+  fill: var(--ny-cab);
+}
+.ny-cab-glass {
+  fill: rgba(20, 30, 60, 0.7);
+}
+.ny-cab-light {
+  fill: var(--ny-cab-light);
+}
+.ny-headlight {
+  fill: #fff2c8;
+}
+.ny-taillight {
+  fill: var(--ny-red);
+}
+.ny-cab-reflect-head {
+  fill: #fff2c8;
+  opacity: 0.18;
+}
+.ny-cab-reflect-tail {
+  fill: var(--ny-red);
+  opacity: 0.2;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .car-head {
+    animation: drive-start 11s linear infinite;
+  }
+  .car-tail {
+    animation: drive-end 13s linear infinite;
+  }
+  .car-head[data-lane='1'] {
+    animation-duration: 8s;
+    animation-delay: -2.5s;
+  }
+  .car-head[data-lane='2'] {
+    animation-duration: 14s;
+    animation-delay: -6s;
+  }
+  .car-head[data-lane='3'] {
+    animation-duration: 9.5s;
+    animation-delay: -8s;
+  }
+  .car-tail[data-lane='1'] {
+    animation-duration: 10s;
+    animation-delay: -3.5s;
+  }
+  .car-tail[data-lane='2'] {
+    animation-duration: 15.5s;
+    animation-delay: -7s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .car-head,
+  .car-tail {
+    transform: translateX(400px);
+  }
+}
+@keyframes drive-start {
+  from {
+    transform: translateX(-60px);
+  }
+  to {
+    transform: translateX(1480px);
+  }
+}
+@keyframes drive-end {
+  from {
+    transform: translateX(1480px);
+  }
+  to {
+    transform: translateX(-60px);
+  }
+}
+
+
+/* ── The neon sign in the hero's far corner ─────────────────────────────── */
+.neon-sign {
+  position: absolute;
+  z-index: 0;
+  display: none;
+  inset-block-start: 1rem;
+  inset-inline-end: 1.25rem;
+  inline-size: 15rem;
+  pointer-events: none;
+  opacity: var(--neon-opacity);
+}
+@media (min-width: 768px) {
+  .neon-sign {
+    display: block;
+  }
+}
+.neon-panel {
+  fill: var(--neon-panel);
+  stroke: var(--neon-panel-edge);
+  stroke-width: 1;
+}
+.neon-bulb {
+  fill: var(--neon-bulb);
+  opacity: 0.35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .neon-bulb {
+    animation: bulb-chase 0.9s steps(1, end) infinite;
+  }
+  .neon-bulb[data-phase='1'] {
+    animation-delay: -0.3s;
+  }
+  .neon-bulb[data-phase='2'] {
+    animation-delay: -0.6s;
+  }
+}
+@keyframes bulb-chase {
+  0% {
+    opacity: 1;
+  }
+  33.4% {
+    opacity: 0.35;
+  }
+  100% {
+    opacity: 0.35;
+  }
+}
+.neon-tube path {
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.neon-tube .neon-glow {
+  stroke-width: 7;
+  opacity: 0.55;
+  filter: blur(3px);
+}
+.neon-tube .neon-core {
+  stroke-width: 2.2;
+}
+.neon-tube[data-tube='magenta'] path {
+  stroke: var(--ny-magenta);
+}
+.neon-tube[data-tube='cyan'] path {
+  stroke: var(--ny-cyan);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .neon-tube[data-tube='magenta'] {
+    animation: neon-flicker 9s steps(1, end) infinite;
+    animation-delay: -3s;
+  }
+}
+
+/* The footer sits on the street, where the reflections are — it takes the
+   template's glass, the same answer ثُرَيّا and تسلا needed. */
+[data-template='newyork'] .tpl-content > footer {
+  margin-block-start: 2.5rem;
+  border: 1px solid var(--glass-border-color);
+  border-radius: var(--nq-radius-lg);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 0.9rem 1.25rem;
+}
+
+:root[data-motion='paused'] .ny-rain,
+:root[data-motion='paused'] .ny-star,
+:root[data-motion='paused'] .ny-plane,
+:root[data-motion='paused'] .ny-plane-strobe,
+:root[data-motion='paused'] .ny-beacon,
+:root[data-motion='paused'] .ny-board,
+:root[data-motion='paused'] .ny-vsign-letter,
+:root[data-motion='paused'] .ny-torch-glow,
+:root[data-motion='paused'] .ny-reflection,
+:root[data-motion='paused'] .ny-steam,
+:root[data-motion='paused'] .ny-signal-red,
+:root[data-motion='paused'] .ny-signal-green,
+:root[data-motion='paused'] .ny-person,
+:root[data-motion='paused'] .car-head,
+:root[data-motion='paused'] .car-tail,
+:root[data-motion='paused'] .neon-bulb,
+:root[data-motion='paused'] .neon-tube {
+  animation-play-state: paused;
+}
+
+/* ── نيويورك hero: the billboard ───────────────────────────────────────────
+   Third pass. The portrait is the LED screen on a Times Square facade
+   (components/templates/tower.tsx): a marquee of chasing bulbs frames it, a
+   refresh sweep crosses it, a canopy throws its light down the wall, a red
+   neon sign runs down the building's edge, and the street door glows at the
+   foot. The name gets a neon rule under it and the tagline a lit ticker.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.window-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.5rem;
+  padding: 1.5rem 1.75rem 0;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .window-hero {
+    grid-template-columns: 1fr minmax(13rem, 19rem);
+    gap: 3rem;
+    padding: 2.25rem 2.75rem 0;
+    align-items: end;
+    justify-items: stretch;
+  }
+}
+
+/* The building stands on the card's floor: no bottom padding on its column,
+   so the door sits on the edge. Desktop sends it to the end column. */
+.window-tower {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  /* Sized to the drawing itself, not to the grid column: the portrait is
+     placed in PERCENTAGES of this box, so the box must be the facade. */
+  inline-size: min(12rem, 52vw);
+  justify-self: center;
+}
+@media (min-width: 768px) {
+  .window-tower {
+    order: 1;
+    inline-size: min(17rem, 22vw);
+    justify-self: end;
+  }
+}
+
+.tower {
+  inline-size: 100%;
+  overflow: visible;
+  block-size: auto;
+  aspect-ratio: 176 / 300;
+  display: block;
+}
+.tower-body {
+  fill: var(--tower-face);
+  stroke: var(--tower-edge);
+  stroke-width: 1;
+}
+.tower-mast {
+  stroke: var(--tower-edge);
+  stroke-width: 1.4;
+}
+.tower-beacon {
+  fill: var(--nq-accent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tower-beacon {
+    animation: beacon-pulse 2.6s ease-in-out infinite;
+  }
+}
+@keyframes beacon-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+.tower-window {
+  fill: var(--window-off);
+}
+.tower-window[data-lit='1'] {
+  fill: var(--window-dim);
+}
+.tower-window[data-lit='2'] {
+  fill: var(--window-lit);
+}
+.tower-window[data-lit='3'] {
+  fill: var(--window-bright);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tower-window[data-blink] {
+    animation: window-switch 17s steps(1, end) infinite;
+  }
+  .tower-window[data-blink='2'] {
+    animation-duration: 23s;
+    animation-delay: -7s;
+  }
+  .tower-window[data-blink='3'] {
+    animation-duration: 31s;
+    animation-delay: -13s;
+  }
+}
+@keyframes window-switch {
+  0%,
+  46% {
+    opacity: 1;
+  }
+  50%,
+  92% {
+    opacity: 0.12;
+  }
+}
+
+/* The screen and its marquee. */
+.tower-screen-glow {
+  fill: var(--ny-magenta);
+  filter: blur(10px);
+  opacity: 0.45;
+}
+.tower-screen-bezel {
+  fill: #06080f;
+  stroke: var(--ny-magenta);
+  stroke-width: 1.5;
+}
+.tower-bulb {
+  fill: var(--neon-bulb);
+  opacity: 0.35;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tower-bulb {
+    animation: bulb-chase 0.9s steps(1, end) infinite;
+  }
+  .tower-bulb[data-phase='1'] {
+    animation-delay: -0.3s;
+  }
+  .tower-bulb[data-phase='2'] {
+    animation-delay: -0.6s;
+  }
+}
+.tower-canopy {
+  fill: var(--tower-canopy);
+}
+.tower-spill-a {
+  stop-color: var(--ny-amber);
+  stop-opacity: 0.45;
+}
+.tower-spill-b {
+  stop-color: var(--ny-amber);
+  stop-opacity: 0;
+}
+.tower-vsign-glow {
+  fill: var(--ny-red);
+  filter: blur(6px);
+  opacity: 0.5;
+}
+.tower-vsign-bar {
+  fill: var(--ny-red);
+  opacity: 0.85;
+}
+.tower-vsign-letter {
+  fill: #ffffff;
+  opacity: 0.8;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .tower-vsign-letter {
+    animation: bulb-chase 1.2s steps(1, end) infinite;
+  }
+  .tower-vsign-letter[data-phase='1'] {
+    animation-delay: -0.4s;
+  }
+  .tower-vsign-letter[data-phase='2'] {
+    animation-delay: -0.8s;
+  }
+}
+.tower-door {
+  fill: #06080f;
+}
+.tower-door-light {
+  fill: var(--ny-amber);
+  opacity: 0.55;
+}
+.tower-door-a {
+  stop-color: var(--ny-amber);
+  stop-opacity: 0.35;
+}
+.tower-door-b {
+  stop-color: var(--ny-amber);
+  stop-opacity: 0;
+}
+.tower-people {
+  fill: #06080f;
+}
+:root[data-motion='paused'] .tower-window,
+:root[data-motion='paused'] .tower-beacon,
+:root[data-motion='paused'] .tower-bulb,
+:root[data-motion='paused'] .tower-vsign-letter {
+  animation-play-state: paused;
+}
+
+/* The portrait, on the screen. Positioned over the SCREEN rect of the SVG
+   (x 22–154 of 176, y 44–176 of 300), square like the screen. */
+.window-mine {
+  position: absolute;
+  z-index: 2;
+  inset-inline-start: 12.5%;
+  inset-block-start: 14.67%;
+  inline-size: 75%;
+  aspect-ratio: 1;
+  display: flex;
+  overflow: hidden;
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 2px #06080f,
+    0 0 24px 4px var(--ny-screen-spill);
+}
+.window-mine [data-avatar] {
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: 2px;
+}
+/* LED refresh: a faint band sweeping across the screen. Kept at 0.07 so the
+   initials on the screen stay legible under it — measured in contrast.py. */
+.window-mine::after {
+  content: '';
+  position: absolute;
+  inset: -40% -60%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.07) 50%, transparent 60%);
+  transform: translateX(-60%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .window-mine::after {
+    animation: screen-sweep 5s ease-in-out infinite;
+  }
+}
+@keyframes screen-sweep {
+  0%,
+  60% {
+    transform: translateX(-60%);
+  }
+  100% {
+    transform: translateX(60%);
+  }
+}
+/* Faint scanlines, so it reads as a screen and not a photo. */
+.window-mine::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 3px);
+}
+:root[data-motion='paused'] .window-mine::after {
+  animation-play-state: paused;
+}
+
+.window-body {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+  /* Room under the writing for the cityscape band, so no text ever sits on
+     one of its strokes (the accent measured 3.10:1 there). */
+  padding-block-end: 7.5rem;
+}
+@media (min-width: 768px) {
+  .window-body {
+    padding-block-end: 9rem;
+  }
+}
+
+/* The cityscape along the foot of the card: full width, behind everything,
+   fixed height so it adds a city without adding height to the layout. Stroke
+   art, so one filter takes it from the white it is drawn in to the amber
+   every other window on this page is lit with. */
+.window-cityline {
+  position: absolute;
+  z-index: 0;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 6.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: var(--cityline-opacity);
+  -webkit-mask-image: linear-gradient(to top, #000 70%, transparent);
+  mask-image: linear-gradient(to top, #000 70%, transparent);
+}
+@media (min-width: 768px) {
+  .window-cityline {
+    block-size: 8rem;
+  }
+}
+/* Each copy carries the art's own 2002:670 ratio, so `contain` fills it with
+   no letterbox and no crop. A phone shows one copy. */
+.window-cityline-tile {
+  flex: 0 0 auto;
+  block-size: 100%;
+  aspect-ratio: 2002 / 670;
+}
+.window-cityline-tile:nth-child(n + 2) {
+  display: none;
+}
+@media (min-width: 768px) {
+  .window-cityline-tile:nth-child(n + 2) {
+    display: block;
+  }
+}
+/* The mirrored copy: static art, so flipping it costs nothing. */
+.window-cityline-tile[data-side='end'] {
+  transform: scaleX(-1);
+}
+.window-cityline canvas {
+  filter: sepia(1) saturate(4) hue-rotate(335deg) brightness(1.1);
+}
+/* A neon tube under the name, with its glow. */
+.window-neon-rule {
+  display: block;
+  inline-size: 7rem;
+  block-size: 3px;
+  border-radius: 2px;
+  background: var(--ny-magenta);
+  box-shadow:
+    0 0 6px 1px var(--ny-magenta),
+    0 0 18px 4px var(--ny-screen-spill);
+  margin-block: -0.25rem 0.25rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .window-neon-rule {
+    animation: neon-flicker 9s steps(1, end) infinite;
+    animation-delay: -5s;
+  }
+}
+
+
+/* ── مَدى, second pass: the night country ─────────────────────────────────
+   Stars and a satellite, radio waves across the sky, three ridges fading
+   with distance and the towns in their valleys; the range rings and a radar
+   sweep opening from the lamp's corner (components/templates/signal-scene.tsx).
+   ────────────────────────────────────────────────────────────────────────── */
+.signal-scene {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+.signal-star {
+  fill: var(--signal-star);
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-star[data-twinkle] {
+    animation: chart-twinkle 4.5s ease-in-out infinite alternate;
+  }
+  .signal-star[data-twinkle='2'] {
+    animation-duration: 6s;
+    animation-delay: -2.5s;
+  }
+  .signal-star[data-twinkle='3'] {
+    animation-duration: 7.5s;
+    animation-delay: -4s;
+  }
+}
+/* The satellite: crosses the sky in two minutes, its light blinking. */
+.signal-sat {
+  transform: translate(-40px, 120px);
+}
+.signal-sat-body {
+  fill: var(--signal-sat);
+}
+.signal-sat-panel {
+  fill: var(--nq-accent);
+  opacity: 0.8;
+}
+.signal-sat-light {
+  fill: #ffffff;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-sat {
+    animation: sat-cross 130s linear infinite;
+  }
+  .signal-sat-light {
+    animation: strobe 1.8s steps(2, jump-none) infinite;
+  }
+}
+@keyframes sat-cross {
+  from {
+    transform: translate(-40px, 150px);
+  }
+  to {
+    transform: translate(1480px, 60px);
+  }
+}
+/* Radio waves: one period slid, so the loop is seamless. */
+.signal-wave {
+  fill: none;
+  stroke: var(--signal-wave);
+  stroke-width: 1.2;
+  vector-effect: non-scaling-stroke;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-wave[data-wave='1'] {
+    animation: wave-slide-360 22s linear infinite;
+  }
+  .signal-wave[data-wave='2'] {
+    animation: wave-slide-260 17s linear infinite reverse;
+  }
+  .signal-wave[data-wave='3'] {
+    animation: wave-slide-480 31s linear infinite;
+  }
+}
+@keyframes wave-slide-360 {
+  to {
+    transform: translateX(360px);
+  }
+}
+@keyframes wave-slide-260 {
+  to {
+    transform: translateX(260px);
+  }
+}
+@keyframes wave-slide-480 {
+  to {
+    transform: translateX(480px);
+  }
+}
+.signal-glow-a {
+  stop-color: var(--signal-haze);
+  stop-opacity: 0;
+}
+.signal-glow-b {
+  stop-color: var(--signal-haze);
+  stop-opacity: 1;
+}
+.signal-ridge[data-depth='3'] {
+  fill: var(--ridge-far);
+}
+.signal-ridge[data-depth='2'] {
+  fill: var(--ridge-mid);
+}
+.signal-ridge[data-depth='1'] {
+  fill: var(--ridge-near);
+}
+.signal-far-mast {
+  fill: none;
+  stroke: var(--signal-wave);
+  stroke-width: 1;
+}
+/* The origin: rings and the sweep, from where the mast's lamp is. */
+.signal-origin {
+  position: fixed;
+  z-index: 0;
+  inset-block-start: 12vh;
+  inset-inline-start: 14vw;
+  inline-size: 0;
+  block-size: 0;
+  pointer-events: none;
+}
+.signal-ring {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 160vmax;
+  block-size: 160vmax;
+  margin-block-start: -80vmax;
+  margin-inline-start: -80vmax;
+  border: 1px solid var(--range-ring);
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.02);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-ring {
+    animation: signal-reach 16s linear infinite;
+  }
+  .signal-ring[data-ring='2'] {
+    animation-delay: -4s;
+  }
+  .signal-ring[data-ring='3'] {
+    animation-delay: -8s;
+  }
+  .signal-ring[data-ring='4'] {
+    animation-delay: -12s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-ring[data-ring='1'] {
+    opacity: 0.5;
+    transform: scale(0.2);
+  }
+  .signal-ring[data-ring='2'] {
+    opacity: 0.3;
+    transform: scale(0.45);
+  }
+  .signal-ring[data-ring='3'] {
+    opacity: 0.15;
+    transform: scale(0.7);
+  }
+}
+/* The sweep: a conic wedge with a fading trail, turning once every 8s. */
+.signal-sweep {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 180vmax;
+  block-size: 180vmax;
+  margin-block-start: -90vmax;
+  margin-inline-start: -90vmax;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, transparent 300deg, var(--sweep-tail) 340deg, var(--sweep-head) 360deg);
+  opacity: 0.7;
+  transform-origin: 50% 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .signal-sweep {
+    animation: sweep-turn 8s linear infinite;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .signal-sweep {
+    opacity: 0.3;
+  }
+}
+@keyframes sweep-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+:root[data-motion='paused'] .signal-star,
+:root[data-motion='paused'] .signal-sat,
+:root[data-motion='paused'] .signal-sat-light,
+:root[data-motion='paused'] .signal-wave,
+:root[data-motion='paused'] .signal-ring,
+:root[data-motion='paused'] .signal-sweep {
+  animation-play-state: paused;
+}
+
+/* ── فجر hero: the horizon, whole ─────────────────────────────────────────
+   One scene, no halves. The drawn horizon (dawn-horizon.tsx) fills the card;
+   the writing stands in the sky at the start side; the portrait rises on the
+   horizon line at the end side, where the sun is; the flock crosses above.
+   Text never reaches the hills: the column ends above the horizon.
+   ────────────────────────────────────────────────────────────────────────── */
+.cover-hero {
+  position: relative;
+  overflow: hidden;
+  min-block-size: 34rem;
+  display: flex;
+  align-items: flex-start;
+  padding: 2rem 1.75rem;
+}
+@media (min-width: 768px) {
+  .cover-hero {
+    min-block-size: 31rem;
+    padding: 2.5rem 3rem;
+  }
+}
+.dawn-horizon {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+/* The drawing is physical; the sun has to stay at inline-end. */
+[dir='rtl'] .dawn-horizon {
+  transform: scaleX(-1);
+}
+.dawn-glow-a {
+  stop-color: var(--dawn-sun);
+  stop-opacity: 0.95;
+}
+.dawn-glow-b {
+  stop-color: var(--dawn-sun);
+  stop-opacity: 0.3;
+}
+.dawn-glow-c {
+  stop-color: var(--dawn-sun);
+  stop-opacity: 0;
+}
+.dawn-ray {
+  fill: var(--dawn-ray);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dawn-rays {
+    animation: rays-turn 90s linear infinite alternate;
+  }
+}
+@keyframes rays-turn {
+  to {
+    transform: rotate(14deg);
+  }
+}
+.dawn-ridge[data-depth='3'] {
+  fill: var(--dawn-hill-far);
+}
+.dawn-ridge[data-depth='2'] {
+  fill: var(--dawn-hill-mid);
+}
+.dawn-ridge[data-depth='1'] {
+  fill: var(--dawn-hill-near);
+}
+.dawn-mist-a {
+  stop-color: var(--dawn-mist);
+  stop-opacity: 0;
+}
+.dawn-mist-b {
+  stop-color: var(--dawn-mist);
+  stop-opacity: 1;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .dawn-mist-band {
+    animation: mist-breathe 9s ease-in-out infinite alternate;
+  }
+}
+@keyframes mist-breathe {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* The flock: high in the sky, small, kept off the writing on wide screens. */
+.cover-art {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: 1%;
+  inset-inline-end: 2%;
+  inline-size: 60%;
+  block-size: 14%;
+  pointer-events: none;
+}
+@media (min-width: 768px) {
+  .cover-art {
+    inset-block-start: 3%;
+    inset-inline-end: 4%;
+    inline-size: 46%;
+    block-size: 30%;
+  }
+}
+/* The portrait on the horizon. Its centre sits ON the line (71.4% down), at
+   the sun's x (73.3% from the start) — the same numbers the SVG exports. */
+.cover-sun {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 71.4%;
+  inset-inline-start: 73.3%;
+  transform: translate(-50%, -50%);
+  display: flex;
+}
+[dir='rtl'] .cover-sun {
+  transform: translate(50%, -50%);
+}
+.cover-sun [data-avatar] {
+  box-shadow:
+    0 0 0 4px var(--glass-fallback-strong),
+    0 0 0 6px var(--dawn-sun),
+    0 0 48px 16px var(--dawn-sun-halo);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.motion-failsafe) .cover-sun {
+    animation: sun-rise 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+  html:not(.motion-failsafe) [dir='rtl'] .cover-sun {
+    animation-name: sun-rise-rtl;
+  }
+}
+@keyframes sun-rise {
+  from {
+    transform: translate(-50%, 10%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%);
+    opacity: 1;
+  }
+}
+@keyframes sun-rise-rtl {
+  from {
+    transform: translate(50%, 10%);
+    opacity: 0;
+  }
+  to {
+    transform: translate(50%, -50%);
+    opacity: 1;
+  }
+}
+/* The writing, in the sky at the start side, ending above the horizon. */
+.cover-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  inline-size: 100%;
+  max-inline-size: 58ch;
+  /* Phone: the portrait sits below the text on the horizon, so the column
+     is capped well above the line. */
+  max-block-size: 60%;
+  padding-block-end: 0;
+}
+@media (min-width: 768px) {
+  .cover-body {
+    inline-size: 56%;
+    /* Capped so the writing stays in the upper sky, where it is measured:
+       the sky is deepest overhead and the sun's glow lives at the far side. */
+    max-block-size: 62%;
+  }
+}
+/* Phone: the sun is centred and lower, the text column narrower. */
+@media (max-width: 767px) {
+  .cover-sun {
+    inset-inline-start: 50%;
+    inset-block-start: 82%;
+  }
+  .cover-body {
+    max-inline-size: none;
+  }
+}
+:root[data-motion='paused'] .dawn-rays,
+:root[data-motion='paused'] .dawn-mist-band {
+  animation-play-state: paused;
+}
+
+/* ── صقيع hero: the frosted pane ───────────────────────────────────────────
+   Icicles along the top edge, frost ferns growing in from the corners,
+   snowflakes falling inside the card, and the portrait in a ring of ice
+   (components/templates/frost.tsx). Flakes fall on transform.
+   ────────────────────────────────────────────────────────────────────────── */
+.frost-hero {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1.5rem;
+  padding: 3.25rem 1.75rem 2rem;
+  justify-items: center;
+}
+@media (min-width: 768px) {
+  .frost-hero {
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 3rem;
+    padding: 4rem 3rem 3rem;
+    align-items: center;
+    justify-items: stretch;
+  }
+}
+.frost-icicles {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  inset-block-start: -1px;
+  inline-size: 100%;
+  block-size: 4.5rem;
+  pointer-events: none;
+}
+.frost-ice-a {
+  stop-color: var(--ice-a);
+}
+.frost-ice-b {
+  stop-color: var(--ice-b);
+}
+.frost-fern {
+  position: absolute;
+  z-index: 0;
+  inline-size: clamp(9rem, 22vw, 16rem);
+  pointer-events: none;
+  opacity: var(--fern-opacity);
+}
+.frost-fern[data-corner='start'] {
+  inset-inline-start: -1.5rem;
+  inset-block-start: 1.5rem;
+}
+.frost-fern[data-corner='end'] {
+  inset-inline-end: -1.5rem;
+  inset-block-end: -0.5rem;
+  transform: rotate(180deg);
+}
+[dir='rtl'] .frost-fern[data-corner='start'] {
+  transform: scaleX(-1);
+}
+[dir='rtl'] .frost-fern[data-corner='end'] {
+  transform: rotate(180deg) scaleX(-1);
+}
+.frost-fern-lines path {
+  fill: none;
+  stroke: var(--fern-ink);
+  stroke-width: 1.1;
+  stroke-linecap: round;
+}
+.frost-flake {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: -1.5rem;
+  inline-size: 1rem;
+  block-size: 1rem;
+  pointer-events: none;
+  opacity: 0;
+}
+.frost-flake path {
+  fill: none;
+  stroke: var(--flake-ink);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+.frost-flake[data-flake='1'] {
+  inset-inline-start: 8%;
+}
+.frost-flake[data-flake='2'] {
+  inset-inline-start: 22%;
+  inline-size: 0.7rem;
+  block-size: 0.7rem;
+}
+.frost-flake[data-flake='3'] {
+  inset-inline-start: 37%;
+}
+.frost-flake[data-flake='4'] {
+  inset-inline-start: 51%;
+  inline-size: 0.8rem;
+  block-size: 0.8rem;
+}
+.frost-flake[data-flake='5'] {
+  inset-inline-start: 63%;
+}
+.frost-flake[data-flake='6'] {
+  inset-inline-start: 74%;
+  inline-size: 0.65rem;
+  block-size: 0.65rem;
+}
+.frost-flake[data-flake='7'] {
+  inset-inline-start: 86%;
+}
+.frost-flake[data-flake='8'] {
+  inset-inline-start: 94%;
+  inline-size: 0.75rem;
+  block-size: 0.75rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .frost-flake {
+    animation: flake-fall 11s linear infinite;
+  }
+  .frost-flake[data-flake='2'] {
+    animation-duration: 14s;
+    animation-delay: -5s;
+  }
+  .frost-flake[data-flake='3'] {
+    animation-delay: -8s;
+  }
+  .frost-flake[data-flake='4'] {
+    animation-duration: 13s;
+    animation-delay: -2s;
+  }
+  .frost-flake[data-flake='5'] {
+    animation-duration: 16s;
+    animation-delay: -11s;
+  }
+  .frost-flake[data-flake='6'] {
+    animation-duration: 12s;
+    animation-delay: -6s;
+  }
+  .frost-flake[data-flake='7'] {
+    animation-duration: 15s;
+    animation-delay: -9s;
+  }
+  .frost-flake[data-flake='8'] {
+    animation-duration: 13.5s;
+    animation-delay: -3.5s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .frost-flake {
+    opacity: 0.5;
+    transform: translate3d(0, 12rem, 0) rotate(30deg);
+  }
+}
+@keyframes flake-fall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  10% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(1.2rem, 14rem, 0) rotate(180deg);
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-0.6rem, 28rem, 0) rotate(360deg);
+  }
+}
+/* The pane: the portrait in a ring of ice, crusted at the rim. */
+.frost-pane {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  padding: 0.6rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 58%, var(--ice-rim) 72%, var(--ice-a) 100%);
+  box-shadow:
+    0 0 0 1px var(--ice-rim),
+    0 10px 30px rgba(20, 40, 70, 0.14),
+    inset 0 0 18px var(--ice-rim);
+}
+.frost-body {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-inline-size: 0;
+  max-inline-size: 60ch;
+}
+:root[data-motion='paused'] .frost-flake {
+  animation-play-state: paused;
+}
+
+/* ── مُحيط hero: the whale ─────────────────────────────────────────────────
+   A blue whale passing the porthole (components/templates/whale.tsx).
+   ────────────────────────────────────────────────────────────────────────── */
+.whale {
+  position: absolute;
+  inset-block-start: 22%;
+  inset-inline-start: -160%;
+  inline-size: 220%;
+  overflow: visible;
+  pointer-events: none;
+}
+[dir='rtl'] .whale {
+  transform: scaleX(-1);
+}
+.whale-body {
+  fill: var(--whale);
+}
+.whale-belly {
+  fill: var(--whale-belly);
+}
+.whale-fin {
+  fill: var(--whale-fin);
+}
+.whale-eye {
+  fill: var(--whale-eye);
+}
+.whale-grooves path {
+  fill: none;
+  stroke: var(--whale-groove);
+  stroke-width: 0.8;
+}
+.whale-spray circle {
+  fill: rgba(255, 255, 255, 0.35);
+}
+.whale-flukes {
+  transform-box: view-box;
+  transform-origin: 40px 80px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .whale {
+    animation: whale-pass 26s linear infinite;
+  }
+  [dir='rtl'] .whale {
+    animation-name: whale-pass-rtl;
+  }
+  .whale-flukes {
+    animation: fluke-beat 2.4s ease-in-out infinite alternate;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .whale {
+    inset-inline-start: -50%;
+  }
+}
+/* From off the start side to off the end side, a slow rise and fall on the
+   way; `left` is physical, so the RTL twin runs the other way. */
+@keyframes whale-pass {
+  0% {
+    transform: translate3d(0, 0.5rem, 0);
+  }
+  50% {
+    transform: translate3d(50%, -0.6rem, 0);
+  }
+  100% {
+    transform: translate3d(100%, 0.5rem, 0);
+  }
+}
+@keyframes whale-pass-rtl {
+  0% {
+    transform: scaleX(-1) translate3d(0, 0.5rem, 0);
+  }
+  50% {
+    transform: scaleX(-1) translate3d(50%, -0.6rem, 0);
+  }
+  100% {
+    transform: scaleX(-1) translate3d(100%, 0.5rem, 0);
+  }
+}
+@keyframes fluke-beat {
+  from {
+    transform: rotate(-9deg);
+  }
+  to {
+    transform: rotate(9deg);
+  }
+}
+:root[data-motion='paused'] .whale,
+:root[data-motion='paused'] .whale-flukes {
+  animation-play-state: paused;
+}
+
+/* ── فن: the gallery room ─────────────────────────────────────────────────
+   A white room lit from a track of spotlights, a wooden floor, paintings on
+   the wall with La Gioconda in a gilded frame at the centre
+   (components/templates/gallery.tsx). Spotlights breathe on opacity.
+   ────────────────────────────────────────────────────────────────────────── */
+.gal-room {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+.gal-floor-a {
+  stop-color: var(--gal-floor-a);
+}
+.gal-floor-b {
+  stop-color: var(--gal-floor-b);
+}
+.gal-boards line {
+  stroke: var(--gal-board-line);
+  stroke-width: 1;
+}
+.gal-skirting {
+  stroke: var(--gal-skirting);
+  stroke-width: 3;
+}
+.gal-track {
+  fill: var(--gal-track);
+}
+.gal-lamp {
+  fill: var(--gal-lamp);
+}
+.gal-cone-a {
+  stop-color: var(--gal-light);
+  stop-opacity: var(--gal-cone-alpha);
+}
+.gal-cone-b {
+  stop-color: var(--gal-light);
+  stop-opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .gal-spot .gal-cone {
+    animation: spot-breathe 7s ease-in-out infinite alternate;
+  }
+  .gal-spot[data-spot='2'] .gal-cone {
+    animation-duration: 9s;
+    animation-delay: -3s;
+  }
+  .gal-spot[data-spot='3'] .gal-cone {
+    animation-duration: 8s;
+    animation-delay: -5s;
+  }
+}
+@keyframes spot-breathe {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.gal-shadow {
+  fill: rgba(0, 0, 0, 0.18);
+  filter: blur(6px);
+}
+.gal-frame {
+  fill: var(--gal-frame);
+}
+.gal-frame-gilt {
+  fill: var(--gal-gilt);
+}
+.gal-bevel {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.35);
+  stroke-width: 1;
+}
+.gal-mat {
+  fill: #f6f3ec;
+}
+.gal-lines path {
+  fill: none;
+  stroke: #1a1a1a;
+  stroke-width: 5;
+}
+.gal-ink {
+  fill: #1a1a1a;
+}
+.gal-pig-red {
+  fill: var(--pig-red);
+  stroke: var(--pig-red);
+}
+.gal-pig-blue {
+  fill: var(--pig-blue);
+  stroke: var(--pig-blue);
+}
+.gal-pig-yellow {
+  fill: var(--pig-yellow);
+  stroke: var(--pig-yellow);
+}
+.gal-pig-teal {
+  fill: var(--pig-teal);
+  stroke: var(--pig-teal);
+}
+.gal-pig-violet {
+  fill: var(--pig-violet);
+  stroke: var(--pig-violet);
+}
+.gal-stroke path {
+  fill: none;
+}
+.gal-bench rect {
+  fill: var(--gal-bench);
+}
+:root[data-motion='paused'] .gal-cone {
+  animation-play-state: paused;
+}
+
+/* The فن footer lands on the gallery floor, bare; it takes the template's
+   glass like every other page whose backdrop is a scene. */
+[data-template='fann'] .tpl-content > footer {
+  margin-block-start: 2.5rem;
+  border: 1px solid var(--glass-border-color);
+  border-radius: var(--nq-radius-lg);
+  background-color: var(--glass-bg);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  padding: 0.9rem 1.25rem;
+}
+
+/* ── مَجلِس: the glass atrium ──────────────────────────────────────────────
+   A dome of glazing overhead with the sun behind it, shafts of light down
+   through the panes, and the building's glass walls at the edges
+   (components/templates/atrium.tsx). Shafts and flare breathe on opacity.
+   ────────────────────────────────────────────────────────────────────────── */
+.atrium {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+.atrium-panes path {
+  fill: var(--pane-sky);
+}
+.atrium-bars circle,
+.atrium-bars line {
+  fill: none;
+  stroke: var(--mullion);
+  stroke-width: 2.5;
+}
+.atrium-oculus {
+  fill: var(--pane-oculus);
+}
+.atrium-ring {
+  fill: none;
+  stroke: var(--mullion);
+  stroke-width: 7;
+}
+.atrium-wall rect {
+  fill: var(--wall-glass);
+}
+.atrium-wall line {
+  stroke: var(--mullion);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+/* The sun behind the dome: a flare at the top-end corner. */
+.atrium-sun {
+  position: fixed;
+  z-index: 0;
+  inset-block-start: -22vmax;
+  inset-inline-end: -14vmax;
+  inline-size: 64vmax;
+  block-size: 64vmax;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, var(--atrium-sun) 0 6%, var(--atrium-sun-mid) 18%, transparent 58%);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .atrium-sun {
+    animation: flare-breathe 11s ease-in-out infinite alternate;
+  }
+}
+@keyframes flare-breathe {
+  from {
+    opacity: 0.75;
+  }
+  to {
+    opacity: 1;
+  }
+}
+/* Shafts of light down through the panes, from the sun's corner. */
+.atrium-shaft {
+  position: fixed;
+  z-index: 0;
+  inset-block-start: -10vh;
+  inset-inline-end: 8vw;
+  inline-size: 9rem;
+  block-size: 130vh;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--atrium-beam), transparent 80%);
+  transform-origin: 50% 0;
+  transform: rotate(22deg);
+  opacity: 0.8;
+}
+.atrium-shaft[data-shaft='2'] {
+  inset-inline-end: 22vw;
+  inline-size: 5rem;
+  transform: rotate(26deg);
+  opacity: 0.55;
+}
+.atrium-shaft[data-shaft='3'] {
+  inset-inline-end: 34vw;
+  inline-size: 13rem;
+  transform: rotate(18deg);
+  opacity: 0.4;
+}
+[dir='rtl'] .atrium-shaft {
+  transform: rotate(-22deg);
+}
+[dir='rtl'] .atrium-shaft[data-shaft='2'] {
+  transform: rotate(-26deg);
+}
+[dir='rtl'] .atrium-shaft[data-shaft='3'] {
+  transform: rotate(-18deg);
+}
+[dir='rtl'] .atrium-sun {
+  inset-inline-end: auto;
+  inset-inline-start: -14vmax;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .atrium-shaft {
+    animation: shaft-breathe 13s ease-in-out infinite alternate;
+  }
+  .atrium-shaft[data-shaft='2'] {
+    animation-duration: 17s;
+    animation-delay: -6s;
+  }
+  .atrium-shaft[data-shaft='3'] {
+    animation-duration: 15s;
+    animation-delay: -10s;
+  }
+}
+@keyframes shaft-breathe {
+  from {
+    opacity: 0.35;
+  }
+  to {
+    opacity: 0.85;
+  }
+}
+:root[data-motion='paused'] .atrium-sun,
+:root[data-motion='paused'] .atrium-shaft {
+  animation-play-state: paused;
+}
+
+/* ── ورقة after dark: a desk lamp ─────────────────────────────────────────
+   The night desk was a black sheet on a black desk. Now a lamp stands at the
+   top-end corner and throws a warm pool over the paper, which keeps a
+   parchment tone rather than going to ink.
+   ────────────────────────────────────────────────────────────────────────── */
+[data-bg='paper'] {
+  background-image: radial-gradient(70vmax 60vmax at 88% -8%, var(--lamp-pool), transparent 62%);
+}
+[dir='rtl'] [data-bg='paper'] {
+  background-image: radial-gradient(70vmax 60vmax at 12% -8%, var(--lamp-pool), transparent 62%);
 }
 
 /* ── Any template whose backdrop is a covering scene ───────────────────────
@@ -1334,6 +4199,229 @@
 .deep-ports circle {
   fill: var(--sea-deep);
   opacity: 0.8;
+}
+
+/* ── مُحيط: the surface, the snow, the bubbles, the kelp ───────────────────
+   Second pass. The column had light shafts, a shoal and a wreck, and still
+   read as a gradient. What was missing was the SEA around them: a surface at
+   the top of the page (absolute, so you descend from it as you scroll), marine
+   snow falling through the water, bubbles rising, kelp swaying on the bed,
+   rocks the wreck settled among. All drawn; transform/opacity only.
+   ────────────────────────────────────────────────────────────────────────── */
+
+.deep-surface {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-start: 0;
+  block-size: clamp(10rem, 22vh, 16rem);
+  overflow: hidden;
+  pointer-events: none;
+  /* Daylight pooling under the surface. */
+  background: linear-gradient(to bottom, var(--surface-glow) 0%, transparent 100%);
+}
+.deep-surface svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+}
+/* Two wave lines, the second lower and fainter, each a 2400-unit path with a
+   300-unit period drawn over a 1600 box, so a 300-unit shift loops cleanly. */
+.deep-wave {
+  transform-box: view-box;
+}
+.deep-wave[data-wave='1'] path {
+  fill: var(--surface);
+}
+.deep-wave[data-wave='2'] path {
+  fill: var(--surface-2);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .deep-wave[data-wave='1'] {
+    animation: deep-wave 11s linear infinite;
+  }
+  .deep-wave[data-wave='2'] {
+    animation: deep-wave-b 17s linear infinite;
+  }
+}
+@keyframes deep-wave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-300px);
+  }
+}
+@keyframes deep-wave-b {
+  from {
+    transform: translateX(-240px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Marine snow: tiny, slow, always falling. */
+.deep-snow {
+  position: fixed;
+  z-index: 0;
+  inline-size: 3px;
+  block-size: 3px;
+  border-radius: 50%;
+  background: var(--snow);
+  pointer-events: none;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .deep-snow {
+    animation: deep-snow 26s linear infinite;
+  }
+  .deep-snow[data-cycle='2'] {
+    animation-duration: 34s;
+    animation-delay: -12s;
+  }
+  .deep-snow[data-cycle='3'] {
+    animation-duration: 41s;
+    animation-delay: -25s;
+  }
+  .deep-snow[data-cycle='4'] {
+    animation-duration: 30s;
+    animation-delay: -6s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .deep-snow {
+    opacity: 0.6;
+  }
+}
+@keyframes deep-snow {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  10% {
+    opacity: 0.9;
+  }
+  90% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(1.5vw, 34vh, 0);
+  }
+}
+
+/* Bubbles: rings that rise from the bottom of the viewport and wobble. */
+.deep-bubble {
+  position: fixed;
+  z-index: 0;
+  inset-block-start: 100%;
+  border-radius: 50%;
+  border: 1px solid var(--bubble);
+  box-shadow: inset 1px 1px 0 var(--bubble-shine);
+  pointer-events: none;
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .deep-bubble {
+    animation: deep-rise 12s ease-in infinite;
+  }
+  .deep-bubble[data-cycle='2'] {
+    animation-duration: 15s;
+    animation-delay: -5s;
+  }
+  .deep-bubble[data-cycle='3'] {
+    animation-duration: 10s;
+    animation-delay: -8s;
+  }
+  .deep-bubble[data-cycle='4'] {
+    animation-duration: 18s;
+    animation-delay: -2s;
+  }
+  .deep-bubble[data-cycle='5'] {
+    animation-duration: 13s;
+    animation-delay: -11s;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .deep-bubble {
+    opacity: 0.5;
+    transform: translate3d(0, -40vh, 0);
+  }
+}
+@keyframes deep-rise {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  8% {
+    opacity: 0.85;
+  }
+  50% {
+    transform: translate3d(1.2vw, -46vh, 0);
+  }
+  88% {
+    opacity: 0.6;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-0.6vw, -92vh, 0);
+  }
+}
+:root[data-motion='paused'] .deep-wave,
+:root[data-motion='paused'] .deep-snow,
+:root[data-motion='paused'] .deep-bubble,
+:root[data-motion='paused'] .deep-frond {
+  animation-play-state: paused;
+}
+
+/* Kelp: a bed each side at the foot of the viewport, fronds swaying from
+   their roots on unrelated cycles. */
+.deep-kelp {
+  position: fixed;
+  z-index: 0;
+  inset-block-end: 0;
+  inline-size: clamp(9rem, 18vw, 16rem);
+  block-size: clamp(13rem, 27vw, 24rem);
+  pointer-events: none;
+}
+.deep-kelp[data-side='start'] {
+  inset-inline-start: -2vw;
+}
+.deep-kelp[data-side='end'] {
+  inset-inline-end: -2vw;
+  transform: scaleX(-1);
+}
+.deep-frond {
+  fill: var(--kelp-a);
+  transform-box: view-box;
+}
+.deep-frond[data-frond='1'] {
+  fill: var(--kelp-b);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .deep-frond {
+    animation: kelp-sway 7s ease-in-out infinite alternate;
+  }
+  .deep-frond[data-sway='2'] {
+    animation-duration: 9s;
+    animation-delay: -3s;
+  }
+  .deep-frond[data-sway='3'] {
+    animation-duration: 8s;
+    animation-delay: -5.5s;
+  }
+}
+@keyframes kelp-sway {
+  from {
+    transform: skewX(-4deg);
+  }
+  to {
+    transform: skewX(4deg);
+  }
+}
+.deep-rocks path {
+  fill: var(--rock);
 }
 
 /* ── The porthole ──────────────────────────────────────────────────────────
@@ -2341,168 +5429,322 @@
   }
 }
 
-/* ── نسيم: three clouds, a gutter, and nothing else ────────────────────────
-   The only template in the set that brings no art of its own — no Lottie, no
-   player, no wasm. You cannot draw air, so the decoration is what air MOVES:
-   three soft clouds crossing a coloured sky.
+/* ── نسيم: an open sky, drawn ─────────────────────────────────────────────
+   Two builds of this template were absences — a gutter, then a wash with
+   three radial-gradient smudges — and the owner called both «سيء للغاية».
+   This one is a PLACE: a sun (a moon at night) in the far corner, cumulus
+   crossing the sky, a small flock going the other way, hazy hills at the foot
+   of the viewport, stars after dark. All of it is SVG and CSS
+   (components/templates/sky.tsx); the only fetched art is the kites.
 
-   Each cloud is one span whose shape is a radial gradient, so only `transform`
-   ever animates and the whole backdrop is compositor work. After ساكورا's
-   stutter this was built that way from the first line rather than fixed later.
+   Which parts show is a theme token (`--sky-sun`, `--sky-moon`, `--sky-stars`,
+   `--sky-birds`), so day and night share one set of markup. Everything that
+   moves does so on `transform` or `opacity` — compositor work only.
    ────────────────────────────────────────────────────────────────────────── */
 
-.cloud {
+.sky-sun,
+.sky-moon,
+.sky-stars,
+.sky-cloud,
+.sky-birds,
+.sky-hills {
   position: fixed;
   z-index: 0;
-  border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(closest-side, var(--cloud-tint), transparent 64%);
-  /* Parked off the start edge; the animation carries them across. */
+}
+
+/* The sun is mostly halo: a small hot core and a long soft fall-off, high in
+   the far corner where nothing is written. */
+.sky-sun {
+  display: var(--sky-sun);
+  inset-block-start: -12vmax;
+  inset-inline-end: -12vmax;
+  inline-size: 50vmax;
+  block-size: 50vmax;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    var(--sun-core) 0 8%,
+    rgba(255, 252, 236, 0.6) 12%,
+    rgba(255, 246, 214, 0.26) 24%,
+    rgba(255, 246, 214, 0.08) 40%,
+    transparent 62%
+  );
+}
+
+/* A full moon in the same corner, with a wide faint halo. */
+.sky-moon {
+  display: var(--sky-moon);
+  inset-block-start: 7vh;
+  inset-inline-end: 9vw;
+  inline-size: 4.25rem;
+  block-size: 4.25rem;
+  border-radius: 50%;
+  background: var(--moon-fill);
+  box-shadow:
+    0 0 0 1.25rem var(--moon-halo),
+    0 0 7rem 3rem var(--moon-halo);
+}
+
+.sky-stars {
+  display: var(--sky-stars);
+  inset-block-start: 0;
+  inset-inline: 0;
+  inline-size: 100%;
+  block-size: 58vh;
+}
+.sky-star {
+  fill: var(--star-fill);
+  opacity: 0.7;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .sky-star[data-twinkle] {
+    animation: star-twinkle 4s ease-in-out infinite alternate;
+  }
+  .sky-star[data-twinkle='2'] {
+    animation-duration: 5.5s;
+    animation-delay: -2s;
+  }
+  .sky-star[data-twinkle='3'] {
+    animation-duration: 7s;
+    animation-delay: -4s;
+  }
+}
+@keyframes star-twinkle {
+  from {
+    opacity: 0.2;
+  }
+  to {
+    opacity: 0.95;
+  }
+}
+
+/* Clouds: one SVG each, parked off the start edge and carried across by the
+   animation. Overlaps inside a cloud do not show because the opacity is on the
+   SVG, so the group composites as one shape. */
+.sky-cloud {
+  inset-inline-start: -60vw;
+  fill: var(--cloud-fill);
+  opacity: var(--cloud-opacity);
   transform: translate3d(0, 0, 0);
 }
-.cloud[data-cloud='1'] {
-  inline-size: 46vw;
-  block-size: 26vw;
-  inset-block-start: 6vh;
-  inset-inline-start: -50vw;
-}
-.cloud[data-cloud='2'] {
-  inline-size: 62vw;
-  block-size: 30vw;
-  inset-block-start: 44vh;
-  inset-inline-start: -66vw;
-}
-.cloud[data-cloud='3'] {
+.sky-cloud[data-cloud='1'] {
   inline-size: 34vw;
-  block-size: 20vw;
-  inset-block-start: 74vh;
-  inset-inline-start: -38vw;
+  inset-block-start: 9vh;
+}
+.sky-cloud[data-cloud='2'] {
+  inline-size: 52vw;
+  inset-block-start: 30vh;
+}
+.sky-cloud[data-cloud='3'] {
+  inline-size: 24vw;
+  inset-block-start: 50vh;
+}
+.sky-cloud[data-cloud='4'] {
+  inline-size: 42vw;
+  inset-block-start: 62vh;
+}
+
+/* A flock, parked off the END edge and flying the other way: two directions
+   of movement are what make a sky read as air rather than as a slideshow. */
+.sky-birds {
+  display: var(--sky-birds);
+  inset-block-start: 20vh;
+  inset-inline-end: -16vw;
+  inline-size: 12vw;
+  min-inline-size: 7rem;
+  fill: none;
+  stroke: var(--bird-ink);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  transform: translate3d(0, 0, 0);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .cloud {
+  .sky-cloud,
+  .sky-birds {
     animation-name: cloud-cross;
     animation-timing-function: linear;
     animation-iteration-count: infinite;
   }
-  /* Three unrelated periods, so the sky never repeats a formation. A breeze
-     that loops on a common multiple stops reading as weather. */
-  .cloud[data-cloud='1'] {
-    animation-duration: 97s;
-    animation-delay: -20s;
+  /* Four unrelated periods, so the sky never repeats a formation. */
+  .sky-cloud[data-cloud='1'] {
+    animation-duration: 118s;
+    animation-delay: -30s;
   }
-  .cloud[data-cloud='2'] {
-    animation-duration: 131s;
-    animation-delay: -70s;
+  .sky-cloud[data-cloud='2'] {
+    animation-duration: 154s;
+    animation-delay: -80s;
   }
-  .cloud[data-cloud='3'] {
-    animation-duration: 79s;
-    animation-delay: -45s;
+  .sky-cloud[data-cloud='3'] {
+    animation-duration: 96s;
+    animation-delay: -50s;
+  }
+  .sky-cloud[data-cloud='4'] {
+    animation-duration: 136s;
+    animation-delay: -110s;
+  }
+  .sky-birds {
+    animation-name: bird-cross;
+    animation-duration: 170s;
+    animation-delay: -40s;
   }
 }
-/* Under reduced motion the clouds simply sit in the sky. */
+/* Under reduced motion the sky simply holds a formation. */
 @media (prefers-reduced-motion: reduce) {
-  .cloud[data-cloud='1'] {
-    transform: translate3d(70vw, 0, 0);
+  .sky-cloud[data-cloud='1'] {
+    transform: translate3d(72vw, 0, 0);
   }
-  .cloud[data-cloud='2'] {
-    transform: translate3d(100vw, 0, 0);
+  .sky-cloud[data-cloud='2'] {
+    transform: translate3d(108vw, 0, 0);
   }
-  .cloud[data-cloud='3'] {
-    transform: translate3d(48vw, 0, 0);
+  .sky-cloud[data-cloud='3'] {
+    transform: translate3d(140vw, 0, 0);
+  }
+  .sky-cloud[data-cloud='4'] {
+    transform: translate3d(90vw, 0, 0);
+  }
+  .sky-birds {
+    transform: translate3d(-58vw, 0, 0);
   }
 }
-:root[data-motion='paused'] .cloud {
+:root[data-motion='paused'] .sky-cloud,
+:root[data-motion='paused'] .sky-birds,
+:root[data-motion='paused'] .sky-star {
   animation-play-state: paused;
 }
 
-/* Left to right, always — wind has a direction of its own and does not take it
-   from the language. `translate` is physical, so this is spelled once and the
-   RTL twin below turns it around to keep the same real-world direction. */
+/* Wind blows left to right and does not take its direction from the language.
+   `translate` is physical, so the RTL twins below turn the numbers around to
+   keep the same real-world direction from the mirrored parking spots. */
 @keyframes cloud-cross {
   from {
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(170vw, 0, 0);
+    transform: translate3d(220vw, 0, 0);
   }
 }
-[dir='rtl'] .cloud {
-  /* In RTL `inset-inline-start` parks them off the RIGHT edge, so they have to
-     travel the other way to cross the screen at all. */
+@keyframes bird-cross {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-140vw, 0, 0);
+  }
+}
+[dir='rtl'] .sky-cloud {
   animation-name: cloud-cross-rtl;
 }
-@media (prefers-reduced-motion: reduce) {
-  [dir='rtl'] .cloud[data-cloud='1'] {
-    transform: translate3d(-70vw, 0, 0);
-  }
-  [dir='rtl'] .cloud[data-cloud='2'] {
-    transform: translate3d(-100vw, 0, 0);
-  }
-  [dir='rtl'] .cloud[data-cloud='3'] {
-    transform: translate3d(-48vw, 0, 0);
-  }
+[dir='rtl'] .sky-birds {
+  animation-name: bird-cross-rtl;
 }
 @keyframes cloud-cross-rtl {
   from {
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(-170vw, 0, 0);
+    transform: translate3d(-220vw, 0, 0);
+  }
+}
+@keyframes bird-cross-rtl {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(140vw, 0, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [dir='rtl'] .sky-cloud[data-cloud='1'] {
+    transform: translate3d(-72vw, 0, 0);
+  }
+  [dir='rtl'] .sky-cloud[data-cloud='2'] {
+    transform: translate3d(-108vw, 0, 0);
+  }
+  [dir='rtl'] .sky-cloud[data-cloud='3'] {
+    transform: translate3d(-140vw, 0, 0);
+  }
+  [dir='rtl'] .sky-cloud[data-cloud='4'] {
+    transform: translate3d(-90vw, 0, 0);
+  }
+  [dir='rtl'] .sky-birds {
+    transform: translate3d(58vw, 0, 0);
   }
 }
 
-/* ── The kite ─────────────────────────────────────────────────────────────
-   The first نسيم hero was a gutter: a wide empty column with a hairline in it.
-   It was an absence, and an absence is not an identity — the template read as
-   a blank. This one is a body.
+/* Hazy hills at the foot of the viewport: the ground a kite is flown from.
+   The far ridge is paler, which is how distance reads. The footer sits on
+   these, so they are measured in contrast.py. */
+.sky-hills {
+  inset-block-end: 0;
+  inset-inline: 0;
+  inline-size: 100%;
+  block-size: min(24vh, 13rem);
+}
+.sky-hill-far {
+  fill: var(--hill-far);
+}
+.sky-hill-near {
+  fill: var(--hill-near);
+}
 
-   Kites fly in the far corner, a string runs down across the card, and the
-   portrait sits at the bottom of it. The art is not placed NEXT to the person,
-   it is attached to them — which is the thing سِيق (a portrait standing in a
-   carved doorway) and مُحيط (a portrait inside a porthole) both do.
+/* ── The kite hero ─────────────────────────────────────────────────────────
+   No card. The writing sits on the open sky at the start; the kite column at
+   the end holds the art at its top and the hand on the string at its foot,
+   which is the relationship سِيق and مُحيط are built on — the art is attached
+   to the person, not placed beside them.
    ────────────────────────────────────────────────────────────────────────── */
 
 .kite-hero {
   position: relative;
-  overflow: hidden;
-  padding: 1.75rem;
-  /* Sky above the writing: the kites need somewhere to be. */
-  padding-block-start: 12rem;
+  display: grid;
+  gap: 1.5rem;
+  padding: 0.5rem 0.25rem 1.5rem;
 }
 @media (min-width: 768px) {
   .kite-hero {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 24rem);
+    gap: 3rem;
+    align-items: end;
+    padding: 1rem 0.5rem 2.5rem;
     min-block-size: 27rem;
-    padding: 2.5rem 3rem;
-    /* Wide enough that the kites fly beside the text rather than over it. */
-    padding-block-start: 2.5rem;
+  }
+}
+
+/* The kite column. It is first in the DOM so that on phones the sky is above
+   the person; on wide screens `order` sends it to the end column. */
+.kite-sky {
+  position: relative;
+  min-block-size: 22rem;
+}
+@media (min-width: 768px) {
+  .kite-sky {
+    order: 1;
+    min-block-size: 26rem;
   }
 }
 
 .kite-flight {
   position: absolute;
-  z-index: 1;
-  inset-block-start: -2%;
-  inset-inline-end: -4%;
-  inline-size: min(17rem, 56%);
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: min(22rem, 92%);
   aspect-ratio: 1;
   pointer-events: none;
+  filter: var(--kite-filter);
 }
-@media (min-width: 768px) {
-  .kite-flight {
-    inline-size: min(29rem, 48%);
-    inset-block-start: -4%;
-    inset-inline-end: 0;
-  }
+/* The art's own strings trail to its bottom-LEFT, so in RTL it is mirrored to
+   keep them trailing toward the hand at inline-start. */
+[dir='rtl'] .kite-flight {
+  transform: scaleX(-1);
 }
 
-/* The string runs corner to corner of the card. `preserveAspectRatio: none`
-   stretches the curve with the box, so the top end stays under the kites and
-   the bottom end stays at the portrait however wide the card gets. */
+/* The string from the hand up to the kites. Stretched to the column with
+   preserveAspectRatio="none", so its ends stay pinned at every width. */
 .kite-string {
   position: absolute;
   inset: 0;
-  z-index: 0;
   inline-size: 100%;
   block-size: 100%;
   pointer-events: none;
@@ -2510,50 +5752,27 @@
 .kite-string path {
   fill: none;
   stroke: var(--nq-foreground);
-  stroke-width: 0.28;
+  stroke-width: 1;
   stroke-linecap: round;
-  opacity: 0.38;
+  opacity: 0.45;
   vector-effect: non-scaling-stroke;
 }
-/* The art hangs off the inline-end corner, so the string has to swing the
-   other way in the other reading direction. The SVG is static — nothing here
-   repaints — so mirroring it costs nothing. */
 [dir='rtl'] .kite-string {
   transform: scaleX(-1);
 }
 
-.kite-body {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 1.1rem;
-  max-inline-size: 60ch;
-}
-@media (min-width: 768px) {
-  .kite-body {
-    /* Down and to the start: the far corner belongs to the kites. */
-    margin-block-start: 4rem;
-    max-inline-size: 52ch;
-  }
-}
-/* The hand on the string: the portrait sits where the curve lands, so the two
-   read as one object rather than as art next to a headshot. The negative
-   margin pulls it down into the card's foot, which is where the string ends
-   and where a person standing under a kite belongs. */
+/* The hand on the string: the portrait at the foot of the column. */
 .kite-holder {
-  display: flex;
-  margin-block-start: 0.5rem;
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
 }
-@media (min-width: 768px) {
-  .kite-holder {
-    margin-block-start: 1.75rem;
-  }
-}
-.kite-text {
+
+.kite-body {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
+  gap: 1rem;
+  max-inline-size: 58ch;
 }
 
 /* ── The slat ─────────────────────────────────────────────────────────────
@@ -2624,20 +5843,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
-  /* Tall enough that the mast reads as a mast and not as an icon. */
-  min-block-size: 14rem;
-  justify-content: flex-end;
-}
-@media (min-width: 768px) {
-  .mast-tower {
-    min-block-size: 22rem;
-  }
-}
-
-.mast-art {
-  inline-size: min(13rem, 78%);
-  aspect-ratio: 1;
+  gap: 0.5rem;
+  justify-content: flex-start;
 }
 
 /* The lamp sits near the top of the art, so the rings are centred there and
@@ -2645,7 +5852,8 @@
    range. The hero clips them at its own edge. */
 .mast-range {
   position: absolute;
-  inset-block-start: 8%;
+  /* The lamp is at the very top of the drawn mast. */
+  inset-block-start: 0.4rem;
   inset-inline-start: 50%;
   inline-size: 0;
   block-size: 0;
@@ -3097,391 +6305,6 @@
   opacity: 0.85;
 }
 
-/* ── نيويورك: the tower ───────────────────────────────────────────────────
-   A tower at night, and the portrait is one lit window in it. The facade is
-   drawn (components/templates/tower.tsx) because no city animation in the free
-   catalogue has a lit window in it — they are all daytime flat illustration —
-   and because a fetched picture of a building cannot have the person INSIDE.
-
-   Eighty-four windows, each a `<rect>` with a fixed opacity, and eleven of them
-   on a switch. Only opacity animates, and only on those eleven.
-   ────────────────────────────────────────────────────────────────────────── */
-
-.window-hero {
-  position: relative;
-  overflow: hidden;
-  display: grid;
-  gap: 1.25rem;
-  padding: 1.75rem;
-  justify-items: center;
-}
-@media (min-width: 768px) {
-  .window-hero {
-    /* Portrait and writing side by side. The card is only as tall as what is
-       in it — the city is the page's now, so nothing here has to leave room
-       for a skyline. */
-    grid-template-columns: minmax(7rem, 11rem) 1fr;
-    gap: 2.5rem;
-    padding: 2.25rem 2.75rem;
-    align-items: center;
-    justify-items: stretch;
-  }
-}
-
-.window-tower {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-}
-
-/* The cityscape along the foot of the card. Absolute, so it costs the hero no
-   height at all — and stroke-only, so one filter carries it from the white it
-   is drawn in to the amber every other window on this page is lit with. */
-.window-cityline {
-  position: absolute;
-  z-index: 0;
-  /* Anchored to the start edge and carrying the art's OWN 2002:670 ratio.
-     Stretched across the card it was cropped to its middle, which is the
-     empty part — the buildings live on one side of a very wide frame. */
-  inset-inline-start: 0;
-  /* On a phone the card stacks — portrait on top, writing under it — so the
-     cityscape goes BEHIND THE PORTRAIT rather than along the foot, where it
-     would lie under the paragraph. Text crossing one of its strokes measured
-     3.10:1 for the accent. */
-  inset-block-start: 0;
-  block-size: 7rem;
-  aspect-ratio: 2002 / 670;
-  pointer-events: none;
-  opacity: var(--cityline-opacity);
-}
-@media (min-width: 768px) {
-  .window-cityline {
-    /* Side by side: the city runs along the foot under the tower, and fades
-       out before it reaches the writing. The gradient is physical, so it is
-       spelled twice. */
-    inset-block-start: auto;
-    inset-block-end: 0;
-    block-size: 9.5rem;
-    -webkit-mask-image: linear-gradient(to right, #000 52%, transparent 88%);
-    mask-image: linear-gradient(to right, #000 52%, transparent 88%);
-  }
-  [dir='rtl'] .window-cityline {
-    -webkit-mask-image: linear-gradient(to left, #000 52%, transparent 88%);
-    mask-image: linear-gradient(to left, #000 52%, transparent 88%);
-  }
-}
-.window-cityline canvas {
-  filter: sepia(1) saturate(4) hue-rotate(335deg) brightness(1.1);
-}
-
-.tower {
-  inline-size: min(7rem, 34vw);
-  /* Room above the crown for the mast, which is drawn at a negative y. */
-  overflow: visible;
-  block-size: auto;
-  aspect-ratio: 120 / 196;
-}
-@media (min-width: 768px) {
-  .tower {
-    inline-size: min(9rem, 14vw);
-  }
-}
-.tower-body {
-  fill: var(--tower-face);
-  stroke: var(--tower-edge);
-  stroke-width: 1;
-}
-.tower-mast {
-  stroke: var(--tower-edge);
-  stroke-width: 1.4;
-}
-.tower-beacon {
-  fill: var(--nq-accent);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .tower-beacon {
-    animation: beacon-pulse 2.6s ease-in-out infinite;
-  }
-}
-@keyframes beacon-pulse {
-  0%,
-  100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.25;
-  }
-}
-
-/* Four states, so the building has depth instead of a checkerboard. */
-.tower-window {
-  fill: var(--window-off);
-}
-.tower-window[data-lit='1'] {
-  fill: var(--window-dim);
-}
-.tower-window[data-lit='2'] {
-  fill: var(--window-lit);
-}
-.tower-window[data-lit='3'] {
-  fill: var(--window-bright);
-}
-
-/* The eleven on a switch. Long, unrelated periods: a tower at night changes
-   slowly, and anything faster reads as an alarm rather than as a city. */
-@media (prefers-reduced-motion: no-preference) {
-  .tower-window[data-blink] {
-    animation: window-switch 17s steps(1, end) infinite;
-  }
-  .tower-window[data-blink='2'] {
-    animation-duration: 23s;
-    animation-delay: -7s;
-  }
-  .tower-window[data-blink='3'] {
-    animation-duration: 31s;
-    animation-delay: -13s;
-  }
-}
-:root[data-motion='paused'] .tower-window,
-:root[data-motion='paused'] .tower-beacon {
-  animation-play-state: paused;
-}
-@keyframes window-switch {
-  0%,
-  46% {
-    opacity: 1;
-  }
-  50%,
-  92% {
-    opacity: 0.12;
-  }
-  96%,
-  100% {
-    opacity: 1;
-  }
-}
-
-/* The window that is yours. A warm frame and a halo, so it reads as one more
-   lit window on the facade rather than a portrait pasted over a pattern. */
-.window-mine {
-  position: absolute;
-  z-index: 2;
-  inset-block-start: 34%;
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  border-radius: 2px;
-  box-shadow:
-    0 0 0 5px var(--glass-fallback),
-    0 0 0 7px var(--window-bright),
-    0 0 34px 10px var(--window-halo);
-}
-[dir='rtl'] .window-mine {
-  transform: translateX(50%);
-}
-/* Square, like every other window on the building. */
-.window-mine [data-avatar] {
-  border-radius: 2px;
-}
-
-/* The corner the layout leaves empty: a city bent into a ring with a cab
-   going round it. Far from the writing, so it can be as bright as it likes. */
-.window-burst {
-  position: absolute;
-  z-index: 0;
-  /* Kept wholly inside the card rather than hung over its edge and trusted to
-     the clip: a burst whose box leaves the card is a burst you have to reason
-     about, and the corner looks better with the whole shape in it anyway. */
-  inset-block-start: 0.5rem;
-  inset-inline-end: 0.5rem;
-  inline-size: 11rem;
-  aspect-ratio: 1;
-  pointer-events: none;
-  opacity: var(--burst-opacity);
-}
-@media (min-width: 768px) {
-  .window-burst {
-    inset-block-start: 0.5rem;
-    inset-inline-end: 1rem;
-    inline-size: 18rem;
-  }
-}
-/* Left in the colours it was drawn in — white and slate buildings with a
-   violet cab — at the owner's request. They sit close enough to the page's own
-   blue-black that no correction is wanted. */
-
-.window-body {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  min-inline-size: 0;
-  max-inline-size: 60ch;
-}
-
-/* The far city: eleven drawn towers standing on the floor of the viewport,
-   behind everything. Fixed, so it stays on the horizon while the page scrolls
-   past it rather than sliding away with the document. */
-.city-skyline {
-  /* Fixed to the foot of the VIEWPORT: the city stays on the horizon while the
-     page scrolls past it, and it runs the full width because no layout has to
-     make room for it. */
-  position: fixed;
-  inset-inline: 0;
-  inset-block-end: 0;
-  z-index: 0;
-  inline-size: 100%;
-  block-size: min(52vh, 26rem);
-  pointer-events: none;
-  opacity: var(--screen-art-opacity);
-}
-
-.city-tower {
-  fill: var(--city-mass);
-}
-.city-spire {
-  stroke: var(--city-mass);
-  stroke-width: 1.4;
-}
-.city-beacon {
-  fill: var(--nq-accent);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .city-beacon {
-    animation: beacon-pulse 3.1s ease-in-out infinite;
-  }
-  .city-beacon[data-beacon='1'] {
-    animation-duration: 4.3s;
-    animation-delay: -1.5s;
-  }
-}
-.city-window {
-  fill: var(--window-dim);
-}
-.city-window[data-lit='2'] {
-  fill: var(--window-lit);
-}
-
-/* The street. */
-.city-road {
-  fill: var(--city-road);
-}
-.city-kerb {
-  stroke: var(--city-kerb);
-  stroke-width: 1.2;
-}
-.city-person {
-  fill: var(--city-crowd-ink);
-}
-@media (prefers-reduced-motion: no-preference) {
-  /* People shift their weight rather than walk: at this size a stride reads as
-     a twitch, and a crowd that all steps together reads as a machine. */
-  .city-person {
-    animation: person-sway 4.7s ease-in-out infinite;
-    transform-box: fill-box;
-    transform-origin: bottom center;
-  }
-  .city-person[data-walk='1'] {
-    animation-duration: 6.1s;
-    animation-delay: -1.9s;
-  }
-  .city-person[data-walk='2'] {
-    animation-duration: 5.3s;
-    animation-delay: -3.4s;
-  }
-  .city-person[data-walk='3'] {
-    animation-duration: 7.3s;
-    animation-delay: -0.8s;
-  }
-}
-@keyframes person-sway {
-  0%,
-  100% {
-    opacity: 0.85;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Traffic: headlights one way, tail lights the other. Pure translation, which
-   is the cheapest thing on the page and the thing that makes a still drawing
-   read as a city that is awake. */
-.car-head {
-  fill: var(--car-head);
-}
-.car-tail {
-  fill: var(--car-tail);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .car-head {
-    animation: drive-start 9s linear infinite;
-  }
-  .car-tail {
-    animation: drive-end 11s linear infinite;
-  }
-  .car-head[data-lane='1'] {
-    animation-duration: 6.5s;
-    animation-delay: -2s;
-  }
-  .car-head[data-lane='2'] {
-    animation-duration: 12s;
-    animation-delay: -5s;
-  }
-  .car-head[data-lane='3'] {
-    animation-duration: 7.8s;
-    animation-delay: -6.5s;
-  }
-  .car-head[data-lane='4'] {
-    animation-duration: 10.5s;
-    animation-delay: -8s;
-  }
-  .car-tail[data-lane='1'] {
-    animation-duration: 8.2s;
-    animation-delay: -3s;
-  }
-  .car-tail[data-lane='2'] {
-    animation-duration: 13s;
-    animation-delay: -6s;
-  }
-  .car-tail[data-lane='3'] {
-    animation-duration: 9.6s;
-    animation-delay: -9s;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .car-head,
-  .car-tail {
-    opacity: 0.8;
-    transform: translateX(240px);
-  }
-}
-:root[data-motion='paused'] .car-head,
-:root[data-motion='paused'] .car-tail,
-:root[data-motion='paused'] .city-person,
-:root[data-motion='paused'] .city-beacon {
-  animation-play-state: paused;
-}
-/* Traffic has a direction of its own and does not take it from the language,
-   so these are spelled in physical terms and never flipped. */
-@keyframes drive-start {
-  from {
-    transform: translateX(-40px);
-  }
-  to {
-    transform: translateX(1260px);
-  }
-}
-@keyframes drive-end {
-  from {
-    transform: translateX(1260px);
-  }
-  to {
-    transform: translateX(-40px);
-  }
-}
 
 /* ── The marquee ──────────────────────────────────────────────────────────
    A lit sign: the panel is dark and the light runs along its top edge, the way
@@ -4094,6 +6917,13 @@
    The meeting seen from above, with the head seat left empty for the portrait.
    Drawn, because every meeting illustration in the free catalogue already
    contains people and a portrait set beside them is a fifth stranger.
+
+   Second pass: the first table was a grey ellipse with grey blobs for chairs
+   — a diagram. Now it is furniture (components/templates/boardroom.tsx): a
+   walnut boardroom table with a lit rim on a floor shadow, chairs with their
+   backs turned to it, and the things a meeting leaves on a table. The HEAD is
+   the short end, so the portrait sits at the inline-start end, and the whole
+   drawing mirrors in RTL to keep it there.
    ────────────────────────────────────────────────────────────────────────── */
 
 .table-hero {
@@ -4106,7 +6936,7 @@
 }
 @media (min-width: 768px) {
   .table-hero {
-    grid-template-columns: minmax(12rem, 20rem) 1fr;
+    grid-template-columns: minmax(16rem, 30rem) 1fr;
     gap: 2.75rem;
     padding: 2.25rem 2.75rem;
     align-items: center;
@@ -4117,8 +6947,8 @@
 .table-stage {
   position: relative;
   justify-self: center;
-  inline-size: min(22rem, 92vw);
-  aspect-ratio: 200 / 148;
+  inline-size: min(30rem, 92vw);
+  aspect-ratio: 260 / 170;
 }
 .table-plan {
   position: absolute;
@@ -4126,62 +6956,112 @@
   inline-size: 100%;
   block-size: 100%;
 }
-.table-top {
-  fill: var(--table-top);
+/* Static SVG, so mirroring it costs nothing; it keeps the head seat at the
+   start end in either reading direction. */
+[dir='rtl'] .table-plan {
+  transform: scaleX(-1);
+}
+
+/* The table's paint, all by token so the night room can relight it. */
+.table-wood-a {
+  stop-color: var(--table-wood-a);
+}
+.table-wood-b {
+  stop-color: var(--table-wood-b);
+}
+.table-shadow {
+  fill: var(--table-shadow);
 }
 .table-edge {
   fill: none;
-  stroke: var(--table-line);
-  stroke-width: 1.1;
+  stroke: var(--table-rim);
+  stroke-width: 1.2;
+}
+.table-grain {
+  fill: none;
+  stroke: var(--table-grain);
+  stroke-width: 0.9;
 }
 .table-seat {
   fill: var(--table-seat);
 }
-.table-thing {
-  fill: var(--table-thing);
+.table-seat-back {
+  fill: var(--table-seat-back);
+}
+.table-laptop {
+  fill: var(--table-laptop);
+}
+.table-screen {
+  fill: var(--table-screen);
+}
+.table-pad {
+  fill: var(--table-pad);
+}
+.table-pen {
+  stroke: var(--table-pen);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+.table-cup {
+  fill: var(--table-cup);
+}
+.table-cup-handle {
+  fill: none;
+  stroke: var(--table-cup-handle);
+  stroke-width: 1;
+}
+.table-folder {
+  fill: var(--table-folder);
+}
+.table-folder-tab {
+  fill: var(--table-folder);
+  opacity: 0.8;
+}
+.table-phone {
+  fill: var(--table-phone);
 }
 
 /* The handshake, on the table. It is the only moving thing in this hero
-   because it is the only thing in a meeting that is an event. */
+   because it is the only thing in a meeting that is an event. Smaller than
+   the first pass: a deal is closed over the middle of a table, it does not
+   cover the table. */
 .table-deal {
   position: absolute;
   z-index: 1;
-  inset-block-start: 40%;
+  inset-block-start: 29%;
   inset-inline-start: 50%;
-  inline-size: 46%;
+  inline-size: 27%;
   aspect-ratio: 1;
   transform: translateX(-50%);
   pointer-events: none;
 }
 /* The art is drawn in a mint green that has nothing to do with this page.
-   Flattened and re-tinted it joins the template instead of arguing with it —
-   a hue rotation alone would keep the spread it came with. */
+   Flattened and re-tinted it joins the template's violet instead of arguing
+   with it — a hue rotation alone would keep the spread it came with. */
 .table-deal canvas {
-  filter: grayscale(1) sepia(1) saturate(4) hue-rotate(205deg) brightness(0.95);
+  /* Chosen off a contact sheet of four tints: this is the one that lands on a
+     muted violet rather than the pink every smaller rotation gave. */
+  filter: grayscale(1) sepia(1) saturate(4) hue-rotate(190deg) brightness(0.7) contrast(1.1);
 }
 [dir='rtl'] .table-deal {
   transform: translateX(50%);
 }
 
-/* The head seat. The portrait sits ON the table's edge, overlapping it, the
-   way سِيق's portrait stands in its doorway — inside the structure, not beside
-   a picture of one. */
+/* The head seat: the portrait sits ON the chair at the start end, its edge
+   against the table — inside the structure the way سِيق's portrait stands in
+   its doorway, not beside a picture of it. */
 .table-head {
   position: absolute;
   z-index: 2;
-  /* Overlapping the table's edge, not floating above it. */
-  inset-block-start: 2%;
-  inset-inline-start: 50%;
-  transform: translateX(-50%);
+  inset-inline-start: -2%;
+  inset-block-start: 50%;
+  transform: translateY(-50%);
   display: flex;
   border-radius: 50%;
   box-shadow:
-    0 0 0 5px var(--glass-fallback),
-    0 0 0 7px var(--nq-accent),
+    0 0 0 4px var(--glass-fallback),
+    0 0 0 6px var(--nq-accent),
     0 10px 26px rgba(20, 25, 50, 0.22);
-}
-[dir='rtl'] .table-head {
-  transform: translateX(50%);
 }
 .table-head [data-avatar] {
   border-radius: 50%;

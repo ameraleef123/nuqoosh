@@ -15,7 +15,7 @@ import type { SectionOrderVariant } from './profile'
 
 export type TemplateBackground = 'frost' | 'prism' | 'dawn' | 'ink' | 'paper' | 'sprout' | 'night' | 'air' | 'stone' | 'grid' | 'deep' | 'shade' | 'spark' | 'signal' | 'volt' | 'bloom' | 'breeze' | 'lattice' | 'city' | 'atlas' | 'gallery' | 'boardroom'
 export type TemplateMotion = 'crisp' | 'drift' | 'rise' | 'editorial' | 'glow' | 'soft'
-export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit' | 'ribbon' | 'gate' | 'blocks' | 'porthole' | 'sunlit' | 'breakout' | 'coil' | 'mast' | 'hanging' | 'kite' | 'screen' | 'window' | 'pin' | 'frame' | 'table'
+export type HeroLayout = 'centered' | 'split' | 'stacked' | 'editorial' | 'feature' | 'cover' | 'orbit' | 'ribbon' | 'gate' | 'blocks' | 'porthole' | 'sunlit' | 'breakout' | 'coil' | 'mast' | 'hanging' | 'kite' | 'screen' | 'window' | 'pin' | 'frame' | 'table' | 'seedling'
 export type ProjectCardShape = 'panel' | 'tile' | 'list' | 'ledger' | 'branch' | 'lume' | 'float' | 'carved' | 'block' | 'pebble' | 'cast' | 'ember' | 'ping' | 'live' | 'petal' | 'slat' | 'inlay' | 'marquee' | 'legend' | 'poster' | 'brief'
 export type GlassIntensity = 'subtle' | 'default' | 'strong'
 
@@ -89,7 +89,7 @@ export const TEMPLATES: Template[] = [
     layout: 'stack',
     media: {
       background: '/lottie/frost-hero.lottie',
-      hero: '/lottie/frost-card.lottie',
+      // No hero art any more: the ice is drawn (frost.tsx).
       // corner: pending an exported file — the LottieFiles editor link cannot be
       // fetched without an account, so the slot is wired but empty.
     },
@@ -209,10 +209,19 @@ export const TEMPLATES: Template[] = [
     // bento rather than a stack, the first to lead with skills (order C), and
     // the first whose backdrop is anchored to the foot of the screen instead
     // of tiled or covering — so it shares no silhouette with the other five.
+    //
+    // Second pass (2026-09-30, «ابدع فيه بدو تعديل»): the hero was a line-art
+    // hand from the catalogue — clip art, not a place. Now it is a SEEDLING,
+    // drawn (components/templates/seedling.tsx): a stem that grows out of a
+    // bed of soil on the card's floor on load, unfolds its first leaves, and
+    // opens a bud at the top — the bud is the portrait. The person is the
+    // first green. A drawn garden was tried behind the page and the owner
+    // preferred the wheat field («الخلفية الأولى أحلى»), so the band stays
+    // and the cards were thinned to glass so it shows through them.
     background: 'sprout',
-    glass: 'default',
+    glass: 'subtle',
     motion: 'rise',
-    hero: 'stacked',
+    hero: 'seedling',
     card: 'branch',
     order: 'C',
     layout: 'bento',
@@ -221,9 +230,6 @@ export const TEMPLATES: Template[] = [
       // card: the page rises out of it. 7 KB.
       background: '/lottie/wheat-field.lottie',
       backgroundFit: 'band',
-      // The hero mark: a hand, open, with a seedling breaking out of it. Line
-      // art, 3 KB, so it takes the page's own ink in either theme.
-      hero: '/lottie/sprout-hand.lottie',
     },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
@@ -250,9 +256,8 @@ export const TEMPLATES: Template[] = [
     order: 'A',
     layout: 'stack',
     media: {
-      // A sky of small stars with one crescent, transparent, so it takes the
-      // page's own night rather than bringing its own black. 5 KB.
-      background: '/lottie/star-field.lottie',
+      // No fetched backdrop any more: the sky is drawn (night-sky.tsx). The
+      // old star field was a crescent-and-sparkles icon tiled across the top.
       // The hero: concentric orbits with a bright point on each. The avatar
       // sits at the centre of them — the student's own chart. 1.2 KB.
       hero: '/lottie/orbit-rings.lottie',
@@ -282,9 +287,8 @@ export const TEMPLATES: Template[] = [
     order: 'B',
     layout: 'stack',
     media: {
-      // Bundles of fine lines drifting across the viewport at three different
-      // heights — moving air, drawn. 8 KB.
-      background: '/lottie/air-lines.lottie',
+      // No fetched backdrop any more: feathers and currents are drawn
+      // (air-drift.tsx). The old line bundles sat in a strip at the top.
       // A band of contour lines crossing the whole hero, edge to edge: the
       // only thing on the page that moves near the text. Pure strokes, no
       // fills, so it tints and inverts cleanly.
@@ -384,7 +388,7 @@ export const TEMPLATES: Template[] = [
       background: '/lottie/shoal.lottie',
       // The hero: a jellyfish drifting behind the porthole glass. 20 KB, and
       // the only thing in the template with colour of its own.
-      hero: '/lottie/jellyfish.lottie',
+      // No hero art any more: the whale is drawn (whale.tsx).
     },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
@@ -483,12 +487,7 @@ export const TEMPLATES: Template[] = [
     card: 'ping',
     order: 'C',
     layout: 'stack',
-    media: {
-      // The mast: a steel tower with its lamp lit and signal arcs either side.
-      // 3 KB, vector, 12 layers. No backdrop any more — the old data stream
-      // was abstract and it was the most expensive thing on the page.
-      hero: '/lottie/mast.lottie',
-    },
+    // No fetched art: the mast is drawn (components/templates/mast.tsx).
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
   {
@@ -589,6 +588,15 @@ export const TEMPLATES: Template[] = [
     // holds up: kites, with their strings running back down to the person
     // flying them. The portrait is at the bottom of that string. That is the
     // same physical relationship سِيق and مُحيط are built on.
+    //
+    // The THIRD build (2026-09-30) took the same lesson to the page itself,
+    // after «naseem سيء للغاية»: the sky had been a flat gradient with three
+    // radial-gradient smudges, and the hero a white card with kites stuck on
+    // it. Now the sky is DRAWN (components/templates/sky.tsx): a sun or a
+    // moon in the far corner, cumulus crossing, a flock going the other way,
+    // hazy hills at the foot of the viewport, stars after dark — all SVG/CSS.
+    // The hero has no card at all: the writing sits on the open sky and the
+    // kite column holds the art at its top and the hand at its foot.
     background: 'breeze',
     glass: 'strong',
     motion: 'drift',
@@ -663,29 +671,10 @@ export const TEMPLATES: Template[] = [
     order: 'C',
     layout: 'stack',
     media: {
-      // The owner's own pick. It is the line-art cityscape that failed as a
-      // page-wide band — a small cluster of buildings in a very wide empty
-      // frame, which showed as two stray lines across a viewport. At the size
-      // of a hero card it is exactly right, and being stroke-only (330 strokes
-      // and one fill) it takes the window-amber cleanly.
-      //
-      // Everything else here stays drawn: the catalogue has no lit window in
-      // it anywhere, and a fetched picture of a building cannot have the
-      // person inside it.
+      // The owner's pick (LottieFiles 33627): a line-art cityscape that runs
+      // along the foot of the hero at full width, behind the facade. Stroke-
+      // only, so one filter carries it to the page's amber.
       hero: '/lottie/cityline.lottie',
-      // The owner's pick for the corner the layout never uses. It is a city
-      // bent into a ring — buildings standing around a circle with a cab going
-      // round them — which is a better answer than the firework that was there
-      // first: a firework is a party, and this is the city at work.
-      //
-      // It is also by some way the heaviest thing in the set: 90 KB, 1174
-      // fills, 652 strokes. Its cost is measured in scripts/perf.mjs.
-      heroCorner: '/lottie/taxi-ring.lottie',
-      // It is a LOADING animation: across its 271 frames the ring builds from
-      // nothing, stands complete, then vanishes again. Rendered whole it is
-      // empty or half-drawn for about 60% of every cycle. These are the frames
-      // where the city is actually standing.
-      heroCornerSegment: [118, 212],
     },
     fonts: { display: 'cairo', body: 'plex-arabic' },
   },
@@ -781,6 +770,15 @@ export const TEMPLATES: Template[] = [
     //
     // The one fetched thing is the handshake on the table, because that is
     // what the meeting is for.
+    //
+    // Second pass (2026-09-30, «زبطو ودقق بالباك قراوند واعطيه جماليات»): the
+    // page was a flat grey with a grid nobody could see, and the table a grey
+    // ellipse with blobs for chairs. Now the ROOM is drawn on the page —
+    // afternoon sun through the blinds of a window in the far corner, laid as
+    // soft bands fixed to the viewport (city glow through the same blinds at
+    // night) — and the table is furniture: walnut with a lit rim on a floor
+    // shadow, chairs with backs, a laptop, pads, cups, a folder, a phone. The
+    // head of a table is its short END, so the portrait sits there.
     background: 'boardroom',
     glass: 'default',
     motion: 'crisp',

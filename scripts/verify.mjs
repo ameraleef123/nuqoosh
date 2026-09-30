@@ -9,7 +9,8 @@
  * Usage: npm run verify
  */
 import { spawnSync } from 'node:child_process'
-import { readFileSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
+import { join } from 'node:path'
 
 const DIST = '.next-verify'
 const run = (cmd, args, env = {}) =>
@@ -55,6 +56,59 @@ step('content rules on built HTML', () => {
     if (!ok) bad++
   }
   console.log(`  ${checks.length - bad}/${checks.length} passed`)
+  return bad === 0
+})
+
+/**
+ * Third-party resources. The page must load scripts, styles and fonts from
+ * this origin only (see the CSP in next.config.mjs): a compromised CDN would
+ * otherwise run in the page's context. This walks every built HTML file and
+ * every client chunk and fails on any external script/style/font reference,
+ * and on the Lottie player falling back to its CDN-hosted WebAssembly.
+ */
+step('third-party resources', () => {
+  const walk = (dir, out = []) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = join(dir, e.name)
+      if (e.isDirectory()) walk(p, out)
+      else out.push(p)
+    }
+    return out
+  }
+  const htmls = walk(`${DIST}/server/app`).filter((f) => f.endsWith('.html'))
+  const chunks = walk(`${DIST}/static`).filter((f) => f.endsWith('.js') || f.endsWith('.css'))
+
+  const external = []
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8')
+    // A <script src>, <link rel=stylesheet|preload|modulepreload href>, or
+    // @import pointing at another origin. Protocol-relative counts.
+    const tags = html.match(/<(?:script|link)\b[^>]*\b(?:src|href)=["'](?:https?:)?\/\/[^"']+["'][^>]*>/gi) ?? []
+    for (const t of tags) {
+      // Links to a student's own profiles are anchors, not resources.
+      if (/^<link\b/i.test(t) && !/rel=["'](?:stylesheet|preload|modulepreload|prefetch)["']/i.test(t)) continue
+      external.push(`${f}: ${t.slice(0, 120)}`)
+    }
+  }
+  for (const f of chunks) {
+    const src = readFileSync(f, 'utf8')
+    for (const m of src.matchAll(/@import\s+(?:url\()?["']?(?:https?:)?\/\/[^"')\s]+/g)) external.push(`${f}: ${m[0]}`)
+    for (const m of src.matchAll(/url\(["']?(?:https?:)?\/\/[^"')\s]+\.(?:woff2?|ttf|otf|eot)/g)) external.push(`${f}: ${m[0]}`)
+  }
+  // The player ships CDN URLs as its DEFAULT; the app must override them.
+  const wasmLocal = chunks.some((f) => readFileSync(f, 'utf8').includes('/lottie/dotlottie-player.wasm'))
+
+  const checks = [
+    [`no external script/style/font tag in ${htmls.length} built pages`, external.length === 0],
+    [`no external @import or font url() in ${chunks.length} client chunks`, external.length === 0],
+    ['Lottie WebAssembly is pointed at public/lottie, not a CDN', wasmLocal],
+  ]
+  for (const e of external) console.log(`  external: ${e}`)
+  let bad = 0
+  for (const [label, ok] of checks) {
+    console.log(`  [${ok ? 'PASS' : 'FAIL'}] ${label}`)
+    if (!ok) bad++
+  }
   return bad === 0
 })
 

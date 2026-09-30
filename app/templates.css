@@ -176,6 +176,12 @@
   --orb-opacity: 0.9;
 
   --screen-art-opacity: 0.85;
+  --ice-a: rgba(255, 255, 255, 0.95);
+  --ice-b: rgba(207, 233, 255, 0.55);
+  --ice-rim: rgba(29, 95, 191, 0.25);
+  --fern-ink: rgba(29, 95, 191, 0.35);
+  --fern-opacity: 1;
+  --flake-ink: rgba(29, 95, 191, 0.55);
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -196,6 +202,12 @@
     --nq-foreground: #eaf2ff; /* 13.10:1 on ink glass */
     --nq-muted-foreground: #b6c8e0; /*  8.66:1 on ink glass */
     --nq-accent: #8fc1ff; /* 10.02:1 as text · ink on it 10.02:1 */
+    --ice-a: rgba(220, 236, 255, 0.6);
+    --ice-b: rgba(143, 193, 255, 0.18);
+    --ice-rim: rgba(143, 193, 255, 0.35);
+    --fern-ink: rgba(143, 193, 255, 0.4);
+    --fern-opacity: 1;
+    --flake-ink: rgba(234, 242, 255, 0.7);
     --nq-on-accent: #0b1220;
     --nq-highlight: #8fc1ff;
     --nq-on-highlight: #0b1220;
@@ -229,6 +241,12 @@
   --nq-foreground: #eaf2ff;
   --nq-muted-foreground: #b6c8e0;
   --nq-accent: #8fc1ff;
+--ice-a: rgba(220, 236, 255, 0.6);
+--ice-b: rgba(143, 193, 255, 0.18);
+--ice-rim: rgba(143, 193, 255, 0.35);
+--fern-ink: rgba(143, 193, 255, 0.4);
+--fern-opacity: 1;
+--flake-ink: rgba(234, 242, 255, 0.7);
   --nq-on-accent: #0b1220;
   --nq-highlight: #8fc1ff;
   --nq-on-highlight: #0b1220;
@@ -343,6 +361,15 @@
   --nq-foreground: #2a1b10; /* 12.91:1 on white glass over peach */
   --nq-muted-foreground: #5c4433; /*  7.00:1 */
   --nq-accent: #c2410c; /*  4.68:1 as text · white on it 5.18:1 */
+  --dawn-sky-top: #fbe3cf;
+  --dawn-sky-low: #ffc9a0;
+  --dawn-sun: #ffb35c;
+  --dawn-sun-halo: rgba(255, 179, 92, 0.45);
+  --dawn-ray: rgba(255, 240, 200, 0.4);
+  --dawn-hill-far: #e7a98e;
+  --dawn-hill-mid: #c97a62;
+  --dawn-hill-near: #8e4b3c;
+  --dawn-mist: rgba(255, 236, 220, 0.7);
   --nq-on-accent: #ffffff;
   --nq-highlight: #ffb88c;
   --nq-on-highlight: #2a1b10;
@@ -387,6 +414,15 @@
     --nq-foreground: #f6f1ff; /* 15.36:1 on ink glass over indigo */
     --nq-muted-foreground: #c9bfe4; /*  9.77:1 */
     --nq-accent: #ffb88c; /* 10.05:1 as text · ink on it 10.05:1 */
+    --dawn-sky-top: #1e1838;
+    --dawn-sky-low: #6b3a52;
+    --dawn-sun: #ffb88c;
+    --dawn-sun-halo: rgba(255, 184, 140, 0.4);
+    --dawn-ray: rgba(255, 184, 140, 0.1);
+    --dawn-hill-far: #4a2c4a;
+    --dawn-hill-mid: #34203a;
+    --dawn-hill-near: #211529;
+    --dawn-mist: rgba(255, 200, 170, 0.22);
     --nq-on-accent: #1e1838;
     --nq-highlight: #ffb88c;
     --nq-on-highlight: #1e1838;
@@ -422,6 +458,15 @@
   --nq-foreground: #f6f1ff;
   --nq-muted-foreground: #c9bfe4;
   --nq-accent: #ffb88c;
+--dawn-sky-top: #1e1838;
+--dawn-sky-low: #6b3a52;
+--dawn-sun: #ffb88c;
+--dawn-sun-halo: rgba(255, 184, 140, 0.4);
+--dawn-ray: rgba(255, 184, 140, 0.1);
+--dawn-hill-far: #4a2c4a;
+--dawn-hill-mid: #34203a;
+--dawn-hill-near: #211529;
+--dawn-mist: rgba(255, 200, 170, 0.22);
   --nq-on-accent: #1e1838;
   --nq-highlight: #ffb88c;
   --nq-on-highlight: #1e1838;
@@ -473,6 +518,14 @@
   --glass-blur: 10px;
   --orb-opacity: 0.6;
 
+  /* The sheet and the ink (components/templates/ink-blot.tsx): rules and a
+     margin line on the paper; indigo ink at a low opacity, the bleed fainter. */
+  --rule: rgba(20, 18, 28, 0.07);
+  --margin-rule: rgba(76, 63, 209, 0.35);
+  --ink: #4c3fd1;
+  --ink-opacity: 0.11;
+  --ink-bleed: 0.35;
+
   --font-display: var(--font-naskh), Georgia, serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
 }
@@ -508,6 +561,12 @@
     --glass-fallback-subtle: #161222;
     --glass-fallback-strong: #201b32;
     --orb-opacity: 0.75;
+    /* Lavender ink on black paper: the same drawing, lit the other way. */
+    --rule: rgba(255, 255, 255, 0.05);
+    --margin-rule: rgba(169, 156, 255, 0.3);
+    --ink: #a99cff;
+    --ink-opacity: 0.16;
+    --ink-bleed: 0.35;
   }
   :root:not([data-theme='light']) [data-bg='ink'] .orb[data-orb='1'] {
     background: #2a2440;
@@ -540,6 +599,11 @@
   --glass-fallback-subtle: #161222;
   --glass-fallback-strong: #201b32;
   --orb-opacity: 0.75;
+  --rule: rgba(255, 255, 255, 0.05);
+  --margin-rule: rgba(169, 156, 255, 0.3);
+  --ink: #a99cff;
+  --ink-opacity: 0.16;
+  --ink-bleed: 0.35;
 }
 :root[data-theme='dark'] [data-bg='ink'] .orb[data-orb='1'] {
   background: #2a2440;
@@ -566,6 +630,7 @@
    ───────────────────────────────────────────────────────────────────────── */
 
 [data-template='waraqa'] {
+  --lamp-pool: transparent;
   --nq-background: #e9dfcb; /* the desk */
   --nq-foreground: #2b2019; /* 15.22:1 on the sheet · 12.00:1 on the desk */
   --nq-muted-foreground: #5c4d3e; /*  7.79:1 on the sheet ·  6.14:1 on the desk
@@ -636,7 +701,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) [data-template='waraqa'] {
-    --nq-background: #15120e; /* the desk, after dark */
+    --nq-background: #1a1410; /* the desk, after dark */
+    --lamp-pool: rgba(255, 180, 100, 0.2);
     --nq-foreground: #f6f1e6; /* 15.04:1 on the sheet */
     --nq-muted-foreground: #c9bfae; /*  9.31:1 on the sheet */
     --nq-accent: #f0a07a; /*  8.08:1 as text · sheet-dark on it 8.08:1 */
@@ -646,9 +712,9 @@
     --nq-border: rgba(255, 255, 255, 0.14);
     --nq-border-strong: rgba(255, 255, 255, 0.3);
     --nq-ring: #f0a07a;
-    --glass-bg: #201c17;
-    --glass-bg-subtle: #201c17;
-    --glass-bg-strong: #262119;
+    --glass-bg: #3b3126;
+    --glass-bg-subtle: #3b3126;
+    --glass-bg-strong: #463a2d;
     --glass-border-color: rgba(255, 255, 255, 0.1);
     --glass-edge: 0 0 0 0 transparent;
     --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -659,9 +725,9 @@
       0 9px 0 -4px rgba(0, 0, 0, 0.45),
       0 16px 26px -16px rgba(0, 0, 0, 0.7),
       0 44px 60px -44px rgba(0, 0, 0, 0.9);
-    --glass-fallback: #201c17;
-    --glass-fallback-subtle: #201c17;
-    --glass-fallback-strong: #262119;
+    --glass-fallback: #3b3126;
+    --glass-fallback-subtle: #3b3126;
+    --glass-fallback-strong: #463a2d;
     --nq-radius-sm: 2px;
     --nq-radius-md: 2px;
     --nq-radius-lg: 3px;
@@ -671,7 +737,7 @@
     --paper-grain-opacity: 0.1;
     --paper-crease: rgba(0, 0, 0, 0.5);
     --paper-crease-hi: rgba(255, 255, 255, 0.045);
-    --paper-rule: rgba(150, 180, 220, 0.09);
+    --paper-rule: rgba(150, 180, 220, 0.14);
     --paper-seal: #262019;
     --paper-seal-ring: rgba(255, 255, 255, 0.3);
     --paper-relief: rgba(0, 0, 0, 0.55);
@@ -680,7 +746,8 @@
   }
 }
 :root[data-theme='dark'] [data-template='waraqa'] {
-  --nq-background: #15120e;
+  --nq-background: #1a1410;
+  --lamp-pool: rgba(255, 180, 100, 0.2);
   --nq-foreground: #f6f1e6;
   --nq-muted-foreground: #c9bfae;
   --nq-accent: #f0a07a;
@@ -690,9 +757,9 @@
   --nq-border: rgba(255, 255, 255, 0.14);
   --nq-border-strong: rgba(255, 255, 255, 0.3);
   --nq-ring: #f0a07a;
-  --glass-bg: #201c17;
-  --glass-bg-subtle: #201c17;
-  --glass-bg-strong: #262119;
+  --glass-bg: #3b3126;
+  --glass-bg-subtle: #3b3126;
+  --glass-bg-strong: #463a2d;
   --glass-border-color: rgba(255, 255, 255, 0.1);
   --glass-edge: 0 0 0 0 transparent;
   --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.05);
@@ -703,9 +770,9 @@
     0 9px 0 -4px rgba(0, 0, 0, 0.45),
     0 16px 26px -16px rgba(0, 0, 0, 0.7),
     0 44px 60px -44px rgba(0, 0, 0, 0.9);
-  --glass-fallback: #201c17;
-  --glass-fallback-subtle: #201c17;
-  --glass-fallback-strong: #262119;
+  --glass-fallback: #3b3126;
+  --glass-fallback-subtle: #3b3126;
+  --glass-fallback-strong: #463a2d;
   --nq-radius-sm: 2px;
   --nq-radius-md: 2px;
   --nq-radius-lg: 3px;
@@ -715,7 +782,7 @@
   --paper-grain-opacity: 0.1;
   --paper-crease: rgba(0, 0, 0, 0.5);
   --paper-crease-hi: rgba(255, 255, 255, 0.045);
-  --paper-rule: rgba(150, 180, 220, 0.09);
+  --paper-rule: rgba(150, 180, 220, 0.14);
   --paper-seal: #262019;
   --paper-seal-ring: rgba(255, 255, 255, 0.3);
   --paper-relief: rgba(0, 0, 0, 0.55);
@@ -740,7 +807,9 @@
                                     ·  5.28:1 over the wheat, the binding case */
   --nq-accent: #2f6b45; /*  6.11:1 as text · white on it 6.34:1 */
   --nq-on-accent: #ffffff;
-  --nq-highlight: #f5b942; /* wheat · ink on it 9.60:1 */
+  --nq-highlight: #cfe8d2; /* first leaf · ink on it 12.3:1 (the wheat amber
+                                was the one yellow left and the owner asked
+                                for it gone) */
   --nq-on-highlight: #16251b;
   --nq-border: rgba(22, 37, 27, 0.12);
   --nq-border-strong: rgba(22, 37, 27, 0.24);
@@ -755,16 +824,35 @@
   --glass-fallback: #fafbf8;
   --glass-fallback-subtle: #f7faf4;
   --glass-fallback-strong: #ffffff;
-  --glass-blur: 14px;
+  /* Frosted rather than milky: the owner asked for the cards to read as
+     glass, so the alpha is low and the blur carries the separation. The
+     wheat band's opacity is the ceiling — measured in contrast.py. */
+  --glass-blur: 18px;
   --orb-opacity: 0.8;
-
-  /* The wheat band. The ceiling is set by the footer, the only text that sits
-     on the page rather than on a card: muted type over the teal leaf of a
-     stalk measures 5.28:1 here, and fails by 0.35 at half opacity. */
   --screen-art-opacity: 0.3;
+  /* The wheat is gold in the source and the owner asked for the yellow gone,
+     so the band is flattened and re-tinted to the template's own green. The
+     resulting stalk colours are computed from these exact functions in the
+     badira block of contrast.py. */
+  --band-filter: grayscale(1) sepia(1) saturate(1.5) hue-rotate(68deg) brightness(0.86);
+
+  /* The seedling (components/templates/seedling.tsx): stem, two leaf tones,
+     a lighter vein, and the bed it grows in. */
+  --stem: #4f8a5c;
+  --leaf-a: #7cc084;
+  --leaf-b: #3f7d4c;
+  --vein: rgba(255, 255, 255, 0.4);
+  --hero-soil: #7a5a3c;
+  --hero-soil-top: #96744f;
+  --root: rgba(236, 216, 186, 0.55);
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
+}
+/* The band takes the theme's tint; the filter is a token, so the night
+   room can darken it rather than only hue it. */
+[data-template='badira'] .tpl-screen-band {
+  filter: var(--band-filter);
 }
 [data-bg='sprout'] .orb[data-orb='1'] {
   background: #cfe8d2;
@@ -783,8 +871,8 @@
     --nq-muted-foreground: #b5c7b8; /*  9.61:1 */
     --nq-accent: #8fd0a0; /*  9.50:1 as text · ink on it 10.47:1 */
     --nq-on-accent: #0d1310;
-    --nq-highlight: #f5b942;
-    --nq-on-highlight: #16251b;
+    --nq-highlight: #8fd0a0;
+    --nq-on-highlight: #0d1310;
     --nq-border: rgba(255, 255, 255, 0.12);
     --nq-border-strong: rgba(255, 255, 255, 0.22);
     --nq-ring: #8fd0a0;
@@ -799,6 +887,14 @@
     --glass-fallback-strong: #18241b;
     --orb-opacity: 0.45;
     --screen-art-opacity: 0.3;
+    --band-filter: grayscale(1) sepia(1) saturate(1.5) hue-rotate(68deg) brightness(0.7);
+    --stem: #6fae7c;
+    --leaf-a: #8fd0a0;
+    --leaf-b: #4f8f5f;
+    --vein: rgba(0, 0, 0, 0.28);
+    --hero-soil: #3a2c1f;
+    --hero-soil-top: #4a3828;
+    --root: rgba(160, 130, 100, 0.45);
   }
   :root:not([data-theme='light']) [data-bg='sprout'] .orb[data-orb='1'] {
     background: #1d3a27;
@@ -816,8 +912,8 @@
   --nq-muted-foreground: #b5c7b8;
   --nq-accent: #8fd0a0;
   --nq-on-accent: #0d1310;
-  --nq-highlight: #f5b942;
-  --nq-on-highlight: #16251b;
+  --nq-highlight: #8fd0a0;
+  --nq-on-highlight: #0d1310;
   --nq-border: rgba(255, 255, 255, 0.12);
   --nq-border-strong: rgba(255, 255, 255, 0.22);
   --nq-ring: #8fd0a0;
@@ -832,6 +928,14 @@
   --glass-fallback-strong: #18241b;
   --orb-opacity: 0.45;
   --screen-art-opacity: 0.3;
+  --band-filter: grayscale(1) sepia(1) saturate(1.5) hue-rotate(68deg) brightness(0.7);
+  --stem: #6fae7c;
+  --leaf-a: #8fd0a0;
+  --leaf-b: #4f8f5f;
+  --vein: rgba(0, 0, 0, 0.28);
+  --hero-soil: #3a2c1f;
+  --hero-soil-top: #4a3828;
+  --root: rgba(160, 130, 100, 0.45);
 }
 :root[data-theme='dark'] [data-bg='sprout'] .orb[data-orb='1'] {
   background: #1d3a27;
@@ -880,7 +984,14 @@
   /* Ink stars on parchment, and this is the binding number of the template:
      the gold has to stay legible where a card crosses a solid star. At 0.35
      it measured 4.30:1 and failed; at 0.22 it is 4.79:1. */
-  --screen-art-opacity: 0.22;
+  /* The chart by day: ink stars on parchment. The sisters stay at the 0.22
+     that was measured for a solid star under a card (accent 4.79:1). */
+  --star: rgba(28, 27, 51, 0.55);
+  --sister: rgba(28, 27, 51, 0.22);
+  --star-glow: rgba(28, 27, 51, 0.16);
+  --haze: rgba(125, 95, 16, 0.14);
+  --chart-line: rgba(28, 27, 51, 0.22);
+  --way: rgba(28, 27, 51, 0.04);
   /* The halo behind the avatar, and the lit edge of a lume card. */
   --lume: rgba(125, 95, 16, 0.5);
   --halo: rgba(125, 95, 16, 0.18);
@@ -920,7 +1031,14 @@
     --glass-fallback-subtle: #0d1020;
     --glass-fallback-strong: #141830;
     --orb-opacity: 0.4;
-    --screen-art-opacity: 0.75;
+    /* The sky at night. The sisters are the 0.75 white the old solid star was
+       measured at, so the card-over-a-star row still binds them. */
+    --star: #f2eee0;
+    --sister: rgba(255, 244, 214, 0.75);
+    --star-glow: rgba(245, 185, 66, 0.55);
+    --haze: rgba(120, 130, 220, 0.18);
+    --chart-line: rgba(242, 238, 224, 0.14);
+    --way: rgba(130, 140, 210, 0.11);
     --lume: rgba(245, 185, 66, 0.55);
     --halo: rgba(245, 185, 66, 0.16);
   }
@@ -955,7 +1073,12 @@
   --glass-fallback-subtle: #0d1020;
   --glass-fallback-strong: #141830;
   --orb-opacity: 0.4;
-  --screen-art-opacity: 0.75;
+  --star: #f2eee0;
+  --sister: rgba(255, 244, 214, 0.75);
+  --star-glow: rgba(245, 185, 66, 0.55);
+  --haze: rgba(120, 130, 220, 0.18);
+  --chart-line: rgba(242, 238, 224, 0.14);
+  --way: rgba(130, 140, 210, 0.11);
   --lume: rgba(245, 185, 66, 0.55);
   --halo: rgba(245, 185, 66, 0.16);
 }
@@ -1009,7 +1132,12 @@
   /* The drifting lines. The ceiling is the footer, the one piece of text that
      sits on the page rather than on a card: muted type over a solid stroke
      measures 5.83:1 here, and failed at 4.17:1 when this was 0.4. */
-  --screen-art-opacity: 0.26;
+  /* Feathers and the currents they ride (components/templates/air-drift.tsx).
+     A feather is the one solid thing the footer can land on — measured. */
+  --current: rgba(14, 109, 138, 0.3);
+  --feather: #c9dde6;
+  --feather-2: #dce9ef;
+  --feather-shaft: rgba(19, 32, 43, 0.4);
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -1047,6 +1175,10 @@
     --glass-fallback-strong: #14202c;
     --orb-opacity: 0.4;
     --screen-art-opacity: 0.45;
+    --current: rgba(125, 211, 252, 0.22);
+    --feather: #2a4658;
+    --feather-2: #223b4b;
+    --feather-shaft: rgba(232, 241, 246, 0.35);
   }
   :root:not([data-theme='light']) [data-bg='air'] .orb[data-orb='1'] {
     background: #143348;
@@ -1080,6 +1212,10 @@
   --glass-fallback-strong: #14202c;
   --orb-opacity: 0.4;
   --screen-art-opacity: 0.45;
+  --current: rgba(125, 211, 252, 0.22);
+  --feather: #2a4658;
+  --feather-2: #223b4b;
+  --feather-shaft: rgba(232, 241, 246, 0.35);
 }
 :root[data-theme='dark'] [data-bg='air'] .orb[data-orb='1'] {
   background: #143348;
@@ -1379,6 +1515,23 @@
   --pane: #cfeaf0;
   --pane-deep: #8fc6d2;
   --pebble-lip: rgba(255, 255, 255, 0.9);
+  --whale: #2b5f8a;
+  --whale-belly: #cfe3ee;
+  --whale-fin: #244f74;
+  --whale-eye: #0b2a33;
+  --whale-groove: rgba(11, 42, 51, 0.25);
+  /* The sea around the wreck: the surface at the top of the page, marine
+     snow, bubbles, kelp on the bed (all in deep-water.tsx). Kelp is the one
+     bare surface the footer can land on, so it is measured in contrast.py. */
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-2: rgba(255, 255, 255, 0.36);
+  --surface-glow: rgba(255, 255, 255, 0.55);
+  --snow: rgba(11, 42, 51, 0.18);
+  --bubble: rgba(11, 42, 51, 0.3);
+  --bubble-shine: rgba(255, 255, 255, 0.8);
+  --kelp-a: #a4d3dd;
+  --kelp-b: #b9dfe6;
+  --rock: rgba(11, 42, 51, 0.14);
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -1433,6 +1586,20 @@
     --pane: #0a2c3a;
     --pane-deep: #041a24;
     --pebble-lip: rgba(255, 255, 255, 0.07);
+    --whale: #1f5f86;
+    --whale-belly: #7fb6cf;
+    --whale-fin: #184c6e;
+    --whale-eye: #e4f4f6;
+    --whale-groove: rgba(4, 20, 28, 0.4);
+    --surface: rgba(143, 227, 240, 0.3);
+    --surface-2: rgba(143, 227, 240, 0.14);
+    --surface-glow: rgba(143, 227, 240, 0.16);
+    --snow: rgba(255, 255, 255, 0.22);
+    --bubble: rgba(255, 255, 255, 0.34);
+    --bubble-shine: rgba(255, 255, 255, 0.5);
+    --kelp-a: #12495a;
+    --kelp-b: #0e3c4a;
+    --rock: rgba(0, 0, 0, 0.45);
   }
   :root:not([data-theme='light']) [data-bg='deep'] .orb[data-orb='1'] {
     background: #0d4152;
@@ -1479,6 +1646,20 @@
   --pane: #0a2c3a;
   --pane-deep: #041a24;
   --pebble-lip: rgba(255, 255, 255, 0.07);
+  --whale: #1f5f86;
+  --whale-belly: #7fb6cf;
+  --whale-fin: #184c6e;
+  --whale-eye: #e4f4f6;
+  --whale-groove: rgba(4, 20, 28, 0.4);
+  --surface: rgba(143, 227, 240, 0.3);
+  --surface-2: rgba(143, 227, 240, 0.14);
+  --surface-glow: rgba(143, 227, 240, 0.16);
+  --snow: rgba(255, 255, 255, 0.22);
+  --bubble: rgba(255, 255, 255, 0.34);
+  --bubble-shine: rgba(255, 255, 255, 0.5);
+  --kelp-a: #12495a;
+  --kelp-b: #0e3c4a;
+  --rock: rgba(0, 0, 0, 0.45);
 }
 :root[data-theme='dark'] [data-bg='deep'] .orb[data-orb='1'] {
   background: #0d4152;
@@ -1806,16 +1987,19 @@
   --nq-border-strong: rgba(15, 23, 32, 0.26);
   --nq-ring: #0e6b9c;
 
-  --glass-bg: rgba(255, 255, 255, 0.62);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.46);
-  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  /* Glass, at the owner's request: thin enough that the range rings and the
+     horizon read through the cards. Nothing here is a solid surface under
+     text but the mast, and the mast carries none. */
+  --glass-bg: rgba(255, 255, 255, 0.5);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.36);
+  --glass-bg-strong: rgba(255, 255, 255, 0.68);
   --glass-border-color: rgba(255, 255, 255, 0.72);
   --glass-edge: 0 0 0 1px rgba(15, 23, 32, 0.05);
   --glass-shadow: 0 12px 34px rgba(15, 35, 60, 0.1);
   --glass-fallback: #f7f9fb;
   --glass-fallback-subtle: #f3f6f9;
   --glass-fallback-strong: #ffffff;
-  --glass-blur: 12px;
+  --glass-blur: 16px;
 
   /* An instrument has corners. */
   --nq-radius-sm: 2px;
@@ -1830,6 +2014,28 @@
 
   --scan-line: rgba(15, 23, 32, 0.05);
   --ping-glow: rgba(14, 107, 156, 0.35);
+  /* The drawn mast and the country it reaches (components/templates/mast.tsx):
+     steel, wires, panels, the lamp; range rings across the page; the horizon
+     and the far towns' lights. The lights are 1-2px points, under any surface
+     rule, so the footer's case stays the bare page. */
+  --mast-steel: rgba(15, 23, 32, 0.55);
+  --mast-wire: rgba(15, 23, 32, 0.25);
+  --mast-panel: #0e6b9c;
+  --lamp: #0e6b9c;
+  --lamp-glow: rgba(14, 107, 156, 0.35);
+  --range-ring: rgba(14, 107, 156, 0.3);
+  --land: #dfe6ee;
+  --land-edge: rgba(15, 23, 32, 0.22);
+  --town-light: #0e6b9c;
+  --signal-star: rgba(15, 23, 32, 0.28);
+  --signal-sat: #3a4753;
+  --signal-wave: rgba(14, 107, 156, 0.3);
+  --signal-haze: rgba(14, 107, 156, 0.1);
+  --ridge-far: #cfd9e4;
+  --ridge-mid: #bcc9d8;
+  --ridge-near: #a9b9cb;
+  --sweep-tail: rgba(14, 107, 156, 0.08);
+  --sweep-head: rgba(14, 107, 156, 0.28);
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -1851,15 +2057,16 @@
     --nq-border: rgba(255, 255, 255, 0.13);
     --nq-border-strong: rgba(255, 255, 255, 0.26);
     --nq-ring: #56ccf2;
-    --glass-bg: rgba(12, 18, 28, 0.74);
-    --glass-bg-subtle: rgba(12, 18, 28, 0.58);
-    --glass-bg-strong: rgba(12, 18, 28, 0.86);
+    --glass-bg: rgba(12, 18, 28, 0.58);
+    --glass-bg-subtle: rgba(12, 18, 28, 0.44);
+    --glass-bg-strong: rgba(12, 18, 28, 0.74);
     --glass-border-color: rgba(255, 255, 255, 0.11);
     --glass-edge: 0 0 0 0 transparent;
     --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
     --glass-fallback: #0a1019;
     --glass-fallback-subtle: #080d15;
     --glass-fallback-strong: #0d141f;
+    --glass-blur: 16px;
     --nq-radius-sm: 2px;
     --nq-radius-md: 3px;
     --nq-radius-lg: 4px;
@@ -1867,6 +2074,24 @@
     --screen-art-opacity: 0.32;
     --scan-line: rgba(86, 204, 242, 0.055);
     --ping-glow: rgba(86, 204, 242, 0.4);
+    --mast-steel: rgba(230, 241, 250, 0.5);
+    --mast-wire: rgba(230, 241, 250, 0.18);
+    --mast-panel: #56ccf2;
+    --lamp: #56ccf2;
+    --lamp-glow: rgba(86, 204, 242, 0.45);
+    --range-ring: rgba(86, 204, 242, 0.35);
+    --land: #050a10;
+    --land-edge: rgba(86, 204, 242, 0.22);
+    --town-light: #9fe0f7;
+    --signal-star: rgba(230, 241, 250, 0.8);
+    --signal-sat: #c9d8e6;
+    --signal-wave: rgba(86, 204, 242, 0.28);
+    --signal-haze: rgba(86, 204, 242, 0.12);
+    --ridge-far: #0e1a2e;
+    --ridge-mid: #0a1424;
+    --ridge-near: #060d19;
+    --sweep-tail: rgba(86, 204, 242, 0.06);
+    --sweep-head: rgba(86, 204, 242, 0.3);
   }
 }
 :root[data-theme='dark'] [data-template='mada'] {
@@ -1880,15 +2105,16 @@
   --nq-border: rgba(255, 255, 255, 0.13);
   --nq-border-strong: rgba(255, 255, 255, 0.26);
   --nq-ring: #56ccf2;
-  --glass-bg: rgba(12, 18, 28, 0.74);
-  --glass-bg-subtle: rgba(12, 18, 28, 0.58);
-  --glass-bg-strong: rgba(12, 18, 28, 0.86);
+  --glass-bg: rgba(12, 18, 28, 0.58);
+  --glass-bg-subtle: rgba(12, 18, 28, 0.44);
+  --glass-bg-strong: rgba(12, 18, 28, 0.74);
   --glass-border-color: rgba(255, 255, 255, 0.11);
   --glass-edge: 0 0 0 0 transparent;
   --glass-shadow: 0 12px 34px rgba(0, 0, 0, 0.55);
   --glass-fallback: #0a1019;
   --glass-fallback-subtle: #080d15;
   --glass-fallback-strong: #0d141f;
+    --glass-blur: 16px;
   --nq-radius-sm: 2px;
   --nq-radius-md: 3px;
   --nq-radius-lg: 4px;
@@ -1896,6 +2122,24 @@
   --screen-art-opacity: 0.32;
   --scan-line: rgba(86, 204, 242, 0.055);
   --ping-glow: rgba(86, 204, 242, 0.4);
+    --mast-steel: rgba(230, 241, 250, 0.5);
+    --mast-wire: rgba(230, 241, 250, 0.18);
+    --mast-panel: #56ccf2;
+    --lamp: #56ccf2;
+    --lamp-glow: rgba(86, 204, 242, 0.45);
+    --range-ring: rgba(86, 204, 242, 0.35);
+    --land: #050a10;
+    --land-edge: rgba(86, 204, 242, 0.22);
+    --town-light: #9fe0f7;
+    --signal-star: rgba(230, 241, 250, 0.8);
+    --signal-sat: #c9d8e6;
+    --signal-wave: rgba(86, 204, 242, 0.28);
+    --signal-haze: rgba(86, 204, 242, 0.12);
+    --ridge-far: #0e1a2e;
+    --ridge-mid: #0a1424;
+    --ridge-near: #060d19;
+    --sweep-tail: rgba(86, 204, 242, 0.06);
+    --sweep-head: rgba(86, 204, 242, 0.3);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -1925,16 +2169,16 @@
      design one: a white-hot core passing behind a translucent card dropped the
      accent to 3.31:1. At 0.86 it is 5.4:1, and an instrument plate should not
      be transparent to the weather anyway. */
-  --glass-bg: rgba(255, 255, 255, 0.86);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.76);
-  --glass-bg-strong: rgba(255, 255, 255, 0.94);
+  --glass-bg: rgba(255, 255, 255, 0.66);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.56);
+  --glass-bg-strong: rgba(255, 255, 255, 0.8);
   --glass-border-color: rgba(255, 255, 255, 0.72);
   --glass-edge: 0 0 0 1px rgba(25, 16, 42, 0.05);
   --glass-shadow: 0 14px 38px rgba(60, 20, 110, 0.12);
   --glass-fallback: #fbf9fd;
   --glass-fallback-subtle: #f8f5fc;
   --glass-fallback-strong: #ffffff;
-  --glass-blur: 13px;
+  --glass-blur: 16px;
   --orb-opacity: 0.55;
 
   /* Static in the air. The ceiling is the footer, which sits on the page
@@ -1952,6 +2196,14 @@
   --bolt-sheath: rgba(124, 34, 206, 0.6);
   --bolt-core: #5b1a99;
   --bolt-flash: rgba(124, 34, 206, 0.05);
+  /* The yard (components/templates/lab.tsx): apparatus in silhouette, the
+     coronas on the toroids, the dust in the air. Measured in contrast.py. */
+  --lab-silhouette: rgba(124, 34, 206, 0.14);
+  --lab-ground: rgba(25, 16, 42, 0.15);
+  --lab-line: rgba(124, 34, 206, 0.28);
+  --lab-corona: rgba(124, 34, 206, 0.3);
+  --lab-lit: #7c22ce;
+  --lab-dust: rgba(124, 34, 206, 0.35);
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -1978,24 +2230,31 @@
     --nq-border: rgba(255, 255, 255, 0.13);
     --nq-border-strong: rgba(255, 255, 255, 0.26);
     --nq-ring: #c084fc;
-    --glass-bg: rgba(20, 13, 32, 0.9);
-    --glass-bg-subtle: rgba(20, 13, 32, 0.82);
-    --glass-bg-strong: rgba(20, 13, 32, 0.95);
+    --glass-bg: rgba(20, 13, 32, 0.72);
+    --glass-bg-subtle: rgba(20, 13, 32, 0.62);
+    --glass-bg-strong: rgba(20, 13, 32, 0.82);
     --glass-border-color: rgba(255, 255, 255, 0.11);
     --glass-edge: 0 0 0 0 transparent;
     --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
     --glass-fallback: #120c1d;
     --glass-fallback-subtle: #100a1a;
     --glass-fallback-strong: #160f24;
+    --glass-blur: 16px;
     --orb-opacity: 0.3;
     --screen-art-opacity: 0.45;
     --live-edge: rgba(192, 132, 252, 0.3);
     --live-glow: rgba(192, 132, 252, 0.5);
     --arc-trace: rgba(192, 132, 252, 0.35);
     --bolt-halo: rgba(168, 85, 247, 0.45);
-    --bolt-sheath: rgba(216, 180, 254, 0.85);
+    --bolt-sheath: rgba(216, 180, 254, 0.55);
     --bolt-core: #ffffff;
     --bolt-flash: rgba(192, 132, 252, 0.07);
+    --lab-silhouette: rgba(0, 0, 0, 0.55);
+    --lab-ground: rgba(0, 0, 0, 0.6);
+    --lab-line: rgba(192, 132, 252, 0.25);
+    --lab-corona: rgba(192, 132, 252, 0.32);
+    --lab-lit: #d8b4fe;
+    --lab-dust: rgba(216, 180, 254, 0.5);
   }
   :root:not([data-theme='light']) [data-bg='volt'] .orb[data-orb='1'] {
     background: #34175c;
@@ -2018,24 +2277,31 @@
   --nq-border: rgba(255, 255, 255, 0.13);
   --nq-border-strong: rgba(255, 255, 255, 0.26);
   --nq-ring: #c084fc;
-  --glass-bg: rgba(20, 13, 32, 0.9);
-  --glass-bg-subtle: rgba(20, 13, 32, 0.82);
-  --glass-bg-strong: rgba(20, 13, 32, 0.95);
+  --glass-bg: rgba(20, 13, 32, 0.72);
+  --glass-bg-subtle: rgba(20, 13, 32, 0.62);
+  --glass-bg-strong: rgba(20, 13, 32, 0.82);
   --glass-border-color: rgba(255, 255, 255, 0.11);
   --glass-edge: 0 0 0 0 transparent;
   --glass-shadow: 0 14px 38px rgba(0, 0, 0, 0.6);
   --glass-fallback: #120c1d;
   --glass-fallback-subtle: #100a1a;
   --glass-fallback-strong: #160f24;
+    --glass-blur: 16px;
   --orb-opacity: 0.3;
   --screen-art-opacity: 0.45;
   --live-edge: rgba(192, 132, 252, 0.3);
   --live-glow: rgba(192, 132, 252, 0.5);
   --arc-trace: rgba(192, 132, 252, 0.35);
   --bolt-halo: rgba(168, 85, 247, 0.45);
-  --bolt-sheath: rgba(216, 180, 254, 0.85);
+  --bolt-sheath: rgba(216, 180, 254, 0.55);
   --bolt-core: #ffffff;
   --bolt-flash: rgba(192, 132, 252, 0.07);
+    --lab-silhouette: rgba(0, 0, 0, 0.55);
+    --lab-ground: rgba(0, 0, 0, 0.6);
+    --lab-line: rgba(192, 132, 252, 0.25);
+    --lab-corona: rgba(192, 132, 252, 0.32);
+    --lab-lit: #d8b4fe;
+    --lab-dust: rgba(216, 180, 254, 0.5);
 }
 :root[data-theme='dark'] [data-bg='volt'] .orb[data-orb='1'] {
   background: #34175c;
@@ -2228,18 +2494,20 @@
   /* Deeper than the first pass (#cfe3f5). On a sky that pale, a white cloud
      has nothing to show against — both the clouds and the paper cards were
      disappearing into the ground. */
-  --nq-background: #bcd9f2;
-  --nq-foreground: #0f2436; /* 15.47:1 on the card · 10.82:1 on the bare sky */
-  --nq-muted-foreground: #334f68; /*  8.35:1 on the card · 5.83:1 on the bare
-                                     sky, which is where the footer sits — the
-                                     binding case on a coloured ground */
-  --nq-accent: #0b4f8a; /*  8.25:1 as text · white on it 8.40:1 */
+  /* The hero is the bare sky now (no card), so every text colour is measured
+     against the DEEPEST sky overhead, --sky-high, and the footer against the
+     hills at the foot of the viewport. See the naseem block in contrast.py. */
+  --nq-background: #d9ecfb;
+  --nq-foreground: #0f2436;
+  --nq-muted-foreground: #24405a; /* a step darker than the first pass: 5.83:1
+                                     on #86bbe8 overhead, 5.9:1 on the near hill */
+  --nq-accent: #083f70; /* 5.25:1 on the deep sky · white on it 10.7:1 */
   --nq-on-accent: #ffffff;
   --nq-highlight: #7cc0f5;
   --nq-on-highlight: #0f2436;
-  --nq-border: rgba(15, 36, 54, 0.1);
-  --nq-border-strong: rgba(15, 36, 54, 0.2);
-  --nq-ring: #0b4f8a;
+  --nq-border: rgba(15, 36, 54, 0.12);
+  --nq-border-strong: rgba(15, 36, 54, 0.24);
+  --nq-ring: #083f70;
 
   /* Paper, not glass. On a coloured ground a translucent card picks up the sky
      and stops reading as a sheet lying on top of it, so these are close to
@@ -2257,11 +2525,25 @@
   --glass-fallback-strong: #ffffff;
   --glass-blur: 6px;
 
-  /* Clouds. White at this strength lightens the ground under the footer, which
-     only ever helps the contrast above. */
-  --cloud-tint: rgba(255, 255, 255, 0.78);
-  --sky-high: #a6cdee; /* overhead */
-  --sky-low: #d8e9f8; /* toward the horizon */
+  /* The drawn sky (components/templates/sky.tsx). Day: sun and birds on;
+     moon and stars off. White clouds only ever lighten the ground under dark
+     text, so the bare deep sky stays the worst case. */
+  --sky-high: #86bbe8; /* overhead */
+  --sky-low: #d9ecfb; /* toward the horizon */
+  --sky-sun: block;
+  --sky-moon: none;
+  --sky-stars: none;
+  --sky-birds: block;
+  --sun-core: rgba(255, 250, 228, 0.98);
+  --cloud-fill: #ffffff;
+  --cloud-opacity: 0.92;
+  --hill-far: #b6d2e8;
+  --hill-near: #9fc3df;
+  --bird-ink: rgba(15, 36, 54, 0.6);
+  --kite-filter: none;
+  --moon-fill: #f3ecd6;
+  --moon-halo: rgba(243, 236, 214, 0.18);
+  --star-fill: #dfe9f7;
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -2275,12 +2557,12 @@
    the horizon. One gradient does more for the illusion than any decoration,
    and it is vertical, so it needs no RTL twin. */
 [data-bg='breeze'] {
-  background-image: linear-gradient(to bottom, var(--sky-high) 0%, var(--sky-low) 62%);
+  background-image: linear-gradient(to bottom, var(--sky-high) 0%, var(--sky-low) 72%);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) [data-template='naseem'] {
-    --nq-background: #0a1723;
+    --nq-background: #10243a;
     --nq-foreground: #e9f3fc; /* 14.82:1 on the card */
     --nq-muted-foreground: #a9c2d8; /*  9.04:1 on the card · 9.83:1 on the page */
     --nq-accent: #9ec5ff; /*  9.43:1 as text · the page on it 9.79:1 · leaning
@@ -2291,23 +2573,34 @@
     --nq-border: rgba(255, 255, 255, 0.12);
     --nq-border-strong: rgba(255, 255, 255, 0.24);
     --nq-ring: #9ec5ff;
-    --glass-bg: rgba(18, 32, 48, 0.9);
-    --glass-bg-subtle: rgba(18, 32, 48, 0.74);
-    --glass-bg-strong: rgba(18, 32, 48, 0.96);
+    /* A shade LIGHTER than the sky, so a card at night still reads as paper
+       lying on it rather than as a hole cut into it. */
+    --glass-bg: rgba(27, 46, 68, 0.92);
+    --glass-bg-subtle: rgba(27, 46, 68, 0.8);
+    --glass-bg-strong: rgba(27, 46, 68, 0.96);
     --glass-border-color: rgba(255, 255, 255, 0.1);
     --glass-edge: 0 0 0 0 transparent;
     --glass-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
-    --glass-fallback: #111f2f;
-    --glass-fallback-subtle: #0e1b29;
-    --glass-fallback-strong: #142334;
-    /* At night a cloud is haze, not a white shape. */
-    --cloud-tint: rgba(210, 232, 255, 0.07);
+    --glass-fallback: #1b2e44;
+    --glass-fallback-subtle: #182a3e;
+    --glass-fallback-strong: #1e3249;
+    /* Night: moon and stars on, sun and birds off. A cloud is haze, not a
+       white shape; the kites dim to dusk; the hills go to silhouette. */
     --sky-high: #071220;
-    --sky-low: #12243a;
+    --sky-low: #10243a;
+    --sky-sun: none;
+    --sky-moon: block;
+    --sky-stars: block;
+    --sky-birds: none;
+    --cloud-fill: #c8dcf5;
+    --cloud-opacity: 0.09;
+    --hill-far: #0f2238;
+    --hill-near: #0a1a2c;
+    --kite-filter: brightness(0.78) saturate(0.85);
   }
 }
 :root[data-theme='dark'] [data-template='naseem'] {
-  --nq-background: #0a1723;
+  --nq-background: #10243a;
   --nq-foreground: #e9f3fc;
   --nq-muted-foreground: #a9c2d8;
   --nq-accent: #9ec5ff;
@@ -2317,18 +2610,26 @@
   --nq-border: rgba(255, 255, 255, 0.12);
   --nq-border-strong: rgba(255, 255, 255, 0.24);
   --nq-ring: #9ec5ff;
-  --glass-bg: rgba(18, 32, 48, 0.9);
-  --glass-bg-subtle: rgba(18, 32, 48, 0.74);
-  --glass-bg-strong: rgba(18, 32, 48, 0.96);
+  --glass-bg: rgba(27, 46, 68, 0.92);
+  --glass-bg-subtle: rgba(27, 46, 68, 0.8);
+  --glass-bg-strong: rgba(27, 46, 68, 0.96);
   --glass-border-color: rgba(255, 255, 255, 0.1);
   --glass-edge: 0 0 0 0 transparent;
   --glass-shadow: 0 18px 44px rgba(0, 0, 0, 0.55);
-  --glass-fallback: #111f2f;
-  --glass-fallback-subtle: #0e1b29;
-  --glass-fallback-strong: #142334;
-  --cloud-tint: rgba(210, 232, 255, 0.07);
+  --glass-fallback: #1b2e44;
+  --glass-fallback-subtle: #182a3e;
+  --glass-fallback-strong: #1e3249;
   --sky-high: #071220;
-  --sky-low: #12243a;
+  --sky-low: #10243a;
+  --sky-sun: none;
+  --sky-moon: block;
+  --sky-stars: block;
+  --sky-birds: none;
+  --cloud-fill: #c8dcf5;
+  --cloud-opacity: 0.09;
+  --hill-far: #0f2238;
+  --hill-near: #0a1a2c;
+  --kite-filter: brightness(0.78) saturate(0.85);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -2534,18 +2835,53 @@
   --window-lit: rgba(240, 175, 70, 0.7);
   --window-bright: #f0a84a;
   --window-halo: rgba(240, 168, 74, 0.28);
-  --city-mass: #c3cee1;
-  --city-road: #dfe5ef;
-  --city-kerb: rgba(16, 24, 42, 0.18);
   --marquee-spill: rgba(240, 168, 74, 0.2); /* accent on it 5.91:1 */
   --cityline-opacity: 0.4;
-  --burst-opacity: 0.8;
-  --car-head: #f0a84a;
-  --car-tail: #d94a6a;
-  --city-crowd-ink: rgba(16, 24, 42, 0.5);
+  --screen-art-opacity: 0.9;
+
+  /* Third pass, from the owner's photographs: blue hour. The sky still has
+     light in it, the screens are on. Tokens for skyline.tsx. */
+  --rain-display: none;
+  --ny-fog: rgba(255, 255, 255, 0.5);
+  --ny-star: rgba(16, 24, 42, 0.18);
+  --ny-haze: rgba(255, 200, 150, 0.22);
+  --ny-plane: rgba(16, 24, 42, 0.4);
+  --ny-mass: #b8c4da;
+  --ny-flank: #a9b7d0;
+  --ny-needle: #8593ad;
+  --ny-window-dim: rgba(255, 210, 120, 0.4);
+  --ny-window-lit: rgba(255, 190, 80, 0.8);
+  --ny-wtc: rgba(90, 160, 230, 0.18);
+  --ny-crown: rgba(255, 190, 80, 0.6);
+  --ny-magenta: #e0338a;
+  --ny-cyan: #1fa4d6;
+  --ny-amber: #eba227;
+  --ny-violet: #8f5cf0;
+  --ny-red: #e03a3a;
+  --board-alpha: 0.85;
+  --ny-iron: rgba(16, 24, 42, 0.45);
+  --ny-stone: #98a6bd;
+  --ny-patina: #6f9c8b;
+  --ny-torch: #f0a020;
+  --ny-sidewalk: #d3dae6;
+  --ny-road: #c4ccda;
+  --ny-kerb: rgba(16, 24, 42, 0.25);
+  --reflect-alpha: 0.3;
+  --ny-steam: rgba(255, 255, 255, 0.8);
+  --ny-lamp: #ffd98a;
+  --ny-crowd: rgba(16, 24, 42, 0.55);
+  --ny-umbrella: rgba(16, 24, 42, 0.5);
+  --ny-cab: #f5c531;
+  --ny-cab-light: #10182a;
+  --ny-screen-spill: rgba(224, 51, 138, 0.25);
+  --tower-canopy: #3a4256;
+  --neon-opacity: 0.9;
+  --neon-panel: rgba(16, 24, 42, 0.06);
+  --neon-panel-edge: rgba(16, 24, 42, 0.18);
+  --neon-bulb: #f0a84a;
+
 
   /* The far skyline, at the foot of the viewport. */
-  --screen-art-opacity: 0.5;
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -2563,7 +2899,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) [data-template='newyork'] {
-    --nq-background: #070b14;
+    --nq-background: #0a1a3f;
     --nq-foreground: #eaf0fb; /* 15.82:1 on the card */
     --nq-muted-foreground: #a9b6cd; /*  8.84:1 on the card */
     --nq-accent: #ff5fa2; /*  6.39:1 as text · the page on it 6.95:1 */
@@ -2593,36 +2929,70 @@
     /* The hero tower stands IN FRONT of the far city, so its face is lighter
        than the city's mass and it carries a lit edge. Without the separation
        the one building the portrait is in disappeared into the skyline. */
-    --tower-face: #1b2740;
+      --tower-face: #1b2740;
     --tower-edge: rgba(255, 207, 122, 0.45);
     --window-off: rgba(255, 255, 255, 0.05);
     --window-dim: rgba(255, 207, 122, 0.22);
     --window-lit: rgba(255, 207, 122, 0.6);
     --window-bright: #ffcf7a;
     --window-halo: rgba(255, 207, 122, 0.3);
-    --city-mass: #1b2741;
-    --city-road: #0a0e18;
-    --city-kerb: rgba(255, 255, 255, 0.14);
     --marquee-spill: rgba(255, 207, 122, 0.1); /* accent on it 5.19:1 */
     --cityline-opacity: 0.32;
-    --burst-opacity: 0.9;
-    --car-head: #ffd79a;
-    --car-tail: #ff5f7a;
-    --city-crowd-ink: rgba(233, 240, 251, 0.45);
-    --screen-art-opacity: 0.4;
+    --screen-art-opacity: 1;
+    --rain-display: block;
+    --ny-fog: rgba(120, 90, 140, 0.22);
+    --ny-star: rgba(234, 240, 251, 0.8);
+    --ny-haze: rgba(255, 120, 90, 0.2);
+    --ny-plane: rgba(234, 240, 251, 0.35);
+    --ny-mass: #0d1d44;
+    --ny-flank: #0a1630;
+    --ny-needle: #9fd2ff;
+    --ny-window-dim: rgba(255, 236, 190, 0.22);
+    --ny-window-lit: rgba(255, 244, 214, 0.4);
+    --ny-wtc: rgba(90, 170, 255, 0.16);
+    --ny-crown: rgba(255, 220, 140, 0.55);
+    --ny-magenta: #ff2d92;
+    --ny-cyan: #35c8ff;
+    --ny-amber: #ffc23d;
+    --ny-violet: #a56bff;
+    --ny-red: #ff3b3b;
+    --board-alpha: 0.8;
+    --ny-iron: rgba(234, 240, 251, 0.3);
+    --ny-stone: #1a2a4a;
+    --ny-patina: #1e4a3c;
+    --ny-torch: #ffd36a;
+    --ny-sidewalk: #0c1326;
+    --ny-road: #070b16;
+    --ny-kerb: rgba(255, 255, 255, 0.16);
+    --reflect-alpha: 0.45;
+    --ny-steam: rgba(255, 255, 255, 0.35);
+    --ny-lamp: #ffd98a;
+    --ny-crowd: rgba(8, 12, 24, 0.9);
+    --ny-umbrella: rgba(8, 12, 24, 0.95);
+    --ny-cab: #f5c531;
+    --ny-cab-light: #ffe9a8;
+    --ny-screen-spill: rgba(255, 45, 146, 0.3);
+    --tower-canopy: #2a3148;
+    --neon-opacity: 1;
+    --neon-panel: rgba(0, 0, 0, 0.35);
+    --neon-panel-edge: rgba(255, 255, 255, 0.1);
+    --neon-bulb: #ffd79a;
   }
 }
 :root[data-theme='dark'] [data-template='newyork'] {
-  --nq-background: #070b14;
-  --nq-foreground: #eaf0fb;
-  --nq-muted-foreground: #a9b6cd;
-  --nq-accent: #ff5fa2;
+  --nq-background: #0a1a3f;
+  --nq-foreground: #eaf0fb; /* 15.82:1 on the card */
+  --nq-muted-foreground: #a9b6cd; /*  8.84:1 on the card */
+  --nq-accent: #ff5fa2; /*  6.39:1 as text · the page on it 6.95:1 */
   --nq-on-accent: #070b14;
   --nq-highlight: #ff5fa2;
   --nq-on-highlight: #070b14;
   --nq-border: rgba(255, 255, 255, 0.12);
   --nq-border-strong: rgba(255, 255, 255, 0.24);
   --nq-ring: #ff5fa2;
+  /* Deliberately thinner than the rest of the set: the city is behind every
+     card and the whole point is that it shows through. Measured with a lit
+     window glowing through — accent 5.69:1. */
   --glass-bg: rgba(16, 23, 38, 0.74);
   --glass-bg-subtle: rgba(16, 23, 38, 0.6);
   --glass-bg-strong: rgba(16, 23, 38, 0.84);
@@ -2644,16 +3014,47 @@
   --window-lit: rgba(255, 207, 122, 0.6);
   --window-bright: #ffcf7a;
   --window-halo: rgba(255, 207, 122, 0.3);
-  --city-mass: #1b2741;
-  --city-road: #0a0e18;
-  --city-kerb: rgba(255, 255, 255, 0.14);
-  --marquee-spill: rgba(255, 207, 122, 0.1);
+  --marquee-spill: rgba(255, 207, 122, 0.1); /* accent on it 5.19:1 */
   --cityline-opacity: 0.32;
-  --burst-opacity: 0.5;
-  --car-head: #ffd79a;
-  --car-tail: #ff5f7a;
-  --city-crowd-ink: rgba(233, 240, 251, 0.45);
-  --screen-art-opacity: 0.4;
+  --screen-art-opacity: 1;
+  --rain-display: block;
+  --ny-fog: rgba(120, 90, 140, 0.22);
+  --ny-star: rgba(234, 240, 251, 0.8);
+  --ny-haze: rgba(255, 120, 90, 0.2);
+  --ny-plane: rgba(234, 240, 251, 0.35);
+  --ny-mass: #0d1d44;
+  --ny-flank: #0a1630;
+  --ny-needle: #9fd2ff;
+  --ny-window-dim: rgba(255, 236, 190, 0.22);
+  --ny-window-lit: rgba(255, 244, 214, 0.4);
+  --ny-wtc: rgba(90, 170, 255, 0.16);
+  --ny-crown: rgba(255, 220, 140, 0.55);
+  --ny-magenta: #ff2d92;
+  --ny-cyan: #35c8ff;
+  --ny-amber: #ffc23d;
+  --ny-violet: #a56bff;
+  --ny-red: #ff3b3b;
+  --board-alpha: 0.8;
+  --ny-iron: rgba(234, 240, 251, 0.3);
+  --ny-stone: #1a2a4a;
+  --ny-patina: #1e4a3c;
+  --ny-torch: #ffd36a;
+  --ny-sidewalk: #0c1326;
+  --ny-road: #070b16;
+  --ny-kerb: rgba(255, 255, 255, 0.16);
+  --reflect-alpha: 0.45;
+  --ny-steam: rgba(255, 255, 255, 0.35);
+  --ny-lamp: #ffd98a;
+  --ny-crowd: rgba(8, 12, 24, 0.9);
+  --ny-umbrella: rgba(8, 12, 24, 0.95);
+  --ny-cab: #f5c531;
+  --ny-cab-light: #ffe9a8;
+  --ny-screen-spill: rgba(255, 45, 146, 0.3);
+    --tower-canopy: #2a3148;
+  --neon-opacity: 1;
+  --neon-panel: rgba(0, 0, 0, 0.35);
+  --neon-panel-edge: rgba(255, 255, 255, 0.1);
+  --neon-bulb: #ffd79a;
 }
 
 /* The sky, declared in all three blocks so a JS-off theme switch still lands. */
@@ -2854,16 +3255,16 @@
      filling the page, and the framed copy over it) and at 0.50 the pair put
      muted type at 3.72:1. At 0.58 with both layers she still reads clearly
      through the card and the accent holds 5.15:1. */
-  --glass-bg: rgba(255, 255, 255, 0.58);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.46);
-  --glass-bg-strong: rgba(255, 255, 255, 0.82);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.6);
+  --glass-bg-strong: rgba(255, 255, 255, 0.86);
   --glass-border-color: rgba(255, 255, 255, 0.8);
   --glass-edge: 0 0 0 1px rgba(28, 26, 34, 0.04);
   --glass-shadow: 0 14px 38px rgba(60, 40, 80, 0.1);
   --glass-fallback: #fefefc;
   --glass-fallback-subtle: #fbf9f6;
   --glass-fallback-strong: #ffffff;
-  --glass-blur: 12px;
+  --glass-blur: 5px; /* low, so the paintings behind a card stay recognisable */
 
   /* The six pigments. Bold on purpose — this is the one template that is not
      monochrome, and a timid palette would make the brief pointless. */
@@ -2873,6 +3274,19 @@
   --pig-violet: #7c4dff;
   --pig-blue: #2f6bff;
   --pig-lime: #8ed600;
+  --pig-red: #e0382f;
+  --pig-yellow: #f2c53d;
+  --gal-floor-a: #d9c3a5;
+  --gal-floor-b: #c4a883;
+  --gal-board-line: rgba(90, 60, 30, 0.25);
+  --gal-skirting: #e9e5dd;
+  --gal-track: #2b2630;
+  --gal-lamp: #3a3440;
+  --gal-light: #fff6dc;
+  --gal-cone-alpha: 0.55;
+  --gal-frame: #2b2630;
+  --gal-gilt: #c9a24a;
+  --gal-bench: #6b4f36;
 
   /* The room. A gallery is a wall, a light washing down it, and a rail. */
   --wall-fill-opacity: 0.3;
@@ -2903,7 +3317,8 @@
     --nq-border: rgba(255, 255, 255, 0.12);
     --nq-border-strong: rgba(255, 255, 255, 0.24);
     --nq-ring: #d29bff;
-    --glass-bg: rgba(28, 26, 36, 0.52);
+    --glass-bg: rgba(28, 26, 36, 0.68);
+    --glass-blur: 5px;
     --glass-bg-subtle: rgba(28, 26, 36, 0.42);
     --glass-bg-strong: rgba(28, 26, 36, 0.8);
     --glass-border-color: rgba(255, 255, 255, 0.1);
@@ -2928,6 +3343,19 @@
     --pig-violet: #a98bff;
     --pig-blue: #6f9cff;
     --pig-lime: #b6e84a;
+    --pig-red: #e8443c;
+    --pig-yellow: #ffd45a;
+    --gal-floor-a: #2a2119;
+    --gal-floor-b: #1d1712;
+    --gal-board-line: rgba(0, 0, 0, 0.35);
+    --gal-skirting: #2f2a36;
+    --gal-track: #0e0c12;
+    --gal-lamp: #3a3440;
+    --gal-light: #ffe9b8;
+    --gal-cone-alpha: 0.3;
+    --gal-frame: #14121a;
+    --gal-gilt: #b08a3a;
+    --gal-bench: #3a2c20;
   }
 }
 :root[data-theme='dark'] [data-template='fann'] {
@@ -2941,7 +3369,8 @@
   --nq-border: rgba(255, 255, 255, 0.12);
   --nq-border-strong: rgba(255, 255, 255, 0.24);
   --nq-ring: #d29bff;
-  --glass-bg: rgba(28, 26, 36, 0.52);
+  --glass-bg: rgba(28, 26, 36, 0.68);
+    --glass-blur: 5px;
   --glass-bg-subtle: rgba(28, 26, 36, 0.42);
   --glass-bg-strong: rgba(28, 26, 36, 0.8);
   --glass-border-color: rgba(255, 255, 255, 0.1);
@@ -2963,6 +3392,19 @@
   --pig-violet: #a98bff;
   --pig-blue: #6f9cff;
   --pig-lime: #b6e84a;
+  --pig-red: #e8443c;
+  --pig-yellow: #ffd45a;
+  --gal-floor-a: #2a2119;
+  --gal-floor-b: #1d1712;
+  --gal-board-line: rgba(0, 0, 0, 0.35);
+  --gal-skirting: #2f2a36;
+  --gal-track: #0e0c12;
+  --gal-lamp: #3a3440;
+  --gal-light: #ffe9b8;
+  --gal-cone-alpha: 0.3;
+  --gal-frame: #14121a;
+  --gal-gilt: #b08a3a;
+  --gal-bench: #3a2c20;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
@@ -2994,9 +3436,11 @@
   --nq-border-strong: rgba(17, 24, 39, 0.24);
   --nq-ring: #5b21b6;
 
-  --glass-bg: rgba(255, 255, 255, 0.84);
-  --glass-bg-subtle: rgba(255, 255, 255, 0.7);
-  --glass-bg-strong: rgba(255, 255, 255, 0.94);
+  /* Thinner than the first pass (0.84): the window light on the page has to
+     reach through the cards, or the room is invisible under them. */
+  --glass-bg: rgba(255, 255, 255, 0.74);
+  --glass-bg-subtle: rgba(255, 255, 255, 0.6);
+  --glass-bg-strong: rgba(255, 255, 255, 0.9);
   --glass-border-color: rgba(255, 255, 255, 0.85);
   --glass-edge: 0 0 0 1px rgba(17, 24, 39, 0.05);
   --glass-shadow: 0 12px 32px rgba(20, 25, 50, 0.1);
@@ -3012,11 +3456,35 @@
   --nq-radius-lg: 6px;
   --nq-radius-xl: 6px;
 
-  --plan-line: rgba(17, 24, 39, 0.045);
-  --table-top: #dde2ec;
-  --table-line: rgba(17, 24, 39, 0.34);
-  --table-seat: rgba(17, 24, 39, 0.26);
-  --table-thing: rgba(91, 33, 182, 0.28);
+  /* The room: floor tiles, afternoon sun through the blinds of a window at
+     the far top corner, and a warm glow from that window. */
+  --plan-line: rgba(17, 24, 39, 0.035);
+  --blind-light: transparent;
+  --window-glow: transparent;
+  --pane-sky: #bcd8f2;
+  --pane-oculus: #cfe3f7;
+  --mullion: rgba(17, 24, 39, 0.35);
+  --wall-glass: rgba(188, 216, 242, 0.25);
+  --atrium-sun: rgba(255, 244, 214, 0.95);
+  --atrium-sun-mid: rgba(255, 236, 190, 0.45);
+  --atrium-beam: rgba(255, 240, 205, 0.55);
+  /* The table: walnut with a lit rim, on a shadow. Everything on it is a
+     token so the night room can relight it. */
+  --table-wood-a: #c9a27a;
+  --table-wood-b: #b08a60;
+  --table-rim: rgba(255, 255, 255, 0.55);
+  --table-grain: rgba(80, 50, 20, 0.14);
+  --table-shadow: rgba(17, 24, 39, 0.28);
+  --table-seat: #6b7280;
+  --table-seat-back: #4b5563;
+  --table-laptop: #1f2937;
+  --table-screen: #a78bfa;
+  --table-pad: #fbfbfd;
+  --table-pen: #1f2937;
+  --table-cup: #f8f8fb;
+  --table-cup-handle: rgba(31, 41, 55, 0.6);
+  --table-folder: #5b21b6;
+  --table-phone: #111827;
 
   --font-display: var(--font-cairo), system-ui, sans-serif;
   --font-body: var(--font-plex-arabic), system-ui, sans-serif;
@@ -3025,12 +3493,49 @@
 [data-bg='boardroom'] .orb {
   display: none;
 }
-/* The plan on the wall: a drafting grid, ruled in degrees so a grid that is
-   identical mirrored needs no RTL twin. */
+/* The floor: large tiles, ruled in degrees so a grid that is identical
+   mirrored needs no RTL twin. */
 [data-bg='boardroom'] {
   background-image:
-    repeating-linear-gradient(90deg, var(--plan-line) 0 1px, transparent 1px 64px),
-    repeating-linear-gradient(0deg, var(--plan-line) 0 1px, transparent 1px 64px);
+    repeating-linear-gradient(90deg, var(--plan-line) 0 1px, transparent 1px 96px),
+    repeating-linear-gradient(0deg, var(--plan-line) 0 1px, transparent 1px 96px);
+}
+/* The window. Sun through venetian blinds throws long soft bands across the
+   room, fading toward the floor; the glow sits in the corner the window is
+   in. Both are fixed to the viewport so the light stays put while the page
+   scrolls under it. Gradients take PHYSICAL angles, so each has an RTL twin
+   that keeps the window at the far (inline-end) top corner. */
+[data-bg='boardroom']::before,
+[data-bg='boardroom']::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+[data-bg='boardroom']::before {
+  background-image: repeating-linear-gradient(
+    114deg,
+    transparent 0 96px,
+    var(--blind-light) 118px 168px,
+    transparent 190px 214px
+  );
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 50%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.75) 50%, transparent 100%);
+}
+[data-bg='boardroom']::after {
+  background-image: radial-gradient(70vmax 70vmax at 100% 0%, var(--window-glow), transparent 62%);
+}
+[dir='rtl'] [data-bg='boardroom']::before {
+  background-image: repeating-linear-gradient(
+    246deg,
+    transparent 0 96px,
+    var(--blind-light) 118px 168px,
+    transparent 190px 214px
+  );
+}
+[dir='rtl'] [data-bg='boardroom']::after {
+  background-image: radial-gradient(70vmax 70vmax at 0% 0%, var(--window-glow), transparent 62%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -3045,9 +3550,9 @@
     --nq-border: rgba(255, 255, 255, 0.12);
     --nq-border-strong: rgba(255, 255, 255, 0.24);
     --nq-ring: #a78bfa;
-    --glass-bg: rgba(23, 28, 36, 0.86);
-    --glass-bg-subtle: rgba(23, 28, 36, 0.7);
-    --glass-bg-strong: rgba(23, 28, 36, 0.94);
+    --glass-bg: rgba(23, 28, 36, 0.8);
+    --glass-bg-subtle: rgba(23, 28, 36, 0.66);
+    --glass-bg-strong: rgba(23, 28, 36, 0.92);
     --glass-border-color: rgba(255, 255, 255, 0.1);
     --glass-edge: 0 0 0 0 transparent;
     --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
@@ -3059,11 +3564,33 @@
     --nq-radius-lg: 6px;
     --nq-radius-xl: 6px;
     --orb-opacity: 0.2;
-    --plan-line: rgba(255, 255, 255, 0.04);
-    --table-top: #232936;
-    --table-line: rgba(255, 255, 255, 0.3);
-    --table-seat: rgba(255, 255, 255, 0.2);
-    --table-thing: rgba(167, 139, 250, 0.4);
+    /* The room at night: city glow through the blinds, cool and faint; the
+       table keeps its walnut but loses the sun, and its rim is what is lit. */
+    --plan-line: rgba(255, 255, 255, 0.035);
+    --blind-light: transparent;
+    --window-glow: transparent;
+    --pane-sky: #0f2140;
+    --pane-oculus: #17305a;
+    --mullion: rgba(255, 255, 255, 0.22);
+    --wall-glass: rgba(60, 80, 120, 0.2);
+    --atrium-sun: rgba(200, 210, 255, 0.35);
+    --atrium-sun-mid: rgba(150, 170, 255, 0.14);
+    --atrium-beam: rgba(180, 200, 255, 0.12);
+    --table-wood-a: #5a4030;
+    --table-wood-b: #3f2c20;
+    --table-rim: rgba(255, 220, 180, 0.35);
+    --table-grain: rgba(0, 0, 0, 0.22);
+    --table-shadow: rgba(0, 0, 0, 0.55);
+    --table-seat: #3a4150;
+    --table-seat-back: #4b5566;
+    --table-laptop: #d1d5db;
+    --table-screen: #a78bfa;
+    --table-pad: #e5e7eb;
+    --table-pen: #e5e7eb;
+    --table-cup: #e5e7eb;
+    --table-cup-handle: rgba(229, 231, 235, 0.6);
+    --table-folder: #a78bfa;
+    --table-phone: #d1d5db;
   }
 }
 :root[data-theme='dark'] [data-template='majlis'] {
@@ -3077,9 +3604,9 @@
   --nq-border: rgba(255, 255, 255, 0.12);
   --nq-border-strong: rgba(255, 255, 255, 0.24);
   --nq-ring: #a78bfa;
-  --glass-bg: rgba(23, 28, 36, 0.86);
-  --glass-bg-subtle: rgba(23, 28, 36, 0.7);
-  --glass-bg-strong: rgba(23, 28, 36, 0.94);
+  --glass-bg: rgba(23, 28, 36, 0.8);
+  --glass-bg-subtle: rgba(23, 28, 36, 0.66);
+  --glass-bg-strong: rgba(23, 28, 36, 0.92);
   --glass-border-color: rgba(255, 255, 255, 0.1);
   --glass-edge: 0 0 0 0 transparent;
   --glass-shadow: 0 12px 32px rgba(0, 0, 0, 0.55);
@@ -3091,11 +3618,31 @@
   --nq-radius-lg: 6px;
   --nq-radius-xl: 6px;
   --orb-opacity: 0.2;
-  --plan-line: rgba(255, 255, 255, 0.04);
-  --table-top: #232936;
-  --table-line: rgba(255, 255, 255, 0.3);
-  --table-seat: rgba(255, 255, 255, 0.2);
-  --table-thing: rgba(167, 139, 250, 0.4);
+  --plan-line: rgba(255, 255, 255, 0.035);
+  --blind-light: transparent;
+  --window-glow: transparent;
+  --pane-sky: #0f2140;
+  --pane-oculus: #17305a;
+  --mullion: rgba(255, 255, 255, 0.22);
+  --wall-glass: rgba(60, 80, 120, 0.2);
+  --atrium-sun: rgba(200, 210, 255, 0.35);
+  --atrium-sun-mid: rgba(150, 170, 255, 0.14);
+  --atrium-beam: rgba(180, 200, 255, 0.12);
+  --table-wood-a: #5a4030;
+  --table-wood-b: #3f2c20;
+  --table-rim: rgba(255, 220, 180, 0.35);
+  --table-grain: rgba(0, 0, 0, 0.22);
+  --table-shadow: rgba(0, 0, 0, 0.55);
+  --table-seat: #3a4150;
+  --table-seat-back: #4b5566;
+  --table-laptop: #d1d5db;
+  --table-screen: #a78bfa;
+  --table-pad: #e5e7eb;
+  --table-pen: #e5e7eb;
+  --table-cup: #e5e7eb;
+  --table-cup-handle: rgba(229, 231, 235, 0.6);
+  --table-folder: #a78bfa;
+  --table-phone: #d1d5db;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

@@ -20,7 +20,7 @@ import { cn } from '@/lib/cn'
 import { LottieMark } from '@/components/lottie-mark'
 import { RetroGrid } from './retro-grid'
 import { DawnSun } from './dawn-sun'
-import { InkBlot } from './ink-blot'
+import { InkPage } from './ink-blot'
 import { DeepWater } from './deep-water'
 import { Storm } from './storm'
 import { TeslaCoil } from './tesla-coil'
@@ -28,6 +28,18 @@ import { PetalFall } from './petal-fall'
 import { LatticePanel, LatticeWall, Rosette } from './mashrabiya'
 import { TowerFacade } from './tower'
 import { CitySkyline } from './skyline'
+import { BreezeSky } from './sky'
+import { Seedling } from './seedling'
+import { NightSky } from './night-sky'
+import { AirDrift } from './air-drift'
+import { Mast } from './mast'
+import { SignalScene } from './signal-scene'
+import { DawnHorizon } from './dawn-horizon'
+import { FrostCorner, Icicles, Snowfall } from './frost'
+import { BlueWhale } from './whale'
+import { GalleryRoom } from './gallery'
+import { Atrium } from './atrium'
+import { LabYard } from './lab'
 import { ArtMarks, ArtMarkAt } from './arts'
 import { MeetingTable } from './boardroom'
 import { PaperOrnament } from './paper-ornament'
@@ -207,7 +219,7 @@ function Background({ template }: { template: Template }) {
           <RetroGrid />
         </>
       ) : null}
-      {template.background === 'ink' ? <InkBlot /> : null}
+      {template.background === 'ink' ? <InkPage /> : null}
       {template.background === 'deep' ? <DeepWater /> : null}
       {template.background === 'volt' ? <Storm /> : null}
       {template.background === 'bloom' ? <PetalFall /> : null}
@@ -216,26 +228,32 @@ function Background({ template }: { template: Template }) {
           the works hang from — both painted once, neither animated. */}
       {template.background === 'gallery' ? (
         <div className="gallery-wall" aria-hidden="true">
-          {/* The same painting twice: once blown up and blurred so her own
-              landscape fills the page, and once at its true proportions in the
-              middle. The wall of this gallery is the picture's own background. */}
-          <span className="wall-fill" />
-          <span className="wall-art" />
-          <span className="wall-light" />
-          <span className="wall-rail" />
+          {/* A gallery by day: white wall, spotlights, a wooden floor, and the
+              works — La Gioconda in a gilded frame among four drawn paintings
+              (components/templates/gallery.tsx). */}
+          <GalleryRoom />
         </div>
       ) : null}
       {template.background === 'city' ? <CitySkyline /> : null}
-      {/* نسيم: three clouds and nothing else. Plain spans — the shape is a
-          radial gradient and only `transform` animates, so the whole backdrop
-          is compositor work and costs the main thread nothing. */}
-      {template.background === 'breeze' ? (
-        <>
-          <span className="cloud" data-cloud="1" />
-          <span className="cloud" data-cloud="2" />
-          <span className="cloud" data-cloud="3" />
-        </>
-      ) : null}
+      {/* نسيم: a drawn sky — sun or moon, cumulus, a flock, hazy hills, stars
+          after dark. All SVG/CSS, and only `transform`/`opacity` ever animate,
+          so the whole backdrop is compositor work (components/templates/sky.tsx). */}
+      {template.background === 'breeze' ? <BreezeSky /> : null}
+      {/* ثُرَيّا: a drawn night sky — stars, the Seven Sisters, chart lines, the
+          Milky Way; ink on parchment by day (components/templates/night-sky.tsx). */}
+      {template.background === 'night' ? <NightSky /> : null}
+      {/* رَفيف: feathers drifting down and the currents they ride
+          (components/templates/air-drift.tsx). */}
+      {template.background === 'air' ? <AirDrift /> : null}
+      {/* مَدى: range rings across the page and a far horizon with the lights
+          of the towns the signal reaches (components/templates/mast.tsx). */}
+      {template.background === 'signal' ? <SignalScene /> : null}
+      {/* تسلا: the yard of the laboratory along the foot of the viewport, its
+          coronas never out (components/templates/lab.tsx). */}
+      {template.background === 'volt' ? <LabYard /> : null}
+      {/* مَجلِس: the glass atrium overhead, sun through the panes
+          (components/templates/atrium.tsx). */}
+      {template.background === 'boardroom' ? <Atrium /> : null}
 
       {orb(1, {
         inlineSize: '52vmax',
@@ -595,57 +613,45 @@ function Hero({ profile, template, lang }: RenderProps) {
   )
 
   if (template.hero === 'feature') {
-    const art = template.media?.hero
+    // صقيع: a frosted pane. Icicles hang from the card's top edge, frost
+    // ferns grow in from its corners, snow falls inside it, and the portrait
+    // sits in a ring of ice — a pane cleared with a glove (frost.tsx).
     return (
-      <header className={cn(glass, 'tilt overflow-hidden p-7 md:p-10 lg:p-12')} data-tilt>
-        <div className="grid items-center gap-7 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-10">
+      <header className={cn(glass, 'tilt frost-hero')} data-tilt>
+        <Icicles />
+        <FrostCorner corner="start" />
+        <FrostCorner corner="end" />
+        <Snowfall />
+        <div className="frost-pane">
           <Avatar profile={profile} lang={lang} />
-
-          <div className="flex flex-col gap-4">
-            <div data-hero-item>{headline}</div>
-            <div data-hero-item>{tagline}</div>
-            {pills}
-            <div data-hero-item>{about}</div>
-          </div>
-
-          {/* The art lives in the card. It is hidden below lg rather than
-              stacked: on a phone the card is the student's name, not scenery,
-              and a display:none LottieMark is never fetched or started. */}
-          {art ? (
-            <LottieMark src={art} className="hidden size-64 shrink-0 lg:block xl:size-72" />
-          ) : null}
+        </div>
+        <div className="frost-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
         </div>
       </header>
     )
   }
 
   if (template.hero === 'cover') {
+    // فجر: one scene, no halves. The drawn horizon fills the card; the
+    // writing stands in the sky at the start side; the portrait rises on the
+    // horizon at the end side where the sun is (dawn-horizon.tsx).
     const art = template.media?.hero
-    // Cover-and-avatar: a wide dawn strip across the top of the card, the
-    // avatar sitting on its lower edge, the text below. Nothing else on the
-    // site uses this shape, which is the point — فجر should be recognisable
-    // from across the room.
     return (
-      <header className={cn(glass, 'tilt overflow-hidden')} data-tilt>
-        {/* No CSS sun in the band: the line-art already carries its own, and
-            the page sun still rises behind the whole card. */}
-        {/* The strip is see-through: the page scene shows through the glass,
-            and the flock crosses it. Birds are silhouettes, so they are
-            inverted to white in dark mode (cover-art CSS). */}
-        <div className="cover-band" aria-hidden="true">
-          {art ? <LottieMark src={art} className="cover-art" fit="cover" /> : null}
+      <header className={cn(glass, 'tilt cover-hero')} data-tilt>
+        <DawnHorizon />
+        {art ? <LottieMark src={art} className="cover-art" /> : null}
+        <div className="cover-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
         </div>
-        <div className="relative px-7 pb-8 md:px-10 md:pb-10">
-          {/* The avatar overlaps the band by half its height. */}
-          <div className="-mt-14 md:-mt-16">
-            <Avatar profile={profile} lang={lang} />
-          </div>
-          <div className="mt-4 flex flex-col gap-4">
-            <div data-hero-item>{headline}</div>
-            <div data-hero-item>{tagline}</div>
-            {pills}
-            <div data-hero-item>{about}</div>
-          </div>
+        <div className="cover-sun">
+          <Avatar profile={profile} lang={lang} />
         </div>
       </header>
     )
@@ -822,33 +828,27 @@ function Hero({ profile, template, lang }: RenderProps) {
   }
 
   if (template.hero === 'window') {
-    // A tower at night, and the portrait is one lit window in it.
-    //
-    // The writing sits BESIDE the portrait, not above it, and the card is
-    // short: an earlier version reserved a tall band of city across the foot
-    // of the hero with the text stacked above it, which made the card enormous
-    // and pushed everything else off the screen. The city belongs to the page
-    // now, behind everything, where it can run the full width without any
-    // layout having to make room for it.
+    // A Times Square facade, and the portrait is the BILLBOARD on it: a LED
+    // screen framed by a marquee of chasing bulbs, a canopy throwing light
+    // down the wall, a red neon sign down the edge, the street door glowing at
+    // the foot. The building stands on the card's floor at the end column and
+    // the writing sits beside it with a neon tube under the name.
     const art = template.media?.hero
-    const burst = template.media?.heroCorner
     return (
       <header className={cn(glass, 'tilt window-hero')} data-tilt>
-        {/* The cityscape the tower stands in. Absolutely positioned along the
-            foot of the card, so it adds a city without adding height — the
-            last version put a tall band of it in the flow and the hero came
-            out nearly twice as tall as it needed to be. */}
-        {art ? <LottieMark src={art} className="window-cityline" /> : null}
-
-        {/* The far corner is the one the layout never uses, and an empty corner
-            in a night scene reads as an unfinished card rather than as air. */}
-        {burst ? (
-          <LottieMark
-            src={burst}
-            className="window-burst"
-            speed={0.5}
-            segment={template.media?.heroCornerSegment}
-          />
+        {/* The cityscape along the foot of the card, full width, behind the
+            facade. Absolute, so it adds a city without adding height; the
+            writing keeps a band of padding above it. */}
+        {art ? (
+          <div className="window-cityline" aria-hidden="true">
+            {/* The art's buildings sit on one side of a very wide frame, so
+                one copy stretched across the card is mostly empty sky. Three
+                copies at the art's own ratio, the middle one mirrored, run
+                the skyline along the whole foot. */}
+            <LottieMark src={art} className="window-cityline-tile" />
+            <LottieMark src={art} className="window-cityline-tile" data-side="end" />
+            <LottieMark src={art} className="window-cityline-tile" />
+          </div>
         ) : null}
 
         <div className="window-tower">
@@ -860,6 +860,7 @@ function Hero({ profile, template, lang }: RenderProps) {
 
         <div className="window-body">
           <div data-hero-item>{headline}</div>
+          <span className="window-neon-rule" aria-hidden="true" />
           <div data-hero-item>{tagline}</div>
           {pills}
           <div data-hero-item>{about}</div>
@@ -901,39 +902,44 @@ function Hero({ profile, template, lang }: RenderProps) {
     // the art is not beside the person, it is ATTACHED to them. The kites fly
     // in the far corner, the string runs down across the card, and the
     // portrait sits at the bottom of it holding on.
+    //
+    // There is NO card. The second build put the kites on a white panel and
+    // the owner called it «سيء للغاية»: a kite on a card is a sticker, a kite
+    // in the sky is a kite. So the hero is the open sky itself — the drawn
+    // backdrop shows through, the writing sits on it (measured against the
+    // deepest sky overhead), and the kite column holds the art at the top and
+    // the hand on the string at the foot.
     const art = template.media?.hero
     return (
-      <header className={cn(glass, 'tilt kite-hero')} data-tilt>
-        {art ? <LottieMark src={art} className="kite-flight" /> : null}
+      <header className="kite-hero">
+        <div className="kite-sky">
+          {art ? <LottieMark src={art} className="kite-flight" /> : null}
 
-        {/* The string. Stretched to the card with preserveAspectRatio="none",
-            so its two ends stay pinned to the corners at every width instead
-            of drifting away from the kite as the card grows. */}
-        <svg
-          className="kite-string"
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          focusable="false"
-        >
-          <path d="M14 86 C 38 78, 52 56, 66 34 C 72 24, 78 16, 86 10" />
-        </svg>
+          {/* The string: from the hand up to where the kites' own strings
+              gather. Stretched to the column with preserveAspectRatio="none",
+              so its ends stay pinned however wide the column gets. */}
+          <svg
+            className="kite-string"
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+            focusable="false"
+          >
+            <path d="M15 76 C 15 66, 20 56, 30 46" />
+          </svg>
 
-        <div className="kite-body">
-          <div className="kite-text">
-            <div data-hero-item>{headline}</div>
-            <div data-hero-item>{tagline}</div>
-            {pills}
-            <div data-hero-item>{about}</div>
-          </div>
-
-          {/* The portrait comes LAST, at the foot of the card, because that is
-              where the string ends. A kite is high and the person holding it
-              is low; putting the portrait at the top broke the one
-              relationship this hero exists to show. */}
+          {/* The portrait at the FOOT of the column, under the kites, because
+              that is where the person flying them stands. */}
           <div className="kite-holder">
             <Avatar profile={profile} lang={lang} />
           </div>
+        </div>
+
+        <div className="kite-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
         </div>
       </header>
     )
@@ -985,11 +991,12 @@ function Hero({ profile, template, lang }: RenderProps) {
     // this hero said that with a dotted reticle, which is a diagram and not a
     // place. This is the structure: a mast with its lamp lit, the portrait
     // standing at the foot of it, and the range opening out across the card.
-    const art = template.media?.hero
+    // Second pass: the mast is DRAWN at full height (mast.tsx) — the old
+    // catalogue icon was the size of a stamp, and range needs distance in it.
     return (
       <header className={cn(glass, 'tilt mast-hero')} data-tilt>
         <div className="mast-tower">
-          {art ? <LottieMark src={art} className="mast-art" /> : null}
+          <Mast />
 
           {/* The range. Three rings opening from the lamp and dying out at the
               far edge — scale and opacity only, so the compositor runs them
@@ -1099,7 +1106,6 @@ function Hero({ profile, template, lang }: RenderProps) {
     // eight rivets, a curved highlight across the pane, and one creature
     // drifting behind it. Nothing else in the set frames its art as something
     // you are looking THROUGH.
-    const art = template.media?.hero
     return (
       <header className={cn(glass, 'tilt p-7 md:p-10 lg:p-12')} data-tilt>
         <div className="grid items-center gap-9 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-14">
@@ -1116,7 +1122,9 @@ function Hero({ profile, template, lang }: RenderProps) {
           </div>
           <div className="porthole">
             <div className="porthole-glass">
-              {art ? <LottieMark src={art} className="porthole-art" /> : null}
+              {/* A blue whale passing the glass, drawn (whale.tsx) — at the
+                  owner's request, in place of the fetched jellyfish. */}
+              <BlueWhale />
             </div>
             <span className="porthole-shine" aria-hidden="true" />
           </div>
@@ -1225,6 +1233,29 @@ function Hero({ profile, template, lang }: RenderProps) {
             {art ? <LottieMark src={art} className="orbit-rings" /> : null}
             <Avatar profile={profile} lang={lang} />
           </div>
+        </div>
+      </header>
+    )
+  }
+
+  if (template.hero === 'seedling') {
+    // بادِرة: the person IS the first green. A seedling grows out of a bed of
+    // soil at the foot of the card — the stem draws itself, the leaves unfold
+    // — and the portrait is the bud that opens at the top of it. The art is
+    // attached to the person, which is what makes a hero a place.
+    return (
+      <header className={cn(glass, 'tilt seed-hero')} data-tilt>
+        <div className="seed-stage">
+          <Seedling />
+          <div className="seed-bud">
+            <Avatar profile={profile} lang={lang} />
+          </div>
+        </div>
+        <div className="seed-body">
+          <div data-hero-item>{headline}</div>
+          <div data-hero-item>{tagline}</div>
+          {pills}
+          <div data-hero-item>{about}</div>
         </div>
       </header>
     )
